@@ -1,0 +1,28 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build directories
+bin/
+obj/
+
+# NuGet packages
+packages/
+*.nupkg
+
+# Publish folder
+_PublishedWebsites/
+
+# Cache files
+*.cache
+*.FileListAbsolute.txt
+
+# Others
+*.log
+*.tmp
+*.temp
+
+# DLL and PDB
+*.dll
+*.pdb
