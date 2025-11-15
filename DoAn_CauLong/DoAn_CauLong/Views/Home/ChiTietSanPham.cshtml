@@ -164,9 +164,25 @@
             <span>| @Model.ReviewCount đánh giá</span>
         </div>
 
-        <button class="btn-review-action" onclick="alert('Chức năng gửi đánh giá sẽ được thêm tại đây.')">
+        @*<button class="btn-review-action" onclick="alert('Chức năng gửi đánh giá sẽ được thêm tại đây.')">
             Gửi đánh giá của bạn
-        </button>
+        </button>*@
+        @if (Session["MaKH"] != null)
+        {
+            <a href="@Url.Action("ReviewForm", "ThemPhanHoiSP", new { maSP = Model.SanPham.MaSanPham })">
+                <button class="btn-review-action" type="button">
+                    Gửi đánh giá của bạn
+                </button>
+            </a>
+        }
+        else
+        {
+            <p>Bạn cần đăng nhập để gửi đánh giá.</p>
+        }
+
+
+
+
 
         <div class="price" id="display-price">
             @priceDisplay

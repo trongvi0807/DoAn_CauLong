@@ -1,0 +1,11 @@
+﻿<form action="@Url.Action("SubmitReview", "ThemPhanHoiSP")" method="post">
+    <input type="hidden" name="maSP" value="@ViewBag.MaSanPham" />
+
+    <label>Đánh giá (1–5 sao):</label>
+    <input type="number" name="danhGia" min="1" max="5" required />
+
+    <label>Nội dung phản hồi:</label>
+    <textarea name="noiDung" required></textarea>
+
+    <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+</form>

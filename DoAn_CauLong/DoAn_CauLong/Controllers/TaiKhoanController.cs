@@ -36,6 +36,8 @@ namespace DoAn_CauLong.Controllers
 
                     if (khachHang != null && !string.IsNullOrEmpty(khachHang.HoTen))
                     {
+                        Session["MaKH"] = khachHang.MaKhachHang; // kiểm tra mã khách hàng-vừa thêm từ Vĩ
+
                         Session["HoTen"] = khachHang.HoTen; // Dùng Họ Tên
                     }
                     else
