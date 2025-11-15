@@ -1,0 +1,62 @@
+﻿using DoAn_CauLong.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using System.Data.Entity;
+
+namespace DoAn_CauLong.Controllers
+{
+    public class KhuyenMaiController : Controller
+    {
+        QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
+
+        // GET: KhuyenMai
+        // Optional parameter: maKhuyenMai - id of promotion to show products for
+        public ActionResult Index(int? maKhuyenMai)
+        {
+            // load all promotions (optionally filter to active only)
+            var promotions = data.KhuyenMais
+                .OrderBy(k => k.NgayBatDau)
+                .ToList();
+
+            ViewBag.Promotions = promotions;
+
+            List<SanPham> products = new List<SanPham>();
+            KhuyenMai selected = null;
+
+            if (maKhuyenMai.HasValue)
+            {
+                selected = promotions.SingleOrDefault(p => p.MaKhuyenMai == maKhuyenMai.Value);
+            }
+
+            if (selected == null && promotions.Any())
+            {
+                selected = promotions.First();
+            }
+
+            if (selected != null)
+            {
+                products = data.SanPhams
+                    .Include(s => s.KhuyenMai)
+                    .Include(s => s.Hang)
+                    .Where(s => s.MaKhuyenMai == selected.MaKhuyenMai)
+                    .OrderByDescending(s => s.NgayTao)
+                    .ToList();
+
+                ViewBag.SelectedPromotion = selected;
+            }
+
+            return View("~/Views/KhuyenMai/Index.cshtml", products);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                data.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}
