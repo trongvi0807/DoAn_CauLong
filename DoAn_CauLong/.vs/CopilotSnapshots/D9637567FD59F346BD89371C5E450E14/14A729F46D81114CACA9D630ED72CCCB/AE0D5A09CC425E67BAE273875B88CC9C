@@ -1,0 +1,339 @@
+﻿﻿@model DoAn_CauLong.ViewModels.ProductDetailViewModel
+@using DoAn_CauLong.Models
+
+@{
+    ViewBag.Title = Model.SanPham.TenSanPham;
+
+    // Lấy giá bán mặc định (của biến thể đầu tiên nếu có, hoặc GiaGoc)
+    var defaultVariant = Model.Variants.FirstOrDefault();
+    decimal? defaultPrice = defaultVariant?.GiaBan ?? Model.SanPham.GiaGoc;
+    string priceDisplay = defaultPrice.GetValueOrDefault().ToString("N0") + "đ";
+
+    // Lấy ID biến thể mặc định
+    int defaultChiTietId = defaultVariant?.MaChiTiet ?? 0;
+
+    // Lấy URL hình ảnh đại diện mặc định
+    string mainImageUrl = "/Content/images/" + (Model.SanPham.HinhAnhDaiDien ?? "default.jpg");
+
+    // Kiểm tra xem có ảnh chi tiết nào khác ngoài ảnh đại diện không
+    bool hasThumbnails = Model.Variants.Any(v => !string.IsNullOrEmpty(v.HinhAnh) && !string.Equals(v.HinhAnh, Model.SanPham.HinhAnhDaiDien));
+
+    // Lấy thông số vợt nếu có (Giả sử Model.ThongSoVot đã được gán từ Controller)
+    var thongSoVot = Model.ThongSoVot;
+    // Giả sử Loại Sản Phẩm có MaLoai = X là Vợt
+    // Trong ví dụ này, ta chỉ kiểm tra nếu Model.ThongSoVot != null thì hiển thị.
+    bool isRacket = thongSoVot != null;
+}
+
+<style>
+    /* CSS Cơ bản cho bố cục giữ nguyên */
+    .product-container {
+        display: flex;
+        max-width: 1200px;
+        margin: 20px auto;
+        gap: 40px;
+    }
+
+    .media-column {
+        flex: 1.5;
+        text-align: center;
+    }
+
+    .info-column {
+        flex: 1;
+    }
+
+    .main-image-box {
+        position: relative;
+        padding-bottom: 75%; /* Tỷ lệ khung hình 4:3 */
+        height: 0;
+        overflow: hidden;
+        margin-bottom: 10px;
+        border: 1px solid #eee;
+    }
+
+        .main-image-box img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-color: #f9f9f9;
+        }
+    /* Loại bỏ style thumbnails nếu không dùng */
+    /* ... (Giữ nguyên các style khác: option-group, price, btn-action, v.v.) ... */
+    .option-group button.selected {
+        border-color: #f36f21;
+        background-color: #fff4ed;
+        font-weight: bold;
+    }
+
+    .price {
+        font-size: 28px;
+        color: #f36f21;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+
+    .btn-action {
+        padding: 12px 25px;
+        font-size: 16px;
+        margin-right: 15px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .btn-add-cart {
+        background-color: #fff;
+        border: 1px solid #f36f21;
+        color: #f36f21;
+    }
+
+    .btn-buy-now {
+        background-color: #f36f21;
+        color: #fff;
+    }
+
+    .quantity-control {
+        display: flex;
+        align-items: center;
+    }
+
+    .rating-stars {
+        color: gold;
+    }
+    /* CSS cho Bảng thông số vợt */
+    .racket-specs-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-size: 14px;
+    }
+
+        .racket-specs-table th, .racket-specs-table td {
+            padding: 10px;
+            border: 1px solid #eee;
+            text-align: left;
+        }
+
+        .racket-specs-table th {
+            background-color: #f7f7f7;
+            font-weight: 600;
+            width: 40%;
+        }
+
+    /* CSS cho nút Đánh giá */
+    .btn-review-action {
+        background-color: #28a745;
+        color: #fff;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 15px;
+        margin-top: 15px;
+    }
+
+        .btn-review-action:hover {
+            background-color: #218838;
+        }
+</style>
+
+
+<div class="product-container">
+
+    <div class="media-column">
+
+        <div class="main-image-box">
+            <img id="main-product-image" src="@mainImageUrl" alt="@Model.SanPham.TenSanPham">
+        </div>
+
+    </div>
+
+    <div class="info-column">
+
+        <h1>@Model.SanPham.TenSanPham</h1>
+        <div class="rating">
+            <span class="rating-stars">
+                @for (int i = 0; i < (int)Math.Round(Model.AverageRating); i++)
+                {<span>★</span>}
+            </span>
+            <span>@Model.AverageRating.ToString("F1") sao</span>
+            <span>| @Model.ReviewCount đánh giá</span>
+        </div>
+
+        <button class="btn-review-action" onclick="alert('Chức năng gửi đánh giá sẽ được thêm tại đây.')">
+            Gửi đánh giá của bạn
+        </button>
+
+        <div class="price" id="display-price">
+            @priceDisplay
+        </div>
+
+        <hr>
+
+        @if (Model.AvailableColors.Any())
+        {
+            <div class="option-selection">
+                <h4>Chọn Màu Sắc:</h4>
+                <div class="option-group" id="color-options" data-option="color">
+                    @foreach (var color in Model.AvailableColors)
+                    {
+                        <button data-color-id="@color.MaMau" data-value="@color.TenMau">@color.TenMau</button>
+                    }
+                </div>
+            </div>
+        }
+
+        @if (Model.AvailableSizes.Any())
+        {
+            <div class="option-selection">
+                <h4>Chọn Trọng lượng/Size:</h4>
+                <div class="option-group" id="weight-options" data-option="size">
+                    @foreach (var size in Model.AvailableSizes)
+                    {
+                        <button data-size-id="@size.MaSize" data-value="@size.TenSize">@size.TenSize</button>
+                    }
+                </div>
+            </div>
+        }
+
+        @if (isRacket)
+        {
+            <hr>
+            <h3>Thông số chi tiết Vợt</h3>
+            <table class="racket-specs-table">
+                <tbody>
+                    <tr><th>Hãng</th><td>@Model.SanPham.Hang.TenHang</td></tr>
+                    <tr><th>Độ cứng</th><td>@thongSoVot.DoCung</td></tr>
+                    <tr><th>Điểm cân bằng</th><td>@thongSoVot.DoCanBang</td></tr>
+                    <tr><th>Sức căng</th><td>@thongSoVot.SucCang</td></tr>
+                    <tr><th>Trọng lượng</th><td>@thongSoVot.TrongLuong</td></tr>
+                    <tr><th>Chiều dài</th><td>@thongSoVot.ChieuDai</td></tr>
+                </tbody>
+            </table>
+        }
+
+        <hr>
+
+        @using (Html.BeginForm("AddToCart", "Home", FormMethod.Post))
+        {
+            <input type="hidden" id="selected-chitiet-id" name="chiTietId" value="@defaultChiTietId">
+
+            <div class="quantity-control">
+                Số lượng:
+                <input type="number" name="quantity" id="quantity-input" value="1" min="1" max="999" style="width: 60px; margin-left: 10px;">
+                <span id="stock-status" style="margin-left: 15px;">Vui lòng chọn tùy chọn</span>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <button type="submit" class="btn-action btn-add-cart">
+                    Thêm vào giỏ
+                </button>
+                <button type="submit" class="btn-action btn-buy-now">
+                    Mua ngay
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+
+    // Khởi tạo MaMau/MaSize của biến thể đầu tiên để dễ dàng kiểm tra
+    let selectedColorId = @(Model.AvailableColors.Any() ? Model.AvailableColors.First().MaMau : (int?)null);
+    let selectedSizeId = @(Model.AvailableSizes.Any() ? Model.AvailableSizes.First().MaSize : (int?)null);
+
+    // Dữ liệu mặc định từ Razor
+    const defaultPrice = @(defaultPrice.HasValue ? defaultPrice.Value : 0);
+    const defaultChiTietId = @defaultChiTietId;
+    const defaultSoLuongTon = @(defaultVariant?.SoLuongTon ?? 0);
+
+    // Hàm format tiền tệ VNĐ
+    const formatCurrency = (amount) => {
+        return amount.toLocaleString('vi-VN') + 'đ';
+    };
+
+    function updateProductState() {
+        // Tìm biến thể phù hợp với lựa chọn hiện tại
+        const selectedVariant = allVariants.find(v =>
+            (!selectedColorId || v.MaMau === selectedColorId) &&
+            (!selectedSizeId || v.MaSize === selectedSizeId)
+        );
+
+        const stockElement = document.getElementById('stock-status');
+        const hiddenIdInput = document.getElementById('selected-chitiet-id');
+        const priceElement = document.getElementById('display-price');
+        const mainProductImage = document.getElementById('main-product-image');
+
+        if (selectedVariant) {
+            stockElement.textContent = `Còn hàng (${selectedVariant.SoLuongTon})`;
+            stockElement.style.color = selectedVariant.SoLuongTon > 0 ? 'green' : 'red';
+
+            hiddenIdInput.value = selectedVariant.MaChiTiet;
+            priceElement.textContent = formatCurrency(selectedVariant.GiaBan);
+
+            if (selectedVariant.SoLuongTon === 0) {
+                 stockElement.textContent = 'Hết hàng';
+            }
+
+            // Cập nhật ảnh chính (Nếu biến thể có ảnh riêng)
+            if (selectedVariant.HinhAnh && mainProductImage) {
+                mainProductImage.src = "/Content/images/" + selectedVariant.HinhAnh;
+            }
+
+        } else {
+             // Trường hợp không tìm thấy biến thể hoặc sản phẩm không có tùy chọn (dùng mặc định)
+            stockElement.textContent = `Còn hàng (${defaultSoLuongTon})`;
+            stockElement.style.color = defaultSoLuongTon > 0 ? 'green' : 'red';
+
+            // Nếu không tìm thấy biến thể, báo lỗi nếu sản phẩm yêu cầu chọn đủ tùy chọn
+            if (@Model.AvailableColors.Count > 0 && @Model.AvailableSizes.Count > 0) {
+                 stockElement.textContent = 'Biến thể không tồn tại';
+                 stockElement.style.color = 'red';
+            }
+
+            // Đặt lại giá trị mặc định
+            hiddenIdInput.value = defaultChiTietId;
+            priceElement.textContent = formatCurrency(defaultPrice);
+
+            // Quay lại ảnh đại diện chính
+            if (mainProductImage) {
+                 mainProductImage.src = "@mainImageUrl";
+            }
+        }
+    }
+
+    // Xử lý logic khi click chọn tùy chọn
+    document.querySelectorAll('.option-group button').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const group = this.closest('.option-group');
+
+            group.querySelectorAll('button').forEach(btn => btn.classList.remove('selected'));
+            this.classList.add('selected');
+
+            const optionType = group.dataset.option;
+            if (optionType === 'color') {
+                selectedColorId = parseInt(this.dataset.colorId);
+            } else if (optionType === 'size') {
+                selectedSizeId = parseInt(this.dataset.sizeId);
+            }
+
+            updateProductState();
+        });
+    });
+
+    // Tự động chọn tùy chọn đầu tiên khi load trang nếu có
+    if (@Model.AvailableColors.Count > 0) {
+        document.querySelector('#color-options button:first-child')?.click();
+    }
+    if (@Model.AvailableSizes.Count > 0) {
+        document.querySelector('#weight-options button:first-child')?.click();
+    }
+
+    // Luôn gọi updateState để thiết lập giá trị ban đầu và tồn kho
+    updateProductState();
+</script>
