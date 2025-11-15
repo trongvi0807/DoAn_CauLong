@@ -3,15 +3,27 @@
   "WorkspaceRootPath": "C:\\Users\\Trong\\OneDrive\\Pictures\\DoAn_CauLong\\DoAn_CauLong\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|c:\\users\\trong\\onedrive\\pictures\\doan_caulong\\doan_caulong\\doan_caulong\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|c:\\users\\trong\\onedrive\\pictures\\doan_caulong\\doan_caulong\\doan_caulong\\views\\sanpham\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\views\\sanpham\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|c:\\users\\trong\\onedrive\\pictures\\doan_caulong\\doan_caulong\\doan_caulong\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|c:\\users\\trong\\onedrive\\pictures\\doan_caulong\\doan_caulong\\doan_caulong\\controllers\\sanphamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\sanphamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|C:\\Users\\Trong\\OneDrive\\Pictures\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|c:\\users\\trong\\onedrive\\pictures\\doan_caulong\\doan_caulong\\doan_caulong\\viewmodels\\themphanhoispcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|C:\\Users\\Trong\\OneDrive\\Pictures\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|C:\\Users\\Trong\\OneDrive\\Pictures\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\viewmodels\\themphanhoispcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\viewmodels\\themphanhoispcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -55,19 +67,58 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Trong\\OneDrive\\Pictures\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\SanPham\\Index.cshtml",
+              "RelativeDocumentMoniker": "DoAn_CauLong\\Views\\SanPham\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Trong\\OneDrive\\Pictures\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\SanPham\\Index.cshtml",
+              "RelativeToolTip": "DoAn_CauLong\\Views\\SanPham\\Index.cshtml",
+              "ViewState": "AgIAAHkAAAAAAAAAAAAiwJ4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T12:50:52.699Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\Trong\\OneDrive\\Pictures\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "DoAn_CauLong\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\Trong\\OneDrive\\Pictures\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "DoAn_CauLong\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAMQAAAAAAAAAAAAewAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T12:42:42.543Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SanPhamController.cs",
+              "DocumentMoniker": "C:\\Users\\Trong\\OneDrive\\Pictures\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\SanPhamController.cs",
+              "RelativeDocumentMoniker": "DoAn_CauLong\\Controllers\\SanPhamController.cs",
+              "ToolTip": "C:\\Users\\Trong\\OneDrive\\Pictures\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\SanPhamController.cs",
+              "RelativeToolTip": "DoAn_CauLong\\Controllers\\SanPhamController.cs",
+              "ViewState": "AgIAAF0AAAAAAAAAAAAIwBMAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T12:36:37.53Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "Web.config",
               "DocumentMoniker": "C:\\Users\\Trong\\OneDrive\\Pictures\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Web.config",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Web.config",
               "ToolTip": "C:\\Users\\Trong\\OneDrive\\Pictures\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Web.config",
               "RelativeToolTip": "DoAn_CauLong\\Web.config",
-              "ViewState": "AgIAACQAAAAAAAAAAAAAACYAAAAZAAAAAAAAAA==",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAAAEYAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
               "WhenOpened": "2025-11-15T12:22:12.253Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "ThemPhanHoiSPController.cs",
               "DocumentMoniker": "C:\\Users\\Trong\\OneDrive\\Pictures\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\ViewModels\\ThemPhanHoiSPController.cs",
               "RelativeDocumentMoniker": "DoAn_CauLong\\ViewModels\\ThemPhanHoiSPController.cs",
@@ -75,12 +126,11 @@
               "RelativeToolTip": "DoAn_CauLong\\ViewModels\\ThemPhanHoiSPController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T12:20:19.698Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-15T12:20:19.698Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "HomeController.cs",
               "DocumentMoniker": "C:\\Users\\Trong\\OneDrive\\Pictures\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Controllers\\HomeController.cs",
@@ -88,8 +138,7 @@
               "RelativeToolTip": "DoAn_CauLong\\Controllers\\HomeController.cs",
               "ViewState": "AgIAABIAAAAAAAAAAAAkwBUAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T12:20:19.762Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-15T12:20:19.762Z"
             }
           ]
         }

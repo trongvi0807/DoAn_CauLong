@@ -15,8 +15,8 @@ namespace DoAn_CauLong.Controllers
         QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
 
         // GET: SanPham
-        // optional parameters: loai (int id or short code/string), hang (brand name), ten (partial product name / model line)
-        public ActionResult Index(string loai = null, string hang = null, string ten = null)
+        // optional parameters: loai (int id or short code/string), hang (brand name)
+        public ActionResult Index(string loai = null, string hang = null)
         {
             var query = data.SanPhams.AsQueryable();
 
@@ -71,13 +71,6 @@ namespace DoAn_CauLong.Controllers
                     // fallback: match by name contains
                     query = query.Where(s => s.Hang.TenHang.ToLower().Contains(hangKey.ToLower()));
                 }
-            }
-
-            // filter by partial product name / model line
-            if (!string.IsNullOrEmpty(ten))
-            {
-                var tenKey = ten.Trim().ToLower();
-                query = query.Where(s => s.TenSanPham.ToLower().Contains(tenKey));
             }
 
             // include related entities for display (LoaiSanPham, Hang)

@@ -1,0 +1,27 @@
+﻿@model List<DoAn_CauLong.Models.SanPham>
+
+@{
+    ViewBag.Title = "Danh sách s?n ph?m";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (Model == null || !Model.Any())
+{
+    <p>Không có s?n ph?m phù h?p.</p>
+}
+else
+{
+    <div class="product-list">
+        @foreach (var sp in Model)
+        {
+            <div class="product-item">
+                <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.MaSanPham })">
+                    <img src="@Url.Content("~/Content/images/" + sp.HinhAnhDaiDien)" alt="@sp.TenSanPham" style="max-width:150px; max-height:150px;" />
+                    <h4>@sp.TenSanPham</h4>
+                    <p>@(sp.GiaGoc.GetValueOrDefault().ToString("N0") + "?")</p>
+                </a>
+            </div>
+        }
+    </div>
+}

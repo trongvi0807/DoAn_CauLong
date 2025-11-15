@@ -1,4 +1,4 @@
-﻿@using System.Web.Mvc
+﻿﻿@using System.Web.Mvc
 @{
     ViewBag.Title = "Cửa Hàng Cầu Lông Online";
 }
@@ -158,10 +158,10 @@
                                     <div class="brand-column">
 
                                         <p class="brand-title">GIÀY YONEX</p>
-                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Giay", ten = "65" })">Giày Yonex 65</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Giay" })">Giày Yonex 65</a>
 
-                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Giay", ten = "Aerus" })">Giày Yonex Aerus</a>
-                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Giay", ten = "Eclipsion" })">Giày Yonex Eclipsion</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Giay" })">Giày Yonex Aerus</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Giay" })">Giày Yonex Eclipsion</a>
 
                                     </div>
 
@@ -188,36 +188,39 @@
                                 <div class="product-brands-grid">
 
                                     <div class="brand-column">
-                                        <p class="brand-title"><a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Vot" })">VỢT YONEX</a></p>
+                                        <p class="brand-title">VỢT YONEX</p>
 
-                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Vot", ten = "Astrox" })">Vợt Yonex Astrox</a>
-                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Vot", ten = "Nanoflare" })">Vợt Yonex Nanoflare</a>
-                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Vot", ten = "Arcsaber" })">Vợt Yonex Arcsaber</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Vot" })">Vợt Yonex Astrox</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Vot" })">Vợt Yonex Nanoflare</a>
+
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Vot" })">Vợt Yonex Arcsaber</a>
                                     </div>
 
                                     <div class="brand-column">
-                                        <p class="brand-title"><a href="@Url.Action("Index", "SanPham", new { hang = "Lining", loai = "Vot" })">VỢT LINING</a></p>
-                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Lining", loai = "Vot", ten = "Aeronaut" })">Vợt Lining Aeronaut</a>
 
-                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Lining", loai = "Vot", ten = "Tectonic" })">Vợt Lining Tectonic</a>
-                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Lining", loai = "Vot", ten = "Axforce" })">Vợt Lining Axforce</a>
+                                        <p class="brand-title">VỢT LINING</p>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Lining", loai = "Vot" })">Vợt Lining Aeronaut</a>
 
-                                    </div>
-
-                                    <div class="brand-column">
-                                        <p class="brand-title"><a href="@Url.Action("Index", "SanPham", new { hang = "Victor", loai = "Vot" })">VỢT VICTOR</a></p>
-                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Victor", loai = "Vot", ten = "Auraspeed" })">Vợt Victor Auraspeed</a>
-
-                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Victor", loai = "Vot", ten = "Thruster" })">Vợt Victor Thruster</a>
-                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Victor", loai = "Vot", ten = "Jetspeed" })">Vợt Victor Jetspeed</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Lining", loai = "Vot" })">Vợt Lining Tectonic</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Lining", loai = "Vot" })">Vợt Lining Axforce</a>
 
                                     </div>
 
                                     <div class="brand-column">
-                                        <p class="brand-title"><a href="@Url.Action("Index", "SanPham", new { hang = "Mizuno", loai = "Vot" })">VỢT MIZUNO</a></p>
 
-                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Mizuno", loai = "Vot", ten = "Fortius" })">Vợt Mizuno Fortius</a>
-                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Mizuno", loai = "Vot", ten = "Altius" })">Vợt Mizuno Altius</a>
+                                        <p class="brand-title">VỢT VICTOR</p>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Victor", loai = "Vot" })">Vợt Victor Auraspeed</a>
+
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Victor", loai = "Vot" })">Vợt Victor Thruster</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Victor", loai = "Vot" })">Vợt Victor Jetspeed</a>
+
+                                    </div>
+
+                                    <div class="brand-column">
+                                        <p class="brand-title">VỢT MIZUNO</p>
+
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Mizuno", loai = "Vot" })">Vợt Mizuno Fortius</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Mizuno", loai = "Vot" })">Vợt Mizuno Altius</a>
 
                                     </div>
                                 </div>
@@ -256,10 +259,10 @@
                                     <div class="brand-column">
                                         <p class="brand-title">PHỤ KIỆN CẦU LÔNG</p>
 
-                                        <a href="@Url.Action("Index", "SanPham", new { loai = "PhuKien", ten = "Túi đựng vợt" })">Túi đựng vợt</a>
-                                        <a href="@Url.Action("Index", "SanPham", new { loai = "PhuKien", ten = "Dây cuốn cán" })">Dây cuốn cán</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { loai = "PhuKien", hang = "" })">Túi đựng vợt</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { loai = "PhuKien", hang = "" })">Dây cuốn cán</a>
 
-                                        <a href="@Url.Action("Index", "SanPham", new { loai = "PhuKien", ten = "Balo cầu lông" })">Balo cầu lông</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { loai = "PhuKien", hang = "" })">Balo cầu lông</a>
                                     </div>
 
                                 </div>
@@ -301,7 +304,7 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h4>THÔNG TIN LIÊN HẸ</h4>
+                <h4>THÔNG TIN LIÊN HỆ</h4>
                 <p><i class="fa-solid fa-location-dot"></i> 25 Hoàng Hoa Thám, Q.Tân Bình, TP.HCM</p>
 
                 <p><i class="fa-solid fa-phone"></i> 0905123456</p>
