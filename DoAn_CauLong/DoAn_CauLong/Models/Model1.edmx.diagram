@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="4f42db2d5cc54c8aa7b5d681421b7ded" Name="Diagram1">
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.ChiTietDonHang" Width="1.5" PointX="10.5" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.ChiTietSanPham" Width="1.5" PointX="5.25" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.DonHang" Width="1.5" PointX="8.25" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.GioHang" Width="1.5" PointX="7.5" PointY="2.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.Hang" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.KhachHang" Width="1.5" PointX="5.25" PointY="16" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.KhuyenMai" Width="1.5" PointX="0.75" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.LoaiSanPham" Width="1.5" PointX="0.75" PointY="10" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.MauSac" Width="1.5" PointX="3" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.NhaCungCap" Width="1.5" PointX="0.75" PointY="12.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.PhanHoi" Width="1.5" PointX="8.25" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.PhanQuyen" Width="1.5" PointX="0.75" PointY="16.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.SanPham" Width="1.5" PointX="3" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.Size" Width="1.5" PointX="3" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.TaiKhoan" Width="1.5" PointX="3" PointY="16.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.ThongSoVot" Width="1.5" PointX="7.5" PointY="12.75" IsExpanded="true" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__ChiTietDo__MaChi__02084FDA" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__ChiTietDo__MaDon__01142BA1" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__ChiTietSa__MaMau__6B24EA82" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__ChiTietSa__MaSan__6A30C649" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__ChiTietSa__MaSiz__6C190EBB" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__GioHang__MaChiTi__0D7A0286" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__ThongSoVo__MaChi__6EF57B66" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__DonHang__MaKhach__7B5B524B" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__GioHang__MaKhach__0C85DE4D" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__SanPham__MaHang__6477ECF3" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__KhachHang__MaTai__73BA3083" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__PhanHoi__MaKhach__06CD04F7" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__SanPham__MaKhuye__6383C8BA" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__SanPham__MaLoai__619B8048" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__SanPham__MaNhaCu__628FA481" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__PhanHoi__MaSanPh__07C12930" ManuallyRouted="false" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__TaiKhoan__MaQuye__4D94879B" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

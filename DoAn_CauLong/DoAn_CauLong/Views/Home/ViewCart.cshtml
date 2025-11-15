@@ -1,0 +1,83 @@
+﻿﻿@model List<DoAn_CauLong.ViewModels.CartItemViewModel>
+
+@{
+    ViewBag.Title = "Giỏ hàng của bạn (DB)";
+    // Tính tổng tiền trực tiếp trong View
+    decimal total = Model?.Sum(i => i.ThanhTien) ?? 0;
+}
+
+<h2>🛍️ Giỏ hàng của bạn</h2>
+<hr />
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">
+        Giỏ hàng của bạn hiện đang trống. <a href="@Url.Action("Index", "Home")">Tiếp tục mua sắm</a>.
+    </div>
+}
+else
+{
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th>Ảnh</th>
+                <th>Sản phẩm</th>
+                <th>Tùy chọn</th>
+                <th>Đơn giá</th>
+                <th>Số lượng</th>
+                <th>Thành tiền</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <img src="/Content/images/@item.HinhAnh" alt="@item.TenSanPham" class="cart-item-img" />
+                    </td>
+                    <td>@item.TenSanPham</td>
+                    <td>
+                        Màu: @item.TenMau <br />
+                        Size: @item.TenSize
+                    </td>
+                    <td>@item.GiaBan.ToString("N0") đ</td>
+                    <td>
+                        @* Khi dùng DB, việc cập nhật số lượng cần gửi MaGioHang *@
+                        <input type="number" value="@item.SoLuong" min="1" data-cart-id="@item.MaGioHang" style="width: 60px;" onchange="updateCartQuantity(this);" />
+                    </td>
+                    <td>@item.ThanhTien.ToString("N0") đ</td>
+                    <td>
+                        <a href="@Url.Action("RemoveFromCart", "Home", new { maGioHang = item.MaGioHang })" class="btn btn-sm btn-danger">Xóa</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="cart-summary">
+        <h3>Tổng tiền giỏ hàng: @total.ToString("N0") đ</h3>
+        <button class="btn-checkout">Tiến hành Thanh toán</button>
+    </div>
+}
+
+<script>
+    // Hàm giả định để cập nhật số lượng (cần AJAX)
+    function updateCartQuantity(inputElement) {
+        const cartId = inputElement.getAttribute('data-cart-id');
+        const newQuantity = parseInt(inputElement.value);
+
+        if (newQuantity < 1) {
+            alert('Số lượng phải lớn hơn 0. Vui lòng sử dụng nút Xóa.');
+            inputElement.value = 1; // Đặt lại
+            return;
+        }
+
+        // TẠM THỜI: Chỉ alert. Trong thực tế, bạn cần gửi yêu cầu AJAX đến Controller
+        console.log(`Cập nhật MaGioHang ${cartId} với số lượng mới: ${newQuantity}`);
+        // Ví dụ AJAX: $.post("/Home/UpdateCartQuantity", { cartId: cartId, quantity: newQuantity }, function(data) { location.reload(); });
+
+        alert('Chức năng cập nhật số lượng qua AJAX cần được code thêm.');
+        // Khuyến nghị: reload trang để thấy kết quả (hoặc cập nhật DOM)
+    }
+</script>

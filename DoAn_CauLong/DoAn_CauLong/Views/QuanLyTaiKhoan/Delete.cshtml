@@ -1,0 +1,38 @@
+﻿﻿@model DoAn_CauLong.Models.TaiKhoan
+@{
+    ViewBag.Title = "Xác nhận Xóa tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" style="padding: 20px;">
+    <h2>@ViewBag.Title</h2>
+    <h3 class="text-danger">Bạn có chắc chắn muốn xóa tài khoản này?</h3>
+    <p class="text-danger"><strong>CẢNH BÁO:</strong> Thao tác này sẽ xóa vĩnh viễn tài khoản, khách hàng, và TOÀN BỘ đơn hàng, giỏ hàng, phản hồi liên quan đến tài khoản này.</p>
+    <hr />
+
+    <dl class="dl-horizontal">
+        <dt>Tên đăng nhập</dt>
+        <dd>@Html.DisplayFor(model => model.TenDangNhap)</dd>
+
+        <dt>Họ tên</dt>
+        <dd>
+            @(Model.KhachHangs.FirstOrDefault() != null ? Model.KhachHangs.FirstOrDefault().HoTen : "[N/A]")
+        </dd>
+
+        <dt>Email</dt>
+        <dd>@Html.DisplayFor(model => model.Email)</dd>
+
+        <dt>Quyền</dt>
+        <dd>@(Model.PhanQuyen != null ? Model.PhanQuyen.TenQuyen : "[N/A]")</dd>
+    </dl>
+
+    @* Form này sẽ POST đến Action "XacNhanXoa" *@
+    @using (Html.BeginForm("XacNhanXoa", "QuanLyTaiKhoan", new { id = Model.MaTaiKhoan }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-actions no-color">
+            <input type="submit" value="XÁC NHẬN XÓA" class="btn btn-danger" /> |
+            @Html.ActionLink("Hủy", "Index")
+        </div>
+    }
+</div>

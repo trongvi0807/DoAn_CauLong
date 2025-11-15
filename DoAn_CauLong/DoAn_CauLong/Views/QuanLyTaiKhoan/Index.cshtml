@@ -1,0 +1,52 @@
+﻿﻿@model IEnumerable<DoAn_CauLong.Models.TaiKhoan>
+@{
+    ViewBag.Title = "Quản lý Tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" style="padding: 20px;">
+    <h2>@ViewBag.Title</h2>
+    <hr />
+    <p>
+        @Html.ActionLink("Tạo tài khoản mới", "Create", null, new { @class = "btn btn-primary" })
+    </p>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">@TempData["Message"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>Tên đăng nhập</th>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Quyền</th>
+            <th>Ngày tạo</th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.TenDangNhap)</td>
+                <td>
+                    @(item.KhachHangs.FirstOrDefault() != null ? item.KhachHangs.FirstOrDefault().HoTen : "[N/A]")
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td>
+                    @(item.PhanQuyen != null ? item.PhanQuyen.TenQuyen : "[N/A]")
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.NgayTao)</td>
+                <td>
+                    @Html.ActionLink("Sửa", "Edit", new { id = item.MaTaiKhoan }, new { @class = "btn btn-warning btn-xs" }) |
+                    @Html.ActionLink("Xóa", "Delete", new { id = item.MaTaiKhoan }, new { @class = "btn btn-danger btn-xs" })
+                </td>
+            </tr>
+        }
+    </table>
+</div>

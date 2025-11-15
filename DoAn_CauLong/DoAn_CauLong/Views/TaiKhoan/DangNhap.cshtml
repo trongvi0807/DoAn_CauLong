@@ -1,0 +1,43 @@
+﻿﻿
+@{
+    ViewBag.Title = "DangNhap";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container" style="padding: 20px;">
+    <h2>Đăng nhập tài khoản</h2>
+    <hr />
+
+    @using (Html.BeginForm("DangNhap", "TaiKhoan", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Tên đăng nhập</label>
+                <div class="col-md-10">
+                    <input type="text" name="TenDangNhap" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Mật khẩu</label>
+                <div class="col-md-10">
+                    <input type="password" name="MatKhau" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Đăng nhập" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="col-md-offset-2 col-md-10" style="padding-top: 15px;">
+        Bạn chưa có tài khoản? @Html.ActionLink("Đăng ký ngay", "DangKy", "TaiKhoan")
+    </div>
+</div>

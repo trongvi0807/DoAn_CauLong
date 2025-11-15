@@ -1,0 +1,61 @@
+﻿﻿@using System.Web.Mvc
+
+<div id="bannerCarousel" class="carousel slide mb-4 shadow m-1" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+
+    <div class="carousel-inner rounded">
+        <div class="carousel-item active">
+            <div class="carousel-caption d-none d-md-block">
+                <h3>Khám phá thế giới Cầu Lông</h3>
+                <p>Hãy chọn cho mình một người bạn đồng hành</p>
+            </div>
+            <img src="@Url.Content("~/Content/images/banner2.jpg")"
+                 srcset="@Url.Content("~/Content/images/banner2.jpg") 1x, @Url.Content("~/Content/images/banner2.png") 2x"
+                 class="d-block w-100 banner-img" alt="Banner 1" loading="lazy">
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-caption d-none d-md-block">
+                <h3>Giảm giá 20%</h3>
+                <p>Cho đơn hàng đầu tiên</p>
+            </div>
+            <img src="@Url.Content("~/Content/images/banner1.jpg")"
+                 srcset="@Url.Content("~/Content/images/banner1.jpg") 1x, @Url.Content("~/Content/images/banner1.png") 2x"
+                 class="d-block w-100 banner-img" alt="Banner 2" loading="lazy">
+        </div>
+        <div class="carousel-item">
+            <div class="carousel-caption d-none d-md-block">
+                <h3>Vợt mới hàng tuần</h3>
+                <p>Cập nhật liên tục</p>
+            </div>
+            <img src="@Url.Content("~/Content/images/banner3.jpg")"
+                 srcset="@Url.Content("~/Content/images/banner3.jpg") 1x, @Url.Content("~/Content/images/banner3.png") 2x"
+                 class="d-block w-100 banner-img" alt="Banner 3" loading="lazy">
+        </div>
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+@section scripts {
+    <script>
+        (function () {
+            try {
+                var el = document.getElementById('bannerCarousel');
+                if (el) {
+                    var carousel = bootstrap.Carousel.getOrCreateInstance(el, { interval: 5000, ride: 'carousel' });
+                }
+            } catch (e) { }
+        })();
+    </script>
+}
