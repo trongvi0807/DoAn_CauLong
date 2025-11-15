@@ -1,7 +1,6 @@
 ﻿@model List<DoAn_CauLong.Models.SanPham>
 
 @{
-    ViewBag.Title = "Sản phẩm khuyến mãi";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var promotions = ViewBag.Promotions as List<DoAn_CauLong.Models.KhuyenMai> ?? new List<DoAn_CauLong.Models.KhuyenMai>();
     var promoProducts = ViewBag.PromoProducts as Dictionary<int, List<DoAn_CauLong.Models.SanPham>> ?? new Dictionary<int, List<DoAn_CauLong.Models.SanPham>>();
@@ -23,8 +22,52 @@
     @@media (max-width: 992px) { .promo-card { width: calc(33.333% - 12px); } }
     @@media (max-width: 768px) { .promo-card { width: calc(50% - 12px); } }
     @@media (max-width: 480px) { .promo-card { width: 100%; } }
-</style>
+    .promo-header {
+        /* Đảm bảo căn giữa theo chiều dọc tốt hơn */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px; /* Tăng khoảng cách dưới tiêu đề */
+        padding: 10px 0;
+        border-bottom: 3px solid #f0f0f0; /* Thêm đường kẻ dưới nhẹ */
+    }
 
+    /* Chỉnh sửa Tiêu đề chính (Tên chương trình) */
+    .promo-title {
+        font-size: 1.6rem; /* Làm chữ lớn hơn */
+        font-weight: 800; /* Làm chữ đậm hơn nữa */
+        color: #e51c23; /* Đổi màu chữ sang màu chủ đạo (màu đỏ) */
+        position: relative;
+        padding-left: 35px; /* Tạo không gian cho biểu tượng */
+    }
+
+        /* Thêm biểu tượng hoặc hiệu ứng vào tiêu đề */
+        .promo-title::before {
+            content: '🔥'; /* Thêm biểu tượng cảm xúc (ví dụ: lửa, loa) */
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.4rem;
+            margin-right: 10px;
+        }
+
+    /* Chỉnh sửa Thời gian áp dụng */
+    .promo-header small {
+        font-size: 0.9rem;
+        color: #757575;
+        font-style: italic; /* In nghiêng nhẹ */
+        margin-top: 5px; /* Tách biệt nhẹ với tiêu đề chính */
+        display: block; /* Đảm bảo nó chiếm một dòng riêng */
+    }
+
+    /* Nút "Xem chương trình" */
+    .promo-header .btn {
+        border-radius: 20px; /* Làm nút bo tròn */
+        font-weight: 600;
+    }
+
+</style>
 <div class="container">
     <h2 class="mt-3">Sản phẩm khuyến mãi</h2>
 
@@ -46,10 +89,10 @@
                 <div class="promo-header">
                     <div>
                         <div class="promo-title">@km.TenChuongTrinh</div>
-                        <small class="text-muted">@km.NgayBatDau?.ToString("dd/MM/yyyy") - @km.NgayKetThuc?.ToString("dd/MM/yyyy")</small>
+                        <small class="text-muted">@km.NgayBatDau - @km.NgayKetThuc</small>
                     </div>
                     <div>
-                        <a class="btn btn-outline-primary" href="#promo-@km.MaKhuyenMai">Xem chương trình</a>
+                        <a class="btn btn-outline-success" href="#promo-@km.MaKhuyenMai">Xem chương trình</a>
                     </div>
                 </div>
 

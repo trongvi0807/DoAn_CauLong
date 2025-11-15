@@ -1,0 +1,208 @@
+﻿﻿@model List<DoAn_CauLong.Models.SanPham>
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@* The Partial method is used to render a partial view. Partial views are like user controls in Web Forms - they allow you to encapsulate a portion of your page's markup and logic, and reuse it in multiple places. Here, we render the _Banner partial view, which is assumed to be present in the shared views folder. *@
+@Html.Partial("_Banner")
+
+<style>
+    /* CSS CŨ: Vẫn giữ nguyên để luân phiên trái phải */
+    .category {
+        display: flex;
+        gap: 40px;
+        margin: 60px 0;
+        align-items: center;
+    }
+
+        .category.left .image-block {
+            order: 1;
+        }
+
+        .category.left .product-block {
+            order: 2;
+        }
+
+        .category.right .image-block {
+            order: 2;
+        }
+
+        .category.right .product-block {
+            order: 1;
+        }
+
+    .image-block img {
+        width: 360px;
+        height: auto; /* Thêm height: auto để hình ảnh không bị méo */
+        border-radius: 12px;
+        object-fit: cover;
+    }
+
+    /* CSS MỚI/CẬP NHẬT: Cho bố cục sản phẩm 3 cột (tối đa 6 sản phẩm) */
+    .product-block {
+        flex-grow: 1; /* Cho phép khối sản phẩm chiếm không gian còn lại */
+    }
+
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    /* Điều chỉnh cho khối chứa tất cả sản phẩm */
+    .grid {
+        display: grid;
+        /* Giảm tỉ lệ chiều rộng của card, bạn có thể thử 4 cột hoặc điều chỉnh tỉ lệ */
+        grid-template-columns: repeat(3, 300px); /* Giữ 3 cột để cân đối với hình đại diện */
+        gap: 15px; /* Giảm khoảng cách giữa các card */
+    }
+
+    /* Điều chỉnh cho từng sản phẩm */
+    .card {
+        /* ... giữ nguyên các style padding, box-shadow, border-radius ... */
+        padding: 10px; /* Giảm padding */
+        height: 100%; /* Đảm bảo card chiếm hết chiều cao có sẵn trong grid cell */
+        /* Nếu bạn muốn card hẹp hơn nữa, bạn cần chỉnh lại grid-template-columns */
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        /* Điều chỉnh hình ảnh sản phẩm */
+        .card img {
+            width: 100%;
+            /* Rất quan trọng: Tăng chiều cao tối đa của hình ảnh
+       và sử dụng object-fit để giữ tỉ lệ */
+            max-height: 220px; /* Tăng chiều cao tối đa (ví dụ 220px) */
+            object-fit: contain; /* Giữ tỉ lệ hình ảnh và căn giữa */
+            border-radius: 8px;
+            margin-bottom: 5px; /* Giảm khoảng cách dưới hình ảnh */
+            background: #f8f8f8;
+        }
+
+        /* Điều chỉnh font chữ cho tên sản phẩm */
+        .card h3 {
+            font-size: 0.95em; /* Giảm cỡ chữ tên sản phẩm */
+            margin: 5px 0;
+            line-height: 1.2;
+            min-height: 35px; /* Đảm bảo chiều cao cố định cho tên, tránh xô lệch */
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Giới hạn 2 dòng tên sản phẩm */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Điều chỉnh font chữ cho giá */
+        .card p {
+            color: #ff5722; /* Màu cam nổi bật (tương tự như mẫu) */
+            font-weight: bold;
+            font-size: 1.2em; /* Giữ cỡ chữ giá to và nổi bật */
+            margin-top: 5px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+
+    .btn-xem-tat-ca {
+        padding: 8px 15px;
+        background-color: #ff5722; /* Màu nút nổi bật */
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+
+        .btn-xem-tat-ca:hover {
+            background-color: #e64a19;
+        }
+</style>
+@{
+    int index = 0;
+
+    // Nhóm sản phẩm và chuyển thành List để tránh lỗi khi truy vấn lại
+    // Sắp xếp nhóm theo MaLoai để vị trí danh mục nhất quán (1:Vợt, 2:Giày, ...)
+    var groups = Model.GroupBy(x => x.MaLoai).OrderBy(g => g.Key).ToList();
+    var categoryImageMap = new Dictionary<int, string>
+{
+        { 1, "yonex.png" },      // Ảnh bạn muốn cho Vợt
+        { 2, "giay_lining.png" },      // Ảnh bạn muốn cho Giày
+        { 3, "aoquan.jpeg" },   // Ảnh bạn muốn cho Áo Quần
+        { 4, "banner-phukien.jpg" }    // Ảnh bạn muốn cho Phụ kiện
+    };
+}
+
+@if (!groups.Any())
+{
+    <div class="container mt-4">
+        <p>Không có sản phẩm để hiển thị.</p>
+    </div>
+}
+else
+{
+    foreach (var g in groups)
+    {
+        var tenLoai = g.First().LoaiSanPham?.TenLoai ?? "Danh mục";
+        bool left = (index % 2 == 0);
+
+        // Chỉ lấy 6 sản phẩm đầu tiên của nhóm
+        var limitedProducts = g.Where(p => p.MaLoai == g.Key).Take(6).ToList();
+
+        // Tạo tên file ảnh danh mục an toàn: thử theo tên loại (slug) rồi theo mã
+
+        string defaultCategory = Url.Content("~/Content/images/default-category.jpg");
+        string hinhAnhDaChon;
+
+        // Sửa lỗi: Kiểm tra g.Key (MaLoai) có bị null không
+        // Nếu g.Key là null HOẶC không tìm thấy g.Key.Value trong "bản đồ"
+        if (g.Key == null || !categoryImageMap.TryGetValue(g.Key.Value, out hinhAnhDaChon))
+        {
+            // Thì dùng ảnh default
+            hinhAnhDaChon = defaultCategory;
+        }
+        else
+        {
+            // Nếu có, tạo đường dẫn đầy đủ
+            hinhAnhDaChon = Url.Content($"~/Content/images/{hinhAnhDaChon}");
+        }
+
+        <section class="category @(left ? "left" : "right")">
+
+            <div class="image-block">
+                <img src="@hinhAnhDaChon"
+                     onerror="this.onerror=null;this.src='@defaultCategory';"
+                     alt="Quảng cáo @tenLoai" style="width:max();height:780px" />
+            </div>
+
+            <div class="product-block">
+                <div class="header-row">
+                    <h2>@tenLoai</h2>
+                    <a href="@Url.Action("ViewAllProduct", "SanPham", new { maLoai = g.Key })" class="btn-xem-tat-ca">Xem tất cả</a>
+                </div>
+
+                <div class="grid">
+                    @foreach (var sp in limitedProducts)
+                    {
+                        <div class="card">
+                            <img src="@Url.Content($"~/Content/images/{sp.HinhAnhDaiDien}")" onerror="this.onerror=null;this.src='@Url.Content("~/Content/images/default-product.jpg")'" alt="@sp.TenSanPham" />
+                            <h3>@sp.TenSanPham</h3>
+                            <a href="@Url.Action("ChiTietSanPham", "Home", new { id = sp.MaSanPham })" style="text-decoration:none;">
+                                <p>@(sp.GiaGoc.GetValueOrDefault().ToString("N0") + "₫")</p>
+                            </a>
+                        </div>
+                    }
+                </div>
+
+            </div>
+
+        </section>
+
+        index++;
+    }
+}

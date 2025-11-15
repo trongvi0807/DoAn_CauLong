@@ -1,0 +1,139 @@
+﻿﻿@* File: Views/SanPham/Index.cshtml (Hoặc ViewAllProducts.cshtml) *@
+
+@model List<DoAn_CauLong.Models.SanPham>
+
+@{
+    // Title sẽ là tên loại sản phẩm (ví dụ: Vợt Cầu Lông)
+    ViewBag.Title = ViewBag.TenLoai ?? "Tất Cả Sản Phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* ---------------------------------- */
+    /* CSS TÙY CHỈNH CHO DANH SÁCH SẢN PHẨM */
+    /* ---------------------------------- */
+    .product-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        transition: box-shadow 0.3s, transform 0.3s;
+        cursor: pointer; /* Cho biết thẻ có thể click */
+        padding: 10px;
+    }
+
+        .product-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+
+    .card-img-top {
+        width: 100%;
+        max-height: 200px; /* Giới hạn chiều cao hình ảnh */
+        object-fit: contain; /* Đảm bảo hình ảnh không bị méo */
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+    }
+
+    .card-title a {
+        font-size: 1em;
+        font-weight: 600;
+        color: #333;
+        text-decoration: none;
+        display: block;
+        min-height: 40px; /* Đảm bảo tên sản phẩm không bị xô lệch */
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Giới hạn 2 dòng tên */
+        -webkit-box-orient: vertical;
+    }
+
+    .price-block {
+        margin-top: auto; /* Đẩy giá xuống cuối card-body */
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+    }
+
+    .original-price {
+        font-size: 0.9em;
+        color: #888;
+        margin-right: 8px;
+        display: block; /* Đặt giá gốc ở dòng riêng nếu cần */
+    }
+
+    .current-price {
+        font-size: 1.25em;
+        color: #D32F2F; /* Màu đỏ nổi bật */
+        font-weight: 700;
+    }
+</style>
+
+<div class="container">
+    <h2 class="mt-4 mb-4 text-center text-primary">Danh Sách Sản Phẩm: @ViewBag.TenLoai</h2>
+    <hr class="mb-5" />
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    @* Thêm data-url để JS có thể lấy link chi tiết *@
+                    <div class="card h-100 product-card"
+                         data-url="@Url.Action("ChiTietSanPham", "Home", new { id = item.MaSanPham })">
+
+                        <a href="@Url.Action("ChiTietSanPham", "Home", new { id = item.MaSanPham })">
+                            <img class="card-img-top"
+                                 src="@Url.Content($"~/Content/images/{item.HinhAnhDaiDien}")"
+                                 alt="@item.TenSanPham">
+                        </a>
+
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">
+                                @* Giữ link trên tên sản phẩm phòng trường hợp JS không hoạt động *@
+                                <a href="@Url.Action("ChiTietSanPham", "Home", new { id = item.MaSanPham })">
+                                    @item.TenSanPham
+                                </a>
+                            </h5>
+
+                            <div class="price-block mt-auto">
+                                <span class="current-price">
+                                    @string.Format("{0:N0}", item.GiaGoc) đ
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center" role="alert">
+            <i class="fa fa-info-circle"></i> Hiện tại không có sản phẩm nào thuộc loại **@ViewBag.TenLoai** này.
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script>
+        // SCRIPT ĐỂ TOÀN BỘ CARD CÓ THỂ CLICK ĐƯỢC
+        $(document).ready(function () {
+            // Lắng nghe sự kiện click trên tất cả các card sản phẩm
+            $('.product-card').on('click', function() {
+                // Lấy URL từ thuộc tính data-url
+                var detailUrl = $(this).data('url');
+
+                if (detailUrl) {
+                    // Chuyển hướng trình duyệt đến URL đó
+                    window.location.href = detailUrl;
+                }
+            });
+
+            // Ngăn chặn sự kiện click lan truyền khi click vào link chi tiết bên trong card
+            // Đảm bảo chỉ khi click vào thẻ chính mới chuyển hướng
+            $('.product-card a').on('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+    </script>
+}
