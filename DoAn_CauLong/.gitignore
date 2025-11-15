@@ -1,0 +1,29 @@
+# Visual Studio files and related
+.vs/
+*.suo
+*.user
+*.bak
+*.pdb
+*.log
+*.ncb
+*.aps
+*.bsc
+
+# Build results (crucial to exclude)
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+TestResults/
+
+# NuGet packages
+packages/
+*.nupkg
+
+# IDEs and Tools
+CopilotSnapshots/
+*.resharper
+
+# Git history files
+# (Only if you're using git submodules or special setups)
+# .git/
