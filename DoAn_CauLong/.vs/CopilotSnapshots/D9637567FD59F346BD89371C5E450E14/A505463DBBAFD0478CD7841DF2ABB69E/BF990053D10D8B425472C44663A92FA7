@@ -1,0 +1,427 @@
+﻿﻿@using System.Web.Mvc
+@{
+    ViewBag.Title = "Cửa Hàng Cầu Lông Online";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cửa Hàng Cầu Lông Online</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link href="@Url.Content("~/Content/bootstrap.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" />
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="header-top">
+            <div class="logo">
+                <a href="@Url.Action("Index", "Home")">
+
+                    <img src="@Url.Content("~/Content/images/HUIT.jpg")"
+                         alt="Logo Cửa Hàng Cầu Lông" />
+                </a>
+            </div>
+
+            <form action="@Url.Action("TimKiem", "SanPham")" method="get" class="search-form search-absolute">
+
+                <input type="text" name="keyword" placeholder="Tìm kiếm sản phẩm..." class="search-input" />
+                <button type="submit" class="search-btn" aria-label="Tìm kiếm">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
+            <div class="header-actions">
+                <div class="account-section">
+                    @if (Session["MaTaiKhoan"] == null)
+                    {
+                        <div class="auth-buttons">
+                            <a href="@Url.Action("DangNhap", "TaiKhoan")" class="auth-btn login-btn">
+                                <i class="fa-solid fa-user"></i>
+                                <span>Đăng nhập</span>
+                            </a>
+                            <a href="@Url.Action("DangKy", "TaiKhoan")" class="auth-btn register-btn">
+                                <span>Đăng ký</span>
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        int maQuyen = 0;
+                        if (Session["MaQuyen"] != null)
+                        {
+                            maQuyen = (int)Session["MaQuyen"];
+                        }
+
+                        <div class="user-dropdown">
+                            <button class="user-btn" type="button">
+                                <i class="fa-solid fa-user"></i>
+                                <span>Xin chào, @Session["HoTen"]</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                            <div class="user-menu">
+                                @if (maQuyen == 1)
+                                {
+                                    <a href="@Url.Action("Index", "QuanLySanPham")" class="user-menu-item" style="font-weight: bold; background: #eee;">
+                                        <i class="fa-solid fa-boxes-stacked"></i>
+                                        Quản lý Sản phẩm
+                                    </a>
+                                    <a href="@Url.Action("Index", "QuanLyTaiKhoan")" class="user-menu-item" style="font-weight: bold; background: #eee;">
+                                        <i class="fa-solid fa-boxes-stacked"></i>
+                                        Quản lý tài khoản
+                                    </a>
+                                    @* Thêm các link quản lý khác tại đây *@
+                                    <hr style="margin: 5px 0;" />
+                                }
+
+                                @* Chức năng chung cho mọi tài khoản đã đăng nhập *@
+                                <a href="@Url.Action("ThongTin", "TaiKhoan")" class="user-menu-item">
+                                    <i class="fa-solid fa-user-circle"></i>
+                                    Thông tin tài khoản
+                                </a>
+                                <a href="@Url.Action("DonHangCuaToi", "DonHang")" class="user-menu-item">
+                                    <i class="fa-solid fa-clipboard-list"></i>
+                                    Đơn hàng của tôi
+                                </a>
+                                <a href="@Url.Action("DangXuat", "TaiKhoan")" class="user-menu-item">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                    Đăng xuất
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="cart-section">
+                    <a href="@Url.Action("ViewCart", "Home")" class="cart-btn">
+
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span class="cart-text">Giỏ hàng</span>
+                        <span class="cart-count">
+                            @(Session["GioHangCount"] ??
+ 0)
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <nav class="main-nav">
+            <ul>
+                <li><a href="@Url.Action("Index", "Home")">TRANG CHỦ</a></li>
+
+
+                <li class="mega-menu-item">
+                    <a href="@Url.Action("Index", "SanPham")">
+                        SẢN PHẨM
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+
+                    <div class="mega-submenu">
+                        <div class="sidebar-categories">
+
+                            <h3>DANH MỤC SẢN PHẨM</h3>
+
+                            <a href="@Url.Action("Index", "SanPham", new { loai = "Vot" })"
+                               class="main-cat active" data-loai="Vot">
+
+                                VỢT CẦU LÔNG
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </a>
+
+                            <a href="@Url.Action("Index", "SanPham", new { loai = "Giay" })"
+                               class="main-cat" data-loai="Giay">
+                                GIÀY CẦU LÔNG
+
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </a>
+                            <a href="@Url.Action("Index", "SanPham", new { loai = "AoQuan" })"
+                               class="main-cat" data-loai="AoQuan">
+                                ÁO QUẦN THỂ THAO
+                                <i class="fa-solid fa-chevron-right"></i>
+
+                            </a>
+                            <a href="@Url.Action("Index", "SanPham", new { loai = "PhuKien" })"
+                               class="main-cat" data-loai="PhuKien">
+
+                                PHỤ KIỆN CẦU LÔNG
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </a>
+                        </div>
+
+
+                        <div class="mega-contents-wrapper">
+                            <div class="mega-content" data-loai="Giay">
+                                <div class="product-brands-grid">
+                                    <div class="brand-column">
+
+                                        <p class="brand-title">GIÀY YONEX</p>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Giay" })">Giày Yonex 65</a>
+
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Giay" })">Giày Yonex Aerus</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Giay" })">Giày Yonex Eclipsion</a>
+
+                                    </div>
+
+                                    <div class="brand-column">
+                                        <p class="brand-title"><a href="@Url.Action("Index", "SanPham", new { hang = "Lining", loai = "Giay" })">GIÀY LINING</a></p>
+
+                                    </div>
+
+                                    <div class="brand-column">
+
+                                        <p class="brand-title"><a href="@Url.Action("Index", "SanPham", new { hang = "Victor", loai = "Giay" })">GIÀY VICTOR</a></p>
+                                    </div>
+
+                                    <div class="brand-column">
+
+                                        <p class="brand-title"><a href="@Url.Action("Index", "SanPham", new { hang = "Mizuno", loai = "Giay" })">GIÀY MIZUNO</a></p>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="mega-content active" data-loai="Vot">
+                                <div class="product-brands-grid">
+
+                                    <div class="brand-column">
+                                        <p class="brand-title">VỢT YONEX</p>
+
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Vot" })">Vợt Yonex Astrox</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Vot" })">Vợt Yonex Nanoflare</a>
+
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "Vot" })">Vợt Yonex Arcsaber</a>
+                                    </div>
+
+                                    <div class="brand-column">
+
+                                        <p class="brand-title">VỢT LINING</p>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Lining", loai = "Vot" })">Vợt Lining Aeronaut</a>
+
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Lining", loai = "Vot" })">Vợt Lining Tectonic</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Lining", loai = "Vot" })">Vợt Lining Axforce</a>
+
+                                    </div>
+
+                                    <div class="brand-column">
+
+                                        <p class="brand-title">VỢT VICTOR</p>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Victor", loai = "Vot" })">Vợt Victor Auraspeed</a>
+
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Victor", loai = "Vot" })">Vợt Victor Thruster</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Victor", loai = "Vot" })">Vợt Victor Jetspeed</a>
+
+                                    </div>
+
+                                    <div class="brand-column">
+                                        <p class="brand-title">VỢT MIZUNO</p>
+
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Mizuno", loai = "Vot" })">Vợt Mizuno Fortius</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { hang = "Mizuno", loai = "Vot" })">Vợt Mizuno Altius</a>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="mega-content" data-loai="AoQuan">
+                                <div class="product-brands-grid">
+
+                                    <div class="brand-column">
+                                        <p class="brand-title"><a href="@Url.Action("Index", "SanPham", new { hang = "Yonex", loai = "AoQuan" })">ÁO QUẦN YONEX</a></p>
+
+                                    </div>
+
+                                    <div class="brand-column">
+                                        <p class="brand-title"><a href="@Url.Action("Index", "SanPham", new { hang = "Lining", loai = "AoQuan" })">ÁO QUẦN LINING</a></p>
+
+                                    </div>
+
+                                    <div class="brand-column">
+
+                                        <p class="brand-title"><a href="@Url.Action("Index", "SanPham", new { hang = "Victor", loai = "AoQuan" })">ÁO QUẦN VICTOR</a></p>
+                                    </div>
+
+
+                                    <div class="brand-column">
+                                        <p class="brand-title"><a href="@Url.Action("Index", "SanPham", new { hang = "Mizuno", loai = "AoQuan" })">ÁO QUẦN MIZUNO</a></p>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="mega-content" data-loai="PhuKien">
+
+                                <div class="product-brands-grid">
+                                    <div class="brand-column">
+                                        <p class="brand-title">PHỤ KIỆN CẦU LÔNG</p>
+
+                                        <a href="@Url.Action("Index", "SanPham", new { loai = "PhuKien", hang = "" })">Túi đựng vợt</a>
+                                        <a href="@Url.Action("Index", "SanPham", new { loai = "PhuKien", hang = "" })">Dây cuốn cán</a>
+
+                                        <a href="@Url.Action("Index", "SanPham", new { loai = "PhuKien", hang = "" })">Balo cầu lông</a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </li>
+
+                <li><a href="@Url.Action("Index", "KhuyenMai")">KHUYẾN MÃI</a></li>
+                <li><a href="@Url.Action("ViewCart", "Home")">GIỎ HÀNG</a></li>
+                <li><a href="@Url.Action("Index", "DonHang")">ĐƠN HÀNG</a></li>
+                <li><a href="@Url.Action("LienHe", "Home")">LIÊN HỆ</a></li>
+            </ul>
+
+        </nav>
+    </header>
+
+    <div class="container">
+        <main>
+            @if (TempData["Message"] != null)
+            {
+                <div class="alert alert-info">
+                    @TempData["Message"]
+                </div>
+
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["Error"]
+                </div>
+
+            }
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>THÔNG TIN LIÊN HỆ</h4>
+                <p><i class="fa-solid fa-location-dot"></i> 25 Hoàng Hoa Thám, Q.Tân Bình, TP.HCM</p>
+
+                <p><i class="fa-solid fa-phone"></i> 0905123456</p>
+                <p><i class="fa-solid fa-envelope"></i> info@shopcaulong.com</p>
+            </div>
+            <div class="footer-section">
+                <h4>DANH MỤC SẢN PHẨM</h4>
+                <a href="@Url.Action("Index", "SanPham", new { loai = "Vot" })">Vợt cầu lông</a>
+                <a href="@Url.Action("Index", "SanPham", new { loai = "Giay" })">Giày cầu lông</a>
+                <a href="@Url.Action("Index", "SanPham", new { loai = "AoQuan" })">Áo quần thể thao</a>
+                <a href="@Url.Action("Index", "SanPham", new { loai = "PhuKien" })">Phụ kiện cầu lông</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>HỖ TRỢ KHÁCH HÀNG</h4>
+                <a href="@Url.Action("Index", "Home")">Hướng dẫn mua hàng</a>
+                <a href="@Url.Action("Index", "Home")">Chính sách bảo hành</a>
+                <a href="@Url.Action("Index", "Home")">Chính sách đổi trả</a>
+
+                <a href="@Url.Action("Index", "Home")">Câu hỏi thường gặp</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>
+                &copy;
+                2025 - HỆ THỐNG QUẢN LÝ BÁN HÀNG CẦU LÔNG
+            </p>
+        </div>
+    </footer>
+
+    <script src="@Url.Content("~/Scripts/jquery-3.7.0.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/bootstrap.js")"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Mega menu logic với delay khi rời chuột
+            let hoverTimeout;
+            let submenuHovered = false;
+
+             let menuHovered = false;
+            const HOVER_DELAY = 300; // 0.3s
+
+            // Chuyển đổi nội dung mega menu
+            function switchMegaMenuContent(activeElement) {
+                const loai = $(activeElement).data('loai');
+                if ($(activeElement).hasClass('active')) return;
+
+                 $('.main-cat').removeClass('active');
+                $('.mega-content').removeClass('active');
+                $(activeElement).addClass('active');
+                $(`.mega-content[data-loai="${loai}"]`).addClass('active');
+            }
+
+            // Hover vào từng danh mục bên trái
+
+         $('.main-cat').on('mouseenter', function () {
+                switchMegaMenuContent(this);
+ });
+
+            // Xử lý hover vào vùng menu cha
+            $('.mega-menu-item').on('mouseenter', function () {
+                menuHovered = true;
+                clearTimeout(hoverTimeout);
+                $('.mega-submenu').css({ display: 'flex', opacity: 1, pointerEvents: 'auto' });
+            });
+ $('.mega-menu-item').on('mouseleave', function () {
+                menuHovered = false;
+                hoverTimeout = setTimeout(function () {
+                    if (!submenuHovered) {
+                        $('.mega-submenu').css({ display: 'none', opacity: 0, pointerEvents: 'none' });
+
+                                   }
+                }, HOVER_DELAY);
+            });
+ // Xử lý hover vào vùng mega-submenu
+            $('.mega-submenu').on('mouseenter', function () {
+                submenuHovered = true;
+                clearTimeout(hoverTimeout);
+            });
+ $('.mega-submenu').on('mouseleave', function () {
+                submenuHovered = false;
+                hoverTimeout = setTimeout(function () {
+                    if (!menuHovered) {
+                        $('.mega-submenu').css({ display: 'none', opacity: 0, pointerEvents: 'none' });
+
+                                   }
+                }, HOVER_DELAY);
+            });
+
+            // ***** THAY ĐỔI 3: ĐÃ XÓA 4 DÒNG CODE BÊN DƯỚI *****
+            // $('.main-cat').removeClass('active');
+            // $('.mega-content').removeClass('active');
+            // $('.main-cat[data-loai="Vot"]').addClass('active');
+            // $('.mega-content[data-loai="Vot"]').addClass('active');
+
+            // User dropdown
+            $('.user-btn').click(function (e) {
+                e.stopPropagation();
+                $(this).siblings('.user-menu').toggleClass('show');
+            });
+ $(document).click(function () {
+                $('.user-menu').removeClass('show');
+            });
+ // Update cart count
+            function updateCartCount() {
+                try {
+                    $.get('@Url.Action("GetCartCount", "GioHang")')
+                        .done(function (data) {
+
+                 $('.cart-count').text(data);
+                        });
+ } catch (e) { }
+            }
+            updateCartCount();
+ });
+    </script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

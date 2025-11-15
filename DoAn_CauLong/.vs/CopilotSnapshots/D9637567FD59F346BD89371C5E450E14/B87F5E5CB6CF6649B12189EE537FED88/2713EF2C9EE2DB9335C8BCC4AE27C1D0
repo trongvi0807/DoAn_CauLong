@@ -1,0 +1,87 @@
+﻿@model List<DoAn_CauLong.Models.SanPham>
+
+@{
+    ViewBag.Title = "Danh sách sản phẩm";
+}
+
+<style>
+    .product-list {
+        margin-top: 20px;
+    }
+    .product-card {
+        border: 1px solid #e8e8e8;
+        border-radius: 8px;
+        transition: box-shadow .2s ease, transform .08s ease;
+        overflow: hidden;
+        background: #fff;
+    }
+    .product-card:hover {
+        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        transform: translateY(-4px);
+    }
+    .product-card .card-img-top {
+        width: 100%;
+        height: 180px;
+        object-fit: contain;
+        background: #f9f9f9;
+        padding: 12px;
+    }
+    .product-title {
+        font-size: 15px;
+        font-weight: 600;
+        min-height: 40px;
+    }
+    .product-price {
+        color: #f36f21;
+        font-weight: 700;
+        font-size: 16px;
+    }
+    .product-brand {
+        font-size: 13px;
+        color: #777;
+    }
+    .card-body .btn {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+</style>
+
+<div class="container">
+    <h2 class="mt-3">@ViewBag.Title</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info mt-3">Không có sản phẩm phù hợp.</div>
+    }
+    else
+    {
+        <div class="row product-list">
+            @foreach (var sp in Model)
+            {
+                <div class="col-6 col-sm-6 col-md-4 col-lg-3 mb-4">
+                    <div class="product-card card h-100">
+                        <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.MaSanPham })" class="d-block">
+                            <img class="card-img-top" src="@Url.Content("~/Content/images/" + (string.IsNullOrEmpty(sp.HinhAnhDaiDien) ? "default.jpg" : sp.HinhAnhDaiDien))" alt="@sp.TenSanPham" />
+                        </a>
+                        <div class="card-body d-flex flex-column">
+                            <div class="mb-2">
+                                <div class="product-title">@sp.TenSanPham</div>
+                                <div class="product-brand">@sp.Hang?.TenHang</div>
+                            </div>
+
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="product-price">@(sp.GiaGoc.GetValueOrDefault().ToString("N0"))đ</div>
+                                </div>
+                                <div class="btn-group">
+                                    <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.MaSanPham })" class="btn btn-sm btn-primary">Xem</a>
+                                    <a href="@Url.Action("Index", "SanPham", new { loai = sp.LoaiSanPham?.TenLoai })" class="btn btn-sm btn-outline-secondary">Tất cả</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
