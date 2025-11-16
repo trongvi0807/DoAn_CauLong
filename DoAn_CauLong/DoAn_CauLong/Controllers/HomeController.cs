@@ -64,19 +64,37 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
                 .ToList();
 
             // 3. Lấy thông tin Đánh giá
-            var reviews = data.PhanHois
-                .Where(ph => ph.MaSanPham == id)
-                .ToList();
+            //var reviews = data.PhanHois
+            //    .Where(ph => ph.MaSanPham == id)
+            //    .ToList();
 
-            double averageRating = reviews.Any() ? reviews.Average(ph => (double)ph.DanhGia) : 0;
-            int reviewCount = reviews.Count();
+            //double averageRating = reviews.Any() ? reviews.Average(ph => (double)ph.DanhGia) : 0;
+            //int reviewCount = reviews.Count();
+            // Sử dụng SqlQuery để gọi trực tiếp SQL Function
+          
+
+            //thêm câu truy vấn tính trung bình đánh giá
+            var TrungBinhDanhGia = data.Database.SqlQuery<decimal?>(
+                "SELECT dbo.TrungBinhDanhGia(@MaSP)",
+                new SqlParameter("@MaSP", id)
+            ).FirstOrDefault();
+
+            // Hàm của bạn trả về decimal(4,2)
+            double XepHangTrungBinh = (double)(TrungBinhDanhGia ?? 0.0m);
+
+            //  Lấy số lượng phản hồi 
+            int reviewCount = data.PhanHois
+                .Where(ph => ph.MaSanPham == id)
+                .Count();
+
+            // ...
 
             // 4. Chuẩn bị ViewModel
             var viewModel = new ProductDetailViewModel
             {
                 SanPham = sanPham,
                 Variants = variants,
-                AverageRating = averageRating,
+                AverageRating = XepHangTrungBinh,
                 ReviewCount = reviewCount,
                 AvailableColors = variants.Where(v => v.MauSac != null).Select(v => v.MauSac).Distinct().ToList(),
                 AvailableSizes = variants.Where(v => v.Size != null).Select(v => v.Size).Distinct().ToList(),

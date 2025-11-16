@@ -6,11 +6,7 @@ using DoAn_CauLong.Models; // namespace của DbContext
 
 public class PhanHoiController : Controller
 {
-<<<<<<< HEAD
-   QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
-=======
     QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
->>>>>>> f56eb37b1e04d8f15733b4cd2df7b91befa0cd54
 
 
     // GET: hiển thị form đánh giá
