@@ -11,7 +11,7 @@ using System.Web.Mvc;
 
 namespace DoAn_CauLong.Controllers
 {
-   [AuthorizeAdmin]
+    [AuthorizeAdmin]
     public class QuanLyTaiKhoanController : Controller
     {
         // GET: QuanLyTaiKhoan

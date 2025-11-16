@@ -9,12 +9,12 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
+using DoAn_CauLong.Filters; // << QUAN TRỌNG: Thêm 'using' này
 
-namespace QLDN_CauLong.Controllers
+namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) để khớp
 {
     public class HomeController : Controller
     {
-        // GIỮ NGUYÊN: Sử dụng DbContext ở cấp độ Controller
         QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
 
         public ActionResult Index()
@@ -27,11 +27,11 @@ namespace QLDN_CauLong.Controllers
             return View(sp);
         }
 
-
         // Action: Hiển thị chi tiết sản phẩm
         public ActionResult ChiTietSanPham(int id)
         {
             // 1. Lấy dữ liệu Sản phẩm chính
+            // SỬA: Dọn dẹp các .Include() bị lặp
             var sanPham = data.SanPhams
                 .Include(sp => sp.Hang)
                 .Include(sp => sp.KhuyenMai)
@@ -58,9 +58,9 @@ namespace QLDN_CauLong.Controllers
             // 2. Lấy tất cả biến thể chi tiết
             var variants = data.ChiTietSanPhams
                 .Where(cts => cts.MaSanPham == id)
-                .Include(cts => cts.MauSac)
+                .Include(cts => cts.MauSac) // Tên đúng là MauSac (theo View)
                 .Include(cts => cts.Size)
-                .Include(cts => cts.ThongSoVots)
+                .Include(cts => cts.ThongSoVots) // Tên đúng là ThongSoVot (theo View)
                 .ToList();
 
             // 3. Lấy thông tin Đánh giá
@@ -80,6 +80,10 @@ namespace QLDN_CauLong.Controllers
                 ReviewCount = reviewCount,
                 AvailableColors = variants.Where(v => v.MauSac != null).Select(v => v.MauSac).Distinct().ToList(),
                 AvailableSizes = variants.Where(v => v.Size != null).Select(v => v.Size).Distinct().ToList(),
+
+                // SỬA: Bổ sung ThongSoVot (bị thiếu) để View hoạt động
+                // Lấy thông số từ biến thể đầu tiên tìm thấy
+                ThongSoVot = variants.SelectMany(v => v.ThongSoVots).FirstOrDefault()
             };
 
             // 5. Truyền ViewModel sang View
@@ -88,87 +92,193 @@ namespace QLDN_CauLong.Controllers
 
         // Action: Thêm sản phẩm vào giỏ hàng
         [HttpPost]
+        [CheckLogin] // Bắt buộc đăng nhập. Tự động chuyển đến trang Đăng nhập
         public ActionResult AddToCart(int chiTietId, int quantity)
         {
-            // 1. KIỂM TRA ĐĂNG NHẬP
-            if (!User.Identity.IsAuthenticated)
+            try
             {
-                string returnUrl = Request.Url?.ToString() ?? Url.Action("Index", "Home");
-                // ĐÃ SỬA: Chuyển hướng đến TaiKhoan/DangNhap
-                return RedirectToAction("DangNhap", "TaiKhoan", new { returnUrl = returnUrl });
-            }
-
-            // 2. Lấy MaKhachHang hiện tại
-            int maKhachHang = GetMaKhachHangFromLoggedInUser(User.Identity.Name);
-
-            // 3. Tìm xem mục hàng đã có trong DB chưa
-            var existingCartItem = data.GioHangs
-                .SingleOrDefault(g => g.MaKhachHang == maKhachHang && g.MaChiTietSanPham == chiTietId);
-
-            if (existingCartItem == null)
-            {
-                // A. Mục hàng chưa tồn tại: Tạo mới
-                var newCartItem = new GioHang
+                // 1. Lấy MaKhachHang hiện tại từ Session
+                int maKhachHang = GetMaKhachHangFromSession();
+                if (maKhachHang == -1)
                 {
-                    MaKhachHang = maKhachHang,
-                    MaChiTietSanPham = chiTietId,
-                    SoLuong = quantity,
-                    NgayThem = DateTime.Now
-                };
-                data.GioHangs.Add(newCartItem);
+                    TempData["Error"] = "Không tìm thấy thông tin khách hàng.";
+                    return RedirectToAction("DangNhap", "TaiKhoan");
+                }
+
+                // 2. Kiểm tra tồn kho
+                var productVariant = data.ChiTietSanPhams.Find(chiTietId);
+                if (productVariant == null)
+                {
+                    TempData["Error"] = "Sản phẩm không tồn tại.";
+                    return Redirect(Request.UrlReferrer?.ToString() ?? Url.Action("Index"));
+                }
+
+                // 3. Tìm xem mục hàng đã có trong DB chưa
+                var existingCartItem = data.GioHangs
+                    .SingleOrDefault(g => g.MaKhachHang == maKhachHang && g.MaChiTietSanPham == chiTietId);
+
+                int soLuongMoi = 0;
+                if (existingCartItem != null)
+                {
+                    // Nếu đã có: Cộng dồn số lượng
+                    soLuongMoi = (existingCartItem.SoLuong ?? 0) + quantity;
+                }
+                else
+                {
+                    // Nếu chưa có: Gán số lượng mới
+                    soLuongMoi = quantity;
+                }
+
+                // 4. Kiểm tra tổng số lượng có vượt tồn kho không
+                if ((productVariant.SoLuongTon ?? 0) < soLuongMoi)
+                {
+                    TempData["Error"] = "Số lượng sản phẩm trong giỏ vượt quá tồn kho!";
+                    return Redirect(Request.UrlReferrer?.ToString() ?? Url.Action("Index"));
+                }
+
+                // 5. Thêm mới hoặc Cập nhật
+                if (existingCartItem == null)
+                {
+                    var newCartItem = new GioHang
+                    {
+                        MaKhachHang = maKhachHang,
+                        MaChiTietSanPham = chiTietId,
+                        SoLuong = soLuongMoi,
+                        NgayThem = DateTime.Now
+                    };
+                    data.GioHangs.Add(newCartItem);
+                }
+                else
+                {
+                    existingCartItem.SoLuong = soLuongMoi;
+                    existingCartItem.NgayThem = DateTime.Now;
+                    data.Entry(existingCartItem).State = EntityState.Modified;
+                }
+
+                data.SaveChanges();
+
+                // 6. Cập nhật lại Session["GioHangCount"]
+                UpdateCartCountInSession(maKhachHang);
+
+                TempData["Message"] = "Thêm vào giỏ hàng thành công!";
             }
-            else
+            catch (Exception ex)
             {
-                // B. Mục hàng đã tồn tại: Cập nhật số lượng
-                existingCartItem.SoLuong += quantity;
-                existingCartItem.NgayThem = DateTime.Now;
-                data.Entry(existingCartItem).State = EntityState.Modified;
+                TempData["Error"] = "Đã xảy ra lỗi: " + ex.Message;
             }
 
-            data.SaveChanges();
-            TempData["SuccessMessage"] = "Đã thêm sản phẩm vào giỏ hàng!";
-            return RedirectToAction("ViewCart");
-        }
-
-        // Hàm giả định để lấy MaKhachHang (Giữ nguyên)
-        private int GetMaKhachHangFromLoggedInUser(string userName)
-        {
-            // CẦN TỰ IMPLEMENT LOGIC TRUY VẤN DB THỰC TẾ Ở ĐÂY
-            return 1;
+            // Quay lại trang chi tiết sản phẩm
+            return Redirect(Request.UrlReferrer?.ToString() ?? Url.Action("Index"));
         }
 
         // Action: Xem Giỏ hàng
+        [CheckLogin] // SỬA: [CheckLogin] đã xử lý việc kiểm tra, không cần if bên trong
         public ActionResult ViewCart()
         {
-            // 1. KIỂM TRA ĐĂNG NHẬP
-            if (!User.Identity.IsAuthenticated)
+            // 1. Lấy MaKhachHang
+            int maKhachHang = GetMaKhachHangFromSession();
+            if (maKhachHang == -1)
             {
-                // ĐÃ SỬA: Chuyển hướng đến TaiKhoan/DangNhap
-                return RedirectToAction("DangNhap", "TaiKhoan");
+                TempData["Error"] = "Không tìm thấy thông tin khách hàng.";
+                return RedirectToAction("Index");
             }
-
-            int maKhachHang = GetMaKhachHangFromLoggedInUser(User.Identity.Name);
 
             // 2. Tối ưu hóa truy vấn bằng Projection (.Select)
             var cartViewModels = data.GioHangs
                 .Where(g => g.MaKhachHang == maKhachHang)
                 .OrderByDescending(g => g.NgayThem)
-                .Select(g => new CartItemViewModel
+                .Select(g => new CartItemViewModel // Giả sử bạn có ViewModel này
                 {
                     MaGioHang = g.MaGioHang,
-                    MaChiTietSanPham = g.MaChiTietSanPham.Value,
-                    SoLuong = g.SoLuong.Value,
+                    // SỬA: Xử lý giá trị Nullable
+                    MaChiTietSanPham = g.MaChiTietSanPham ?? 0,
+                    SoLuong = g.SoLuong ?? 0,
 
                     TenSanPham = g.ChiTietSanPham.SanPham.TenSanPham,
                     GiaBan = g.ChiTietSanPham.GiaBan ?? 0,
                     HinhAnh = g.ChiTietSanPham.HinhAnh ?? g.ChiTietSanPham.SanPham.HinhAnhDaiDien,
-                    TenMau = g.ChiTietSanPham.MauSac.TenMau,
-                    TenSize = g.ChiTietSanPham.Size.TenSize
+
+                    // SỬA: Xử lý an toàn (tránh lỗi nếu MauSac/Size là null)
+                    TenMau = g.ChiTietSanPham.MauSac != null ? g.ChiTietSanPham.MauSac.TenMau : "N/A",
+                    TenSize = g.ChiTietSanPham.Size != null ? g.ChiTietSanPham.Size.TenSize : "N/A"
                 })
                 .ToList();
 
             // 3. Hiển thị View Giỏ hàng
             return View(cartViewModels);
+        }
+
+        // ===================================================================
+        // SỬA: CÁC HÀM HỖ TRỢ MỚI
+        // ===================================================================
+
+        // Hàm này lấy MaKhachHang dựa trên MaTaiKhoan trong Session
+        private int GetMaKhachHangFromSession()
+        {
+            if (Session["MaTaiKhoan"] != null)
+            {
+                int maTaiKhoan = (int)Session["MaTaiKhoan"];
+                var khachHang = data.KhachHangs.FirstOrDefault(kh => kh.MaTaiKhoan == maTaiKhoan);
+                if (khachHang != null)
+                {
+                    return khachHang.MaKhachHang;
+                }
+            }
+            return -1; // Trả về -1 nếu không tìm thấy
+        }
+
+        // Hàm này cập nhật số lượng trong Session
+        private void UpdateCartCountInSession(int maKhachHang)
+        {
+            int totalItems = data.GioHangs
+                         .Where(g => g.MaKhachHang == maKhachHang)
+                         .Sum(g => (int?)g.SoLuong) ?? 0;
+
+            Session["GioHangCount"] = totalItems;
+        }
+
+        // SỬA: Thêm hàm Dispose để giải phóng DbContext
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                data.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+        [CheckLogin]
+        public ActionResult RemoveFromCart(int maGioHang)
+        {
+            try
+            {
+                // 1. Tìm mục giỏ hàng bằng MaGioHang (Primary Key)
+                var cartItem = data.GioHangs.Find(maGioHang);
+                int maKhachHang = -1;
+
+                if (cartItem != null)
+                {
+                    // 2. Lấy MaKhachHang của item này TRƯỚC KHI XÓA
+                    //    để biết cần cập nhật lại Session cho ai.
+                    maKhachHang = cartItem.MaKhachHang ?? -1;
+
+                    // 3. Xóa item
+                    data.GioHangs.Remove(cartItem);
+                    data.SaveChanges();
+
+                    // 4. Cập nhật lại số lượng trong Session
+                    if (maKhachHang != -1)
+                    {
+                        UpdateCartCountInSession(maKhachHang);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Lỗi khi xóa sản phẩm: " + ex.Message;
+            }
+
+            // 5. Quay lại trang giỏ hàng
+            return RedirectToAction("ViewCart");
         }
     }
 }

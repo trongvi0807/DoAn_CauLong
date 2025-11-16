@@ -1,0 +1,86 @@
+###########################
+# Tệp và thư mục của Visual Studio
+###########################
+
+# Thư mục build (Các file nhị phân được tạo ra)
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Các file do Visual Studio tạo ra khi chạy/build
+*.exe
+*.dll
+*.pdb
+*.suo
+*.user
+*.aps
+*.manifest
+*.obj
+*.ilk
+*.meta
+*.o
+*.tdl
+*.pch
+*.ipch
+
+# Thư mục chứa các file tạm thời của Visual Studio
+# .vs/ nằm ở thư mục Solution (thường là thư mục gốc của repo)
+.vs/
+
+# Thư mục NuGet (Nếu không dùng PackageReference trong .csproj)
+[Pp]ackages/
+
+# Cache và các file tạm thời khác
+*.[Cc]ache
+*.log
+*.filter
+*.resharper
+*.vshost.*
+[Tt]humbs.db
+*.bak
+*.old
+
+# Thư mục phát sinh từ quá trình publish/deploy
+[Pp]ublish/
+[Ww]eb[Dd]eploy/
+
+###########################
+# Các file IDE (Tùy chọn)
+###########################
+
+# Rider (IDE khác)
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+###########################
+# Các file hệ thống/OS
+###########################
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+###########################
+# Thư mục và file của .NET Core / .NET 5+
+###########################
+
+# Thư mục Khôi phục công cụ (Tool restoration folder)
+.config/
+.nuget/
+
+# Các file tạm thời
+*.tmp
+*.temp
+
+# Output của DotNetWatch
+**/*.tmp

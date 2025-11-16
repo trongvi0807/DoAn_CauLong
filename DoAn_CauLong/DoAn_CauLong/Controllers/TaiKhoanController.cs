@@ -11,14 +11,19 @@ namespace DoAn_CauLong.Controllers
 {
     public class TaiKhoanController : Controller
     {
-      QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
-        public ActionResult DangNhap()
+        QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
+
+        // SỬA 1: Thêm 'returnUrl' để biết đường quay lại
+        public ActionResult DangNhap(string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DangNhap(string TenDangNhap, string MatKhau)
+        // SỬA 2: Thêm 'returnUrl' vào action POST
+        public ActionResult DangNhap(string TenDangNhap, string MatKhau, string returnUrl)
         {
             if (ModelState.IsValid)
             {
@@ -26,30 +31,51 @@ namespace DoAn_CauLong.Controllers
 
                 if (user != null)
                 {
-
                     Session["MaTaiKhoan"] = user.MaTaiKhoan;
                     Session["TenDangNhap"] = user.TenDangNhap;
                     Session["MaQuyen"] = user.MaQuyen;
 
-                    // Tìm Họ Tên từ bảng KhachHang
                     var khachHang = data.KhachHangs.FirstOrDefault(k => k.MaTaiKhoan == user.MaTaiKhoan);
 
                     if (khachHang != null && !string.IsNullOrEmpty(khachHang.HoTen))
                     {
-                        Session["HoTen"] = khachHang.HoTen; // Dùng Họ Tên
+                        Session["HoTen"] = khachHang.HoTen;
                     }
                     else
                     {
-                        Session["HoTen"] = user.TenDangNhap; // Dùng Tên đăng nhập nếu không có
+                        Session["HoTen"] = user.TenDangNhap;
                     }
 
-                    return RedirectToAction("Index", "Home");
+                    // SỬA 3: Cập nhật số lượng giỏ hàng vào Session
+                    int cartCount = 0;
+                    if (khachHang != null)
+                    {
+                        // Đếm tổng số lượng sản phẩm trong giỏ của khách hàng
+                        cartCount = data.GioHangs
+                .Where(g => g.MaKhachHang == khachHang.MaKhachHang)
+                .Sum(g => (int?)g.SoLuong) ?? 0;
+                    }
+                    Session["GioHangCount"] = cartCount;
+
+
+                    // SỬA 4: Xử lý chuyển hướng 'returnUrl'
+                    if (Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
                 else
                 {
                     ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng.");
                 }
             }
+
+            // Nếu đăng nhập thất bại, gửi lại returnUrl
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
@@ -71,15 +97,9 @@ namespace DoAn_CauLong.Controllers
                     return View();
                 }
 
-                // === SỬA LỖI KIỂM TRA EMAIL ===
-                // 1. Chuẩn hóa email về chữ thường để kiểm tra không phân biệt hoa/thường
+                // (Code kiểm tra Email và TenDangNhap của bạn đã tốt)
                 var emailLower = Email.ToLower();
-
-                // 2. Kiểm tra TenDangNhap (tên đăng nhập nên phân biệt hoa/thường)
                 var checkUser = data.TaiKhoans.Any(t => t.TenDangNhap == TenDangNhap);
-
-                // 3. Kiểm tra Email ở cả 2 bảng (TaiKhoan và KhachHang)
-                // Thêm 't.Email != null' để tránh lỗi nếu CSDL có email là NULL
                 var checkEmailTK = data.TaiKhoans.Any(t => t.Email != null && t.Email.ToLower() == emailLower);
                 var checkEmailKH = data.KhachHangs.Any(k => k.Email != null && k.Email.ToLower() == emailLower);
 
@@ -88,25 +108,20 @@ namespace DoAn_CauLong.Controllers
                     ModelState.AddModelError("", "Tên đăng nhập đã tồn tại.");
                     return View();
                 }
-
-                // 4. Gộp 2 kết quả kiểm tra email
                 if (checkEmailTK || checkEmailKH)
                 {
                     ModelState.AddModelError("", "Email đã được sử dụng.");
                     return View();
                 }
-                // === KẾT THÚC SỬA ===
 
                 try
                 {
-                    // 1. Tạo TÀI KHOẢN (dùng Procedure)
                     data.Database.ExecuteSqlCommand("EXEC ThemTaiKhoanMoi @TenDangNhap, @MatKhau, @Email",
                         new SqlParameter("@TenDangNhap", TenDangNhap),
                         new SqlParameter("@MatKhau", MatKhau),
-                        new SqlParameter("@Email", Email) // Truyền Email gốc (chưa ToLower())
+                        new SqlParameter("@Email", Email)
                     );
 
-                    // 2. Lấy lại Tài khoản vừa tạo để có MaTaiKhoan
                     var newUser = data.TaiKhoans.FirstOrDefault(t => t.TenDangNhap == TenDangNhap);
                     if (newUser == null)
                     {
@@ -114,28 +129,29 @@ namespace DoAn_CauLong.Controllers
                         return View();
                     }
 
-                    // 3. Tạo KHACHHANG mới liên kết với Tài khoản
                     KhachHang newKhachHang = new KhachHang
                     {
                         HoTen = HoTen,
-                        Email = Email, // Lưu Email gốc
-                        MaTaiKhoan = newUser.MaTaiKhoan
+                        Email = Email,
+                        MaTaiKhoan = newUser.MaTaiKhoan,
+                        NgayTao = DateTime.Now // Thêm NgayTao
                     };
                     data.KhachHangs.Add(newKhachHang);
-                    data.SaveChanges(); // Lưu KhachHang vào CSDL
+                    data.SaveChanges();
 
-                    // 4. Tự động đăng nhập
+                    // Tự động đăng nhập
                     Session["MaTaiKhoan"] = newUser.MaTaiKhoan;
                     Session["TenDangNhap"] = newUser.TenDangNhap;
                     Session["MaQuyen"] = newUser.MaQuyen;
                     Session["HoTen"] = newKhachHang.HoTen;
 
+                    // SỬA 5: Người dùng mới đăng ký, giỏ hàng = 0
+                    Session["GioHangCount"] = 0;
+
                     return RedirectToAction("Index", "Home");
                 }
                 catch (Exception ex)
                 {
-                    // Lỗi (có thể do trigger hoặc lỗi kết nối)
-                    // Nếu lỗi báo "Email này đã tồn tại!" tức là trigger SQL đã hoạt động
                     ModelState.AddModelError("", "Đã xảy ra lỗi: " + ex.InnerException?.Message ?? ex.Message);
                 }
             }
@@ -144,16 +160,19 @@ namespace DoAn_CauLong.Controllers
 
         public ActionResult DangXuat()
         {
-            // Xóa tất cả Session
             Session.Clear();
-            Session.Remove("MaTaiKhoan");
-            Session.Remove("TenDangNhap");
-            Session.Remove("HoTen");
-            Session.Remove("MaQuyen");
-
-            Session.Abandon();
-
+            Session.Abandon(); // Đảm bảo xóa sạch Session
             return RedirectToAction("Index", "Home");
+        }
+
+        // Thêm hàm Dispose để giải phóng DbContext
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                data.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

@@ -72,6 +72,23 @@
                                         <i class="fa-solid fa-boxes-stacked"></i>
                                         Quản lý tài khoản
                                     </a>
+                                    <a href="@Url.Action("Index", "QuanLyDonHang")" class="user-menu-item" style="font-weight: bold; background: #eee;">
+                                        <i class="fa-solid fa-file-invoice"></i>
+                                        Quản lý Đơn hàng
+                                    </a>
+                                    @* Thêm các link quản lý khác tại đây *@
+                                    <hr style="margin: 5px 0;" />
+                                }
+                                @if (maQuyen == 2)
+                                {
+                                    <a href="@Url.Action("Index", "QuanLySanPham")" class="user-menu-item" style="font-weight: bold; background: #eee;">
+                                        <i class="fa-solid fa-boxes-stacked"></i>
+                                        Quản lý Sản phẩm
+                                    </a>
+                                    <a href="@Url.Action("Index", "QuanLyDonHang")" class="user-menu-item" style="font-weight: bold; background: #eee;">
+                                        <i class="fa-solid fa-file-invoice"></i>
+                                        Quản lý Đơn hàng
+                                    </a>
                                     @* Thêm các link quản lý khác tại đây *@
                                     <hr style="margin: 5px 0;" />
                                 }
@@ -100,8 +117,7 @@
                         <i class="fa-solid fa-cart-shopping"></i>
                         <span class="cart-text">Giỏ hàng</span>
                         <span class="cart-count">
-                            @(Session["GioHangCount"] ??
- 0)
+                            @(Session["GioHangCount"] ?? 0)
                         </span>
                     </a>
                 </div>
