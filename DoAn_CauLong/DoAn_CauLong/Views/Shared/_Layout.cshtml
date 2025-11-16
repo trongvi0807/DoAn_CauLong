@@ -287,7 +287,7 @@
                 <li><a href="@Url.Action("Index", "KhuyenMai")">KHUYẾN MÃI</a></li>
                 <li><a href="@Url.Action("ViewCart", "Home")">GIỎ HÀNG</a></li>
                 <li><a href="@Url.Action("Index", "DonHang")">ĐƠN HÀNG</a></li>
-                <li><a href="@Url.Action("LienHe", "Home")">LIÊN HỆ</a></li>
+                <li><a href="@Url.Action("Contact", "Home")">LIÊN HỆ</a></li>
             </ul>
 
         </nav>
@@ -317,10 +317,10 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h4>THÔNG TIN LIÊN HẸ</h4>
-                <p><i class="fa-solid fa-location-dot"></i> 25 Hoàng Hoa Thám, Q.Tân Bình, TP.HCM</p>
+                <p><i class="fa-solid fa-location-dot"></i>140 Lê Trọng Tấn, Tây Thạnh, Tân Phú, TP.HCM</p>
 
-                <p><i class="fa-solid fa-phone"></i> 0905123456</p>
-                <p><i class="fa-solid fa-envelope"></i> info@shopcaulong.com</p>
+                <p><i class="fa-solid fa-phone"></i>0123456789</p>
+                <p><i class="fa-solid fa-envelope"></i>HUIT@gmail.com</p>
             </div>
             <div class="footer-section">
                 <h4>DANH MỤC SẢN PHẨM</h4>
@@ -406,13 +406,7 @@
                 }, HOVER_DELAY);
             });
 
-            // ***** THAY ĐỔI 3: ĐÃ XÓA 4 DÒNG CODE BÊN DƯỚI *****
-            // $('.main-cat').removeClass('active');
-            // $('.mega-content').removeClass('active');
-            // $('.main-cat[data-loai="Vot"]').addClass('active');
-            // $('.mega-content[data-loai="Vot"]').addClass('active');
 
-            // User dropdown
             $('.user-btn').click(function (e) {
                 e.stopPropagation();
                 $(this).siblings('.user-menu').toggleClass('show');
@@ -420,7 +414,7 @@
  $(document).click(function () {
                 $('.user-menu').removeClass('show');
             });
- // Update cart count
+
             function updateCartCount() {
                 try {
                     $.get('@Url.Action("GetCartCount", "GioHang")')

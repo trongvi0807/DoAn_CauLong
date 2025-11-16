@@ -1,0 +1,153 @@
+﻿@model DoAn_CauLong.Models.SanPham
+
+@{
+    ViewBag.Title = "Chỉnh Sửa Sản Phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Chỉnh Sửa: @Model.TenSanPham</h2>
+
+
+@* THAY ĐỔI QUAN TRỌNG:
+    Thêm enctype="multipart/form-data" để cho phép upload file (thay thế hình ảnh).
+*@
+@using (Html.BeginForm("Edit", "QuanLySanPham", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Thông Tin Chung Sản Phẩm</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @* Bắt buộc phải có HiddenFor MaSanPham để biết đang sửa đối tượng nào *@
+        @Html.HiddenFor(model => model.MaSanPham)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TenSanPham, "Tên Sản Phẩm", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TenSanPham, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TenSanPham, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.GiaGoc, "Giá Gốc", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.GiaGoc, new { htmlAttributes = new { @class = "form-control", type = "number" } })
+                @Html.ValidationMessageFor(model => model.GiaGoc, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MoTa, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.MoTa, 10, 30, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.MoTa, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* SỬA: "Anh" -> "HinhAnhDaiDien" *@
+            @Html.LabelFor(model => model.HinhAnhDaiDien, "Ảnh Hiện Tại", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (!string.IsNullOrEmpty(Model.HinhAnhDaiDien))
+                {
+                    <img src="@Url.Content("~/Content/Images/" + Model.HinhAnhDaiDien)" width="150" alt="Ảnh hiện tại" />
+                }
+                else
+                {
+                    <p>(Không có ảnh)</p>
+                }
+
+                <hr style="margin-top: 10px; margin-bottom: 10px;" />
+                <label>Tải ảnh mới (để thay thế):</label>
+                @* Tên của input "HinhAnhUpload" này sẽ được dùng ở Controller
+                    để nhận file MỚI (nếu có).
+                *@
+                <input type="file" name="HinhAnhUpload" id="HinhAnhUpload" class="form-control-file" />
+                @* Chúng ta cũng cần gửi lại tên ảnh CŨ để controller biết
+                    là giữ lại ảnh cũ nếu không có file mới nào được upload.
+                *@
+                @Html.HiddenFor(model => model.HinhAnhDaiDien)
+            </div>
+        </div>
+
+        @* XÓA: Bỏ trường SoLuong (vì nó thuộc ChiTietSanPham) *@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MaLoai, "Loại Sản Phẩm", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @* Controller (GET) phải truyền vào ViewBag.MaLoai, CHỌN GIÁ TRỊ HIỆN TẠI (Model.MaLoai) *@
+                @Html.DropDownList("MaLoai", null, "-- Chọn Loại SP --", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.MaLoai, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MaNhaCungCap, "Nhà Cung Cấp", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @* Controller (GET) phải truyền vào ViewBag.MaNhaCungCap *@
+                @Html.DropDownList("MaNhaCungCap", null, "-- Chọn NCC --", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.MaNhaCungCap, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* THÊM MỚI: MaHang *@
+            @Html.LabelFor(model => model.MaHang, "Hãng Sản Xuất", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @* Controller (GET) phải truyền vào ViewBag.MaHang *@
+                @Html.DropDownList("MaHang", null, "-- Chọn Hãng --", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.MaHang, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* THÊM MỚI: MaKhuyenMai (nullable) *@
+            @Html.LabelFor(model => model.MaKhuyenMai, "Khuyến Mãi", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @* Controller (GET) phải truyền vào ViewBag.MaKhuyenMai *@
+                @Html.DropDownList("MaKhuyenMai", null, "-- Không Áp Dụng --", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.MaKhuyenMai, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* THÊM MỚI: CoSize (BIT) *@
+            @Html.LabelFor(model => model.CoSize, "Có Quản Lý Size", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.CoSize)
+                    @Html.ValidationMessageFor(model => model.CoSize, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @* THÊM MỚI: CoMau (BIT) *@
+            @Html.LabelFor(model => model.CoMau, "Có Quản Lý Màu", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.CoMau)
+                    @Html.ValidationMessageFor(model => model.CoMau, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Lưu Thay Đổi" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Quay lại Chi tiết", "Details", new { id = Model.MaSanPham }) |
+    @Html.ActionLink("Quay lại Danh sách", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,74 @@
+﻿@model IEnumerable<DoAn_CauLong.Models.SanPham>
+
+@{
+    ViewBag.Title = "Quản lý Sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Quản lý Sản phẩm</h2>
+
+<p>
+    @Html.ActionLink("Thêm sản phẩm mới", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+@* Thêm class "table-hover" để tạo hiệu ứng khi di chuột *@
+<table class="table table-bordered table-hover">
+    <tr class="active">
+        <th>
+            @* THÊM MỚI: Cột hình ảnh *@
+            Hình Ảnh
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TenSanPham)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GiaGoc)
+        </th>
+        <th>
+            Loại SP
+        </th>
+        <th>
+            Hãng
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NgayTao)
+        </th>
+        <th>Chức năng</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @* THÊM MỚI: Hiển thị ảnh (điều chỉnh đường dẫn nếu cần) *@
+                @if (!string.IsNullOrEmpty(item.HinhAnhDaiDien))
+                {
+                    <img src="@Url.Content("~/Content/Images/" + item.HinhAnhDaiDien)" width="80" alt="@item.TenSanPham" class="img-thumbnail" />
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenSanPham)
+            </td>
+            <td>
+                @* SỬA: Định dạng lại tiền tệ cho dễ đọc *@
+                @(item.GiaGoc?.ToString("N0")) VNĐ
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LoaiSanPham.TenLoai)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hang.TenHang)
+            </td>
+            <td>
+                @* SỬA: Định dạng lại ngày tháng (giả sử NgayTao không null) *@
+                @(item.NgayTao?.ToString("dd/MM/yyyy"))
+            </td>
+            <td>
+                @Html.ActionLink("Sửa", "Edit", new { id = item.MaSanPham }, new { @class = "btn btn-xs btn-outline-warning" })
+                @Html.ActionLink("Chi tiết", "Details", new { id = item.MaSanPham }, new { @class = "btn btn-xs btn-outline-info" })
+                @Html.ActionLink("Xóa", "Delete", new { id = item.MaSanPham }, new { @class = "btn btn-xs btn-outline-danger" })
+            </td>
+        </tr>
+    }
+
+</table>

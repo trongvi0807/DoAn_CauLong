@@ -27,6 +27,11 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
             return View(sp);
         }
 
+        public ActionResult Contact()
+        {
+            
+            return View();
+        }
         // Action: Hiển thị chi tiết sản phẩm
         public ActionResult ChiTietSanPham(int id)
         {

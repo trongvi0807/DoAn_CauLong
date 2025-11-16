@@ -276,12 +276,27 @@
 
     // Dữ liệu mặc định từ Razor
     const defaultPrice = @((discountedPrice).ToString(System.Globalization.CultureInfo.InvariantCulture));
+    const defaultOriginalPrice = @((originalPrice).ToString(System.Globalization.CultureInfo.InvariantCulture));
     const defaultChiTietId = @defaultChiTietId;
     const defaultSoLuongTon = @(defaultVariant?.SoLuongTon ?? 0);
+    const discountPercent = @((discountPercent.HasValue ? discountPercent.Value : 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
+    const hasDiscount = discountPercent > 0;
 
     // Hàm format tiền tệ VNĐ
     const formatCurrency = (amount) => {
         return amount.toLocaleString('vi-VN') + 'đ';
+    };
+
+    // Hàm hiển thị giá với giảm giá (nếu có)
+    const formatPriceWithDiscount = (originalPrice, hasDiscount, discountPercent) => {
+        if (hasDiscount && discountPercent > 0) {
+            const discountedPrice = Math.max(0, originalPrice - (originalPrice * discountPercent / 100));
+            return discountedPrice.toLocaleString('vi-VN') + 'đ' + 
+                   ' <span style="text-decoration:line-through;color:#9e9e9e;margin-left:8px;">' + 
+                   originalPrice.toLocaleString('vi-VN') + 'đ</span>';
+        } else {
+            return originalPrice.toLocaleString('vi-VN') + 'đ';
+        }
     };
 
     function updateProductState() {
@@ -301,7 +316,8 @@
             stockElement.style.color = selectedVariant.SoLuongTon > 0 ? 'green' : 'red';
 
             hiddenIdInput.value = selectedVariant.MaChiTiet;
-            priceElement.textContent = formatCurrency(selectedVariant.GiaBan);
+            // Hiển thị giá với giảm giá (nếu có)
+            priceElement.innerHTML = formatPriceWithDiscount(selectedVariant.GiaBan, hasDiscount, discountPercent);
 
             if (selectedVariant.SoLuongTon === 0) {
                  stockElement.textContent = 'Hết hàng';
@@ -325,7 +341,8 @@
 
             // Đặt lại giá trị mặc định
             hiddenIdInput.value = defaultChiTietId;
-            priceElement.textContent = formatCurrency(defaultPrice);
+            // Hiển thị giá mặc định với giảm giá (nếu có)
+            priceElement.innerHTML = formatPriceWithDiscount(defaultOriginalPrice, hasDiscount, discountPercent);
 
             // Quay lại ảnh đại diện chính
             if (mainProductImage) {

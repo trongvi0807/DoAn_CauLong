@@ -1,0 +1,114 @@
+﻿@* Giả định Model của bạn là DoAn_CauLong.Models.SanPham *@
+@model DoAn_CauLong.Models.SanPham
+
+@{
+    ViewBag.Title = "Xóa Sản Phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Xóa Sản Phẩm</h2>
+
+@* THÊM CẢNH BÁO QUAN TRỌNG *@
+<div class="alert alert-danger" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <strong>Cảnh báo!</strong> Bạn có chắc chắn muốn xóa sản phẩm này?
+    <p>
+        Toàn bộ <strong>Chi Tiết Sản Phẩm</strong> liên quan (bao gồm tất cả Màu sắc, Size, Giá bán và Số lượng tồn kho)
+        sẽ bị <strong>XÓA VĨNH VIỄN</strong> theo.
+    </p>
+    <p>Hành động này không thể hoàn tác.</p>
+</div>
+
+
+<div>
+    <h4>Thông Tin Sản Phẩm Sắp Xóa</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @* SỬA: Tên thuộc tính *@
+        <dt>
+            @Html.DisplayNameFor(model => model.TenSanPham)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TenSanPham)
+        </dd>
+
+        @* SỬA: Điều hướng đến LoaiSanPham *@
+        <dt>
+            @Html.DisplayNameFor(model => model.LoaiSanPham.TenLoai)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LoaiSanPham.TenLoai)
+        </dd>
+
+        @* SỬA: Điều hướng đến NhaCungCap *@
+        <dt>
+            @Html.DisplayNameFor(model => model.NhaCungCap.TenNhaCungCap)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NhaCungCap.TenNhaCungCap)
+        </dd>
+
+        @* THÊM: Hiển thị Hãng (từ SQL) *@
+        <dt>
+            @Html.DisplayNameFor(model => model.Hang.TenHang)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Hang.TenHang)
+        </dd>
+
+        @* SỬA: Đổi GiaBan thành GiaGoc (từ SQL) *@
+        <dt>
+            @Html.DisplayNameFor(model => model.GiaGoc)
+        </dt>
+        <dd>
+            @* Định dạng lại tiền tệ cho dễ đọc *@
+            @Html.DisplayFor(model => model.GiaGoc)
+        </dd>
+
+        @* SỬA: Tên thuộc tính (từ Anh sang HinhAnhDaiDien) *@
+        <dt>
+            @Html.DisplayNameFor(model => model.HinhAnhDaiDien)
+        </dt>
+        <dd>
+            @* Giữ lại logic hiển thị ảnh của bạn, nhưng dùng đúng tên thuộc tính *@
+            @if (!string.IsNullOrEmpty(Model.HinhAnhDaiDien))
+            {
+                <img src="@Url.Content("~/Content/Images/" + Model.HinhAnhDaiDien)" width="150" alt="Ảnh đại diện" />
+                @* Lưu ý: Bạn có thể cần điều chỉnh đường dẫn "~/Content/Images/" cho đúng với project *@
+            }
+            else
+            {
+                <span>(Không có ảnh)</span>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MoTa)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MoTa)
+        </dd>
+
+        @* THÊM: Ngày tạo (từ SQL) *@
+        <dt>
+            @Html.DisplayNameFor(model => model.NgayTao)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.NgayTao)
+        </dd>
+
+        @* XÓA: Bỏ trường SoLuong (vì nó thuộc ChiTietSanPham) *@
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            @* Đổi class nút thành "btn-danger" để nhấn mạnh hành động Xóa *@
+            <input type="submit" value="Xác Nhận Xóa" class="btn btn-danger" /> |
+            @Html.ActionLink("Quay lại Danh sách", "Index")
+        </div>
+    }
+</div>
