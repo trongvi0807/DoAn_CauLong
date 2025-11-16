@@ -1,8 +1,11 @@
 ﻿using DoAn_CauLong.Models;
 using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection;
+using System.Web;
 using System.Web.Mvc;
-using System.Web.Security; // Đã thêm
 
 namespace DoAn_CauLong.Controllers
 {
@@ -10,21 +13,16 @@ namespace DoAn_CauLong.Controllers
     {
         QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
 
+        // SỬA 1: Thêm 'returnUrl' để biết đường quay lại
         public ActionResult DangNhap(string returnUrl)
         {
-            // Kiểm tra trạng thái đã đăng nhập (Dùng Cookie)
-            if (User.Identity.IsAuthenticated)
-            {
-                // Nếu đã đăng nhập, chuyển hướng người dùng ngay lập tức
-                if (Url.IsLocalUrl(returnUrl)) return Redirect(returnUrl);
-                return RedirectToAction("Index", "Home");
-            }
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        // SỬA 2: Thêm 'returnUrl' vào action POST
         public ActionResult DangNhap(string TenDangNhap, string MatKhau, string returnUrl)
         {
             if (ModelState.IsValid)
@@ -33,65 +31,141 @@ namespace DoAn_CauLong.Controllers
 
                 if (user != null)
                 {
-                    // Đảm bảo TenDangNhap không rỗng/null trước khi tạo Cookie
-                    if (string.IsNullOrEmpty(user.TenDangNhap))
-                    {
-                        ModelState.AddModelError("", "Tài khoản bị lỗi định danh.");
-                        return View();
-                    }
-
-                    // === 1. TẠO AUTHENTICATION COOKIE ===
-                    FormsAuthentication.SetAuthCookie(user.TenDangNhap, false);
-
-                    // === 2. THIẾT LẬP SESSION (Giữ lại cho hiển thị UI) ===
                     Session["MaTaiKhoan"] = user.MaTaiKhoan;
                     Session["TenDangNhap"] = user.TenDangNhap;
                     Session["MaQuyen"] = user.MaQuyen;
 
                     var khachHang = data.KhachHangs.FirstOrDefault(k => k.MaTaiKhoan == user.MaTaiKhoan);
-                    if (khachHang != null)
+
+                    if (khachHang != null && !string.IsNullOrEmpty(khachHang.HoTen))
                     {
-                        Session["MaKhachHang"] = khachHang.MaKhachHang;
-                        Session["HoTen"] = string.IsNullOrEmpty(khachHang.HoTen) ? user.TenDangNhap : khachHang.HoTen;
+                        Session["HoTen"] = khachHang.HoTen;
                     }
                     else
                     {
                         Session["HoTen"] = user.TenDangNhap;
                     }
 
-                    // === 3. CHUYỂN HƯỚNG SAU ĐĂNG NHẬP ===
+                    // SỬA 3: Cập nhật số lượng giỏ hàng vào Session
+                    int cartCount = 0;
+                    if (khachHang != null)
+                    {
+                        // Đếm tổng số lượng sản phẩm trong giỏ của khách hàng
+                        cartCount = data.GioHangs
+                .Where(g => g.MaKhachHang == khachHang.MaKhachHang)
+                .Sum(g => (int?)g.SoLuong) ?? 0;
+                    }
+                    Session["GioHangCount"] = cartCount;
+
+
+                    // SỬA 4: Xử lý chuyển hướng 'returnUrl'
                     if (Url.IsLocalUrl(returnUrl))
                     {
                         return Redirect(returnUrl);
                     }
-                    return RedirectToAction("Index", "Home");
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
                 else
                 {
                     ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng.");
                 }
             }
+
+            // Nếu đăng nhập thất bại, gửi lại returnUrl
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
-        // Action Đăng ký giữ nguyên, đảm bảo FormsAuthentication.SetAuthCookie được gọi
+        public ActionResult DangKy()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DangKy(string HoTen, string TenDangNhap, string MatKhau, string Email, string XacNhanMatKhau)
+        {
+            if (ModelState.IsValid)
+            {
+                if (MatKhau != XacNhanMatKhau)
+                {
+                    ModelState.AddModelError("", "Xác nhận mật khẩu không khớp.");
+                    return View();
+                }
+
+                // (Code kiểm tra Email và TenDangNhap của bạn đã tốt)
+                var emailLower = Email.ToLower();
+                var checkUser = data.TaiKhoans.Any(t => t.TenDangNhap == TenDangNhap);
+                var checkEmailTK = data.TaiKhoans.Any(t => t.Email != null && t.Email.ToLower() == emailLower);
+                var checkEmailKH = data.KhachHangs.Any(k => k.Email != null && k.Email.ToLower() == emailLower);
+
+                if (checkUser)
+                {
+                    ModelState.AddModelError("", "Tên đăng nhập đã tồn tại.");
+                    return View();
+                }
+                if (checkEmailTK || checkEmailKH)
+                {
+                    ModelState.AddModelError("", "Email đã được sử dụng.");
+                    return View();
+                }
+
+                try
+                {
+                    data.Database.ExecuteSqlCommand("EXEC ThemTaiKhoanMoi @TenDangNhap, @MatKhau, @Email",
+                        new SqlParameter("@TenDangNhap", TenDangNhap),
+                        new SqlParameter("@MatKhau", MatKhau),
+                        new SqlParameter("@Email", Email)
+                    );
+
+                    var newUser = data.TaiKhoans.FirstOrDefault(t => t.TenDangNhap == TenDangNhap);
+                    if (newUser == null)
+                    {
+                        ModelState.AddModelError("", "Lỗi khi tạo tài khoản, vui lòng thử lại.");
+                        return View();
+                    }
+
+                    KhachHang newKhachHang = new KhachHang
+                    {
+                        HoTen = HoTen,
+                        Email = Email,
+                        MaTaiKhoan = newUser.MaTaiKhoan,
+                        NgayTao = DateTime.Now // Thêm NgayTao
+                    };
+                    data.KhachHangs.Add(newKhachHang);
+                    data.SaveChanges();
+
+                    // Tự động đăng nhập
+                    Session["MaTaiKhoan"] = newUser.MaTaiKhoan;
+                    Session["TenDangNhap"] = newUser.TenDangNhap;
+                    Session["MaQuyen"] = newUser.MaQuyen;
+                    Session["HoTen"] = newKhachHang.HoTen;
+
+                    // SỬA 5: Người dùng mới đăng ký, giỏ hàng = 0
+                    Session["GioHangCount"] = 0;
+
+                    return RedirectToAction("Index", "Home");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Đã xảy ra lỗi: " + ex.InnerException?.Message ?? ex.Message);
+                }
+            }
+            return View();
+        }
 
         public ActionResult DangXuat()
         {
-            // 1. Xóa tất cả Session
             Session.Clear();
-            Session.RemoveAll();
-            Session.Abandon();
-
-            // 2. XÓA AUTHENTICATION COOKIE (Bắt buộc)
-            FormsAuthentication.SignOut();
-
-            // Cố gắng chuyển hướng người dùng về trang chủ
+            Session.Abandon(); // Đảm bảo xóa sạch Session
             return RedirectToAction("Index", "Home");
         }
 
-        // Thêm Dispose (Giữ nguyên)
+        // Thêm hàm Dispose để giải phóng DbContext
         protected override void Dispose(bool disposing)
         {
             if (disposing)

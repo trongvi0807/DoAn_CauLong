@@ -1,0 +1,130 @@
+﻿@model DoAn_CauLong.Models.DonHang
+@{
+    ViewBag.Title = "Chi tiết Đơn hàng #" + Model.MaDonHang;
+}
+
+<div class="container" style="padding: 20px;">
+    <h2>@ViewBag.Title</h2>
+    <a href="@Url.Action("Index", "QuanLyDonHang")" class="btn btn-default btn-sm" style="margin-bottom: 15px;">
+        &larr; Quay lại danh sách
+    </a>
+    <hr />
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            <h4>Thông tin đơn hàng</h4>
+            <table class="table">
+                <tr><th>Mã đơn:</th><td>#@Model.MaDonHang</td></tr>
+                <tr><th>Ngày đặt:</th><td>@(Model.NgayDat?.ToString("dd/MM/yyyy HH:mm"))</td></tr>
+                <tr><th>Trạng thái:</th><td><span class="label label-warning" style="font-size: 14px;">@Model.TrangThai</span></td></tr>
+                <tr><th>Người đặt:</th><td>@Model.KhachHang.HoTen</td></tr>
+                <tr><th>Địa chỉ giao:</th><td>@Model.DiaChiGiaoHang</td></tr>
+                <tr><th>Số điện thoại:</th><td>@Model.SoDienThoaiNhanHang</td></tr>
+            </table>
+
+            <h4>Chi tiết sản phẩm</h4>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th colspan="2">Sản phẩm</th>
+                        <th>Phân loại</th>
+                        <th>Đơn giá</th>
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ChiTietDonHangs)
+                    {
+                        <tr>
+                            <td style="width: 80px;">
+                                <img src="@Url.Content("~/Content/images/" + (item.ChiTietSanPham.HinhAnh ?? item.ChiTietSanPham.SanPham.HinhAnhDaiDien ?? "default.jpg"))"
+                                     style="width: 100%; border-radius: 4px;" />
+                            </td>
+                            <td>@item.ChiTietSanPham.SanPham.TenSanPham</td>
+                            <td>
+                                @if (item.ChiTietSanPham.MauSac != null)
+                                {
+                                    <span>Màu: @item.ChiTietSanPham.MauSac.TenMau</span><br />
+                                }
+                                @if (item.ChiTietSanPham.Size != null)
+                                {
+                                    <span>Size: @item.ChiTietSanPham.Size.TenSize</span>
+                                }
+                            </td>
+                            <td>@(item.DonGia?.ToString("N0"))đ</td>
+                            <td>@item.SoLuong</td>
+                            <td>@(item.ThanhTien?.ToString("N0"))đ</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-4" style="background-color: #f5f5f5; padding: 15px; border-radius: 5px;">
+            <h4>Cập nhật Trạng thái</h4>
+            <p>Trạng thái hiện tại: <strong>@Model.TrangThai</strong></p>
+            <hr />
+
+            @* Nút chuyển sang "Đang xử lý" *@
+            @if (Model.TrangThai == "Chờ xác nhận")
+            {
+                using (Html.BeginForm("SetTrangThai", "QuanLyDonHang", FormMethod.Post, new { @class = "form-group" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.MaDonHang)
+                    @Html.Hidden("trangThaiMoi", "Đang xử lý")
+                    <button type="submit" class="btn btn-primary btn-block">Xác nhận (Chuyển sang Đang xử lý)</button>
+                }
+            }
+
+            @* Nút chuyển sang "Đang giao hàng" *@
+            @if (Model.TrangThai == "Đang xử lý")
+            {
+                using (Html.BeginForm("SetTrangThai", "QuanLyDonHang", FormMethod.Post, new { @class = "form-group" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.MaDonHang)
+                    @Html.Hidden("trangThaiMoi", "Đang giao hàng")
+                    <button type="submit" class="btn btn-info btn-block">Chuyển sang Đang giao hàng</button>
+                }
+            }
+
+            @* Nút chuyển sang "Đã hoàn thành" *@
+            @if (Model.TrangThai == "Đang giao hàng")
+            {
+                using (Html.BeginForm("SetTrangThai", "QuanLyDonHang", FormMethod.Post, new { @class = "form-group" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.MaDonHang)
+                    @Html.Hidden("trangThaiMoi", "Đã hoàn thành")
+                    <button type="submit" class="btn btn-success btn-block">Đã hoàn thành</button>
+                }
+            }
+
+            @* Nút "Hủy đơn" (hiển thị nếu chưa hoàn thành) *@
+            @if (Model.TrangThai != "Đã hoàn thành" && Model.TrangThai != "Đã hủy")
+            {
+                using (Html.BeginForm("SetTrangThai", "QuanLyDonHang", FormMethod.Post, new { @class = "form-group", style = "margin-top: 20px;" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.MaDonHang)
+                    @Html.Hidden("trangThaiMoi", "Đã hủy")
+                    <button type="submit" class="btn btn-danger btn-block"
+                            onclick="return confirm('Bạn có chắc muốn hủy đơn hàng này?');">
+                        HỦY ĐƠN HÀNG
+                    </button>
+                }
+            }
+        </div>
+    </div>
+</div>

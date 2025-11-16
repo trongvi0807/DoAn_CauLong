@@ -1,0 +1,67 @@
+﻿@model DoAn_CauLong.ViewModels.CheckoutViewModel
+@{
+    ViewBag.Title = "Thanh toán Đơn hàng";
+}
+
+<div class="container" style="padding: 20px;">
+    <h2>Xác nhận Thông tin Thanh toán</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-7">
+            <h4>Thông tin Giao hàng</h4>
+
+            @using (Html.BeginForm("Checkout", "DonHang", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <label>Họ và Tên Người nhận</label>
+                    <input type="text" name="HoTenNhan" class="form-control" value="@Model.CustomerInfo.HoTen" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input type="tel" name="SoDienThoaiNhan" class="form-control" value="@Model.CustomerInfo.SoDienThoai" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Địa chỉ Giao hàng</label>
+                    <textarea name="DiaChiGiao" class="form-control" rows="3" required>@Model.CustomerInfo.DiaChi</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Ghi chú (tùy chọn)</label>
+                    <textarea name="GhiChu" class="form-control" rows="2"></textarea>
+                </div>
+
+                <hr />
+                <button type="submit" class="btn btn-primary btn-lg" style="background-color: #f36f21; border-color: #f36f21;">
+                    XÁC NHẬN ĐẶT HÀNG
+                </button>
+            }
+        </div>
+
+        <div class="col-md-5" style="background-color: #f9f9f9; padding: 15px; border-radius: 8px;">
+            <h4>Tóm tắt Đơn hàng (@Model.CartItems.Count sản phẩm)</h4>
+
+            @foreach (var item in Model.CartItems)
+            {
+                <div style="display: flex; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+                    <img src="@Url.Content("~/Content/images/" + (item.HinhAnh ?? "default.jpg"))" style="width: 60px; margin-right: 10px;" />
+                    <div style="flex-grow: 1;">
+                        <strong>@item.TenSanPham</strong> <br />
+                        <span style="font-size: 0.9em; color: #777;">SL: @item.SoLuong</span>
+                    </div>
+                    <div style="font-weight: bold;">
+                        @item.ThanhTien.ToString("N0")đ
+                    </div>
+                </div>
+            }
+            <hr />
+            <h3 style="text-align: right;">
+                Tổng cộng: <span style="color: #f36f21;">@Model.Total.ToString("N0")đ</span>
+            </h3>
+        </div>
+    </div>
+</div>

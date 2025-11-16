@@ -129,7 +129,11 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\DonHangController.cs" />
+    <Compile Include="Controllers\GioHangController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\KhuyenMaiController.cs" />
+    <Compile Include="Controllers\QuanLyDonHangController.cs" />
     <Compile Include="Controllers\QuanLyTaiKhoanController.cs" />
     <Compile Include="Controllers\SanPhamController.cs" />
     <Compile Include="Controllers\TaiKhoanController.cs" />
@@ -137,6 +141,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AuthorizeAdmin.cs" />
+    <Compile Include="Models\CheckAdminAttribute.cs" />
+    <Compile Include="Models\CheckLoginAttribute.cs" />
     <Compile Include="Models\ChiTietDonHang.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -202,6 +208,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\CartItemViewModel.cs" />
+    <Compile Include="ViewModels\CheckoutViewModel.cs" />
     <Compile Include="ViewModels\ProductDetailViewModel.cs" />
     <Compile Include="ViewModels\TaiKhoanViewModel.cs" />
     <Compile Include="ViewModels\ThemPhanHoiSPController.cs" />
@@ -342,9 +349,16 @@
     <Content Include="Views\TaiKhoan\DangKy.cshtml" />
     <Content Include="Views\SanPham\Index.cshtml" />
     <Content Include="Views\SanPham\ViewAllProduct.cshtml" />
+    <Content Include="Views\DonHang\Checkout.cshtml" />
+    <Content Include="Views\DonHang\Details.cshtml" />
+    <Content Include="Views\DonHang\Index.cshtml" />
+    <Content Include="Views\KhuyenMai\Index.cshtml" />
+    <Content Include="Views\QuanLyDonHang\Details.cshtml" />
+    <Content Include="Views\QuanLyDonHang\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\GioHang\" />
     <Folder Include="Views\ThemPhanHoiSP\" />
   </ItemGroup>
   <ItemGroup>

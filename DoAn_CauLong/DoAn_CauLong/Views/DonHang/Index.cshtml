@@ -1,0 +1,66 @@
+﻿@model IEnumerable<DoAn_CauLong.Models.DonHang>
+@{
+    ViewBag.Title = "Đơn hàng của tôi";
+}
+
+<div class="container" style="padding: 20px;">
+    <h2>Đơn hàng của tôi</h2>
+    <hr />
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Bạn chưa có đơn hàng nào.</div>
+    }
+    else
+    {
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Mã Đơn</th>
+                    <th>Ngày Đặt</th>
+                    <th>Người Đặt</th>
+                    <th>Địa chỉ</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>#@order.MaDonHang</td>
+                        <td>@(order.NgayDat?.ToString("dd/MM/yyyy HH:mm"))</td>
+
+                        <td>@order.KhachHang.HoTen</td>
+
+                        <td>@order.DiaChiGiaoHang</td>
+                        <td>@(order.TongTien?.ToString("N0"))đ</td>
+                        <td>
+                            @if (order.TrangThai == "Chờ xác nhận")
+                            {
+                                <span class="label label-warning">@order.TrangThai</span>
+                            }
+                            else if (order.TrangThai == "Đã xử lý")
+                            {
+                                <span class="label label-success">@order.TrangThai</span>
+                            }
+                            else
+                            {
+                                <span class="label label-default">@order.TrangThai</span>
+                            }
+                        </td>
+                        <td>
+                            @Html.ActionLink("Xem Chi tiết", "Details", "DonHang", new { id = order.MaDonHang }, new { @class = "btn btn-info btn-sm" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

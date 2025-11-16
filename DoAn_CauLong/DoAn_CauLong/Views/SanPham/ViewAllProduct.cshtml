@@ -18,6 +18,7 @@
         transition: box-shadow 0.3s, transform 0.3s;
         cursor: pointer; /* Cho biết thẻ có thể click */
         padding: 10px;
+        position: relative;
     }
 
         .product-card:hover {
@@ -65,6 +66,18 @@
         color: #D32F2F; /* Màu đỏ nổi bật */
         font-weight: 700;
     }
+
+    .promo-badge-small {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #d32f2f;
+        color: #fff;
+        padding: 6px 10px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 12px;
+    }
 </style>
 
 <div class="container">
@@ -76,10 +89,24 @@
         <div class="row">
             @foreach (var item in Model)
             {
+                // compute discount if any
+                var discountPercent = item.KhuyenMai?.PhanTramGiam ?? 0m;
+                var oldPrice = item.GiaGoc ?? 0m;
+                var discountedPrice = oldPrice;
+                if (discountPercent > 0)
+                {
+                    discountedPrice = Math.Max(0, oldPrice - (oldPrice * discountPercent / 100));
+                }
+
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                     @* Thêm data-url để JS có thể lấy link chi tiết *@
                     <div class="card h-100 product-card"
                          data-url="@Url.Action("ChiTietSanPham", "Home", new { id = item.MaSanPham })">
+
+                        @if (discountPercent > 0)
+                        {
+                            <div class="promo-badge-small">Giảm @discountPercent% </div>
+                        }
 
                         <a href="@Url.Action("ChiTietSanPham", "Home", new { id = item.MaSanPham })">
                             <img class="card-img-top"
@@ -96,9 +123,15 @@
                             </h5>
 
                             <div class="price-block mt-auto">
-                                <span class="current-price">
-                                    @string.Format("{0:N0}", item.GiaGoc) đ
-                                </span>
+                                @if (discountPercent > 0)
+                                {
+                                    <span class="current-price">@string.Format("{0:N0}", discountedPrice) đ</span>
+                                    <span class="original-price">@string.Format("{0:N0}", oldPrice) đ</span>
+                                }
+                                else
+                                {
+                                    <span class="current-price">@string.Format("{0:N0}", oldPrice) đ</span>
+                                }
                             </div>
                         </div>
                     </div>
@@ -119,7 +152,7 @@
         // SCRIPT ĐỂ TOÀN BỘ CARD CÓ THỂ CLICK ĐƯỢC
         $(document).ready(function () {
             // Lắng nghe sự kiện click trên tất cả các card sản phẩm
-            $('.product-card').on('click', function() {
+            $('.product-card').on('click', function () {
                 // Lấy URL từ thuộc tính data-url
                 var detailUrl = $(this).data('url');
 
@@ -131,7 +164,7 @@
 
             // Ngăn chặn sự kiện click lan truyền khi click vào link chi tiết bên trong card
             // Đảm bảo chỉ khi click vào thẻ chính mới chuyển hướng
-            $('.product-card a').on('click', function(e) {
+            $('.product-card a').on('click', function (e) {
                 e.stopPropagation();
             });
         });

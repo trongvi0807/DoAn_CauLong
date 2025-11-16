@@ -1,27 +1,199 @@
 ﻿@model List<DoAn_CauLong.Models.SanPham>
 
 @{
-    ViewBag.Title = "Danh sách s?n ph?m";
+    ViewBag.Title = "Danh sách sản phẩm";
 }
 
-<h2>@ViewBag.Title</h2>
+<style>
+    /* Container */
+    .product-list {
+        margin-top: 20px;
+    }
 
-@if (Model == null || !Model.Any())
-{
-    <p>Không có s?n ph?m phù h?p.</p>
-}
-else
-{
-    <div class="product-list">
-        @foreach (var sp in Model)
-        {
-            <div class="product-item">
-                <a href="@Url.Action("ChiTiet", "SanPham", new { id = sp.MaSanPham })">
-                    <img src="@Url.Content("~/Content/images/" + sp.HinhAnhDaiDien)" alt="@sp.TenSanPham" style="max-width:150px; max-height:150px;" />
-                    <h4>@sp.TenSanPham</h4>
-                    <p>@(sp.GiaGoc.GetValueOrDefault().ToString("N0") + "?")</p>
-                </a>
-            </div>
+    /* Card */
+    .product-card {
+        border: 0;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #ffffff;
+        transition: transform .15s ease, box-shadow .15s ease;
+        box-shadow: 0 1px 6px rgba(20,20,20,0.06);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        position: relative; /* for badge */
+    }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(18,18,18,0.08);
         }
-    </div>
-}
+
+    /* Image */
+    .card-img-top {
+        width: 100%;
+        height: 180px;
+        object-fit: contain;
+        background: linear-gradient(180deg, #fbfbfb 0%, #f7f7f7 100%);
+        padding: 12px;
+        display: block;
+    }
+
+    /* Card body layout */
+    .card-body {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    /* Title and description */
+    .product-title {
+        font-size: 14px;
+        font-weight: 600;
+        min-height: 40px;
+        line-height: 1.2;
+        margin-bottom: 4px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* 2 lines */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .product-brand {
+        font-size: 13px;
+        color: #6b6b6b;
+        min-height: 36px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* Price & badge */
+    .product-footer {
+        margin-top: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .product-price {
+        color: #e65100;
+        font-weight: 800;
+        font-size: 16px;
+    }
+
+    .price-small {
+        font-size: 13px;
+        color: #888;
+        text-decoration: line-through;
+        margin-left: 6px;
+    }
+
+    .badge-out {
+        background: #e0e0e0;
+        color: #333;
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 999px;
+    }
+
+    .promo-badge-small {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        background: #d32f2f;
+        color: #fff;
+        padding: 6px 10px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 12px;
+    }
+
+    /* Responsive tweaks */
+    @@media (max-width: 576px) {
+        .card-img-top {
+            height: 160px;
+        }
+    }
+</style>
+
+<div class="container">
+    <h2 class="mt-3">@ViewBag.Title</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info mt-3">Không có sản phẩm phù hợp.</div>
+    }
+    else
+    {
+        <div class="row product-list gx-3 gy-4">
+            @foreach (var sp in Model)
+            {
+                var discountPercent = sp.KhuyenMai?.PhanTramGiam ?? 0m;
+                decimal oldPrice = sp.GiaGoc ?? 0m;
+                decimal newPrice = oldPrice;
+                if (discountPercent > 0)
+                {
+                    newPrice = Math.Max(0, oldPrice - (oldPrice * discountPercent / 100));
+                }
+
+                <div class="col-6 col-sm-6 col-md-4 col-lg-3">
+                    <div class="product-card card h-100">
+
+                        @if (discountPercent > 0)
+                        {
+                            <div class="promo-badge-small">Giảm @discountPercent% </div>
+                        }
+
+                        <a href="@Url.Action("ChiTietSanPham", "Home", new { id = sp.MaSanPham })" class="d-block">
+                            <img class="card-img-top" src="@Url.Content("~/Content/images/" + (string.IsNullOrEmpty(sp.HinhAnhDaiDien) ? "default.jpg" : sp.HinhAnhDaiDien))" alt="@sp.TenSanPham" />
+                        </a>
+
+                        <div class="card-body">
+                            <a href="@Url.Action("ChiTietSanPham", "Home", new { id = sp.MaSanPham })" style="text-decoration:none;color:inherit;">
+                                <div class="product-title">@sp.TenSanPham</div>
+                            </a>
+
+                            <div class="product-brand">@sp.MoTa</div>
+
+                            <div class="product-footer">
+                                <div>
+                                    @if (sp.GiaGoc.HasValue)
+                                    {
+                                        <div>
+                                            <span class="product-price">@newPrice.ToString("N0")đ</span>
+                                            @if (discountPercent > 0)
+                                            {
+                                                <span class="price-small">@oldPrice.ToString("N0")đ</span>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="product-price">Liên hệ</div>
+                                    }
+                                </div>
+
+                                @* Nếu bạn có trường SoLuong để kiểm tra hết hàng, hiển thị nhãn *@
+                                @if (sp.GetType().GetProperty("SoLuong") != null)
+                                {
+                                    var soLuongProp = sp.GetType().GetProperty("SoLuong").GetValue(sp, null);
+                                    int soLuongValue = 0;
+                                    if (soLuongProp != null) { int.TryParse(soLuongProp.ToString(), out soLuongValue); }
+                                    if (soLuongValue <= 0)
+                                    {
+                                        <div class="badge-out">Hết hàng</div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

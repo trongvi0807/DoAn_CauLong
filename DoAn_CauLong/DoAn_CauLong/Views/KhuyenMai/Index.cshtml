@@ -1,0 +1,208 @@
+﻿@model List<DoAn_CauLong.Models.SanPham>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var promotions = ViewBag.Promotions as List<DoAn_CauLong.Models.KhuyenMai> ?? new List<DoAn_CauLong.Models.KhuyenMai>();
+    var promoProducts = ViewBag.PromoProducts as Dictionary<int, List<DoAn_CauLong.Models.SanPham>> ?? new Dictionary<int, List<DoAn_CauLong.Models.SanPham>>();
+}
+
+<style>
+    .promo-section {
+        margin: 28px 0;
+    }
+
+    .promo-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .promo-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+    }
+
+    .promo-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .promo-card {
+        width: calc(25% - 12px);
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+        position: relative;
+    }
+
+        .promo-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: contain;
+            background: #fafafa;
+        }
+
+    .promo-body {
+        padding: 12px;
+    }
+
+    .promo-title-item {
+        font-weight: 600;
+        font-size: 14px;
+        min-height: 44px;
+    }
+
+    .promo-price {
+        color: #e51c23;
+        font-weight: 800;
+        font-size: 16px;
+    }
+
+    .promo-old {
+        text-decoration: line-through;
+        color: #9e9e9e;
+        margin-left: 8px;
+    }
+
+    .promo-badge {
+        position: absolute;
+        background: #c62828;
+        color: #fff;
+        padding: 6px 10px;
+        border-radius: 12px;
+        top: 12px;
+        left: 12px;
+        font-weight: 700;
+        font-size: 13px;
+    }
+    /* Responsive: rely on bootstrap grid or simple percentage layout */
+    @@media (max-width: 992px) {
+        .promo-card {
+            width: calc(33.333% - 12px);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .promo-card {
+            width: calc(50% - 12px);
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .promo-card {
+            width: 100%;
+        }
+    }
+
+    .promo-header {
+        /* Đảm bảo căn giữa theo chiều dọc tốt hơn */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px; /* Tăng khoảng cách dưới tiêu đề */
+        padding: 10px 0;
+        border-bottom: 3px solid #f0f0f0; /* Thêm đường kẻ dưới nhẹ */
+    }
+
+    /* Chỉnh sửa Tiêu đề chính (Tên chương trình) */
+    .promo-title {
+        font-size: 1.6rem; /* Làm chữ lớn hơn */
+        font-weight: 800; /* Làm chữ đậm hơn nữa */
+        color: #e51c23; /* Đổi màu chữ sang màu chủ đạo (màu đỏ) */
+        position: relative;
+        padding-left: 35px; /* Tạo không gian cho biểu tượng */
+    }
+
+        /* Thêm biểu tượng hoặc hiệu ứng vào tiêu đề */
+        .promo-title::before {
+            content: '🔥'; /* Thêm biểu tượng cảm xúc (ví dụ: lửa, loa) */
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.4rem;
+            margin-right: 10px;
+        }
+
+    /* Chỉnh sửa Thời gian áp dụng */
+    .promo-header small {
+        font-size: 0.9rem;
+        color: #757575;
+        font-style: italic; /* In nghiêng nhẹ */
+        margin-top: 5px; /* Tách biệt nhẹ với tiêu đề chính */
+        display: block; /* Đảm bảo nó chiếm một dòng riêng */
+    }
+
+    /* Nút "Xem chương trình" */
+    .promo-header .btn {
+        border-radius: 20px; /* Làm nút bo tròn */
+        font-weight: 600;
+    }
+</style>
+<div class="container">
+    <h2 class="mt-3">Sản phẩm khuyến mãi</h2>
+
+    @if (!promotions.Any())
+    {
+        <div class="alert alert-info">Hiện không có chương trình khuyến mãi.</div>
+    }
+    else
+    {
+        foreach (var km in promotions)
+        {
+            var products = promoProducts.ContainsKey(km.MaKhuyenMai) ? promoProducts[km.MaKhuyenMai] : new List<DoAn_CauLong.Models.SanPham>();
+            if (products == null || !products.Any())
+            {
+                continue; // skip promotions without products
+            }
+
+            <section class="promo-section" id="promo-@km.MaKhuyenMai">
+                <div class="promo-header">
+                    <div>
+                        <div class="promo-title">@km.TenChuongTrinh</div>
+                        <small class="text-muted">@km.NgayBatDau - @km.NgayKetThuc</small>
+                    </div>
+                    <div>
+                        <a class="btn btn-outline-success" href="#promo-@km.MaKhuyenMai">Xem chương trình</a>
+                    </div>
+                </div>
+
+                <div class="promo-grid">
+                    @foreach (var sp in products)
+                    {
+                        var discountPercent = sp.KhuyenMai?.PhanTramGiam ?? 0m;
+                        var oldPrice = sp.GiaGoc ?? 0m;
+                        var newPrice = oldPrice;
+                        if (discountPercent > 0)
+                        {
+                            newPrice = Math.Max(0, oldPrice - (oldPrice * discountPercent / 100));
+                        }
+
+                        <div class="promo-card position-relative">
+                            @if (discountPercent > 0)
+                            {
+                                <div class="promo-badge">Giảm @discountPercent% </div>
+                            }
+                            <a href="@Url.Action("ChiTietSanPham", "Home", new { id = sp.MaSanPham })">
+                                <img src="@Url.Content("~/Content/images/" + (string.IsNullOrEmpty(sp.HinhAnhDaiDien) ? "default.jpg" : sp.HinhAnhDaiDien))" alt="@sp.TenSanPham" />
+                            </a>
+                            <div class="promo-body">
+                                <div class="promo-title-item">@sp.TenSanPham</div>
+                                <div class="mt-2">
+                                    <span class="promo-price">@newPrice.ToString("N0") đ</span>
+                                    @if (discountPercent > 0)
+                                    {
+                                        <span class="promo-old">@oldPrice.ToString("N0") đ</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </section>
+        }
+    }
+</div>
