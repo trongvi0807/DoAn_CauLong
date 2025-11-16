@@ -134,6 +134,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\KhuyenMaiController.cs" />
     <Compile Include="Controllers\QuanLyDonHangController.cs" />
+    <Compile Include="Controllers\QuanLySanPhamController.cs" />
     <Compile Include="Controllers\QuanLyTaiKhoanController.cs" />
     <Compile Include="Controllers\SanPhamController.cs" />
     <Compile Include="Controllers\TaiKhoanController.cs" />
@@ -355,6 +356,12 @@
     <Content Include="Views\KhuyenMai\Index.cshtml" />
     <Content Include="Views\QuanLyDonHang\Details.cshtml" />
     <Content Include="Views\QuanLyDonHang\Index.cshtml" />
+    <Content Include="Views\QuanLySanPham\Index.cshtml" />
+    <Content Include="Views\QuanLySanPham\Create.cshtml" />
+    <Content Include="Views\QuanLySanPham\Edit.cshtml" />
+    <Content Include="Views\QuanLySanPham\Delete.cshtml" />
+    <Content Include="Views\QuanLySanPham\Details.cshtml" />
+    <Content Include="Views\Home\Contact.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
