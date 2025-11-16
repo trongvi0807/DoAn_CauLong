@@ -265,6 +265,10 @@
 </div>
 
 <script>
+    // ===================================================================
+    // ✨ SỬA LỖI: Dòng code này chuyển Model.Variants (C#) thành biến 'allVariants' (JavaScript)
+    // ===================================================================
+    const allVariants = @Html.Raw(Json.Encode(Model.Variants.Select(v => new { v.MaChiTiet, v.MaMau, v.MaSize, v.GiaBan, v.SoLuongTon, v.HinhAnh })));
 
     // Khởi tạo MaMau/MaSize của biến thể đầu tiên để dễ dàng kiểm tra
     let selectedColorId = @(Model.AvailableColors.Any() ? Model.AvailableColors.First().MaMau : (int?)null);

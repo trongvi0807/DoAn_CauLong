@@ -75,8 +75,13 @@
         color: #fff;
         padding: 6px 10px;
         border-radius: 10px;
+<<<<<<< HEAD
         font-weight:700;
         font-size:12px;
+=======
+        font-weight: 700;
+        font-size: 12px;
+>>>>>>> f56eb37b1e04d8f15733b4cd2df7b91befa0cd54
     }
 </style>
 
@@ -152,7 +157,7 @@
         // SCRIPT ĐỂ TOÀN BỘ CARD CÓ THỂ CLICK ĐƯỢC
         $(document).ready(function () {
             // Lắng nghe sự kiện click trên tất cả các card sản phẩm
-            $('.product-card').on('click', function() {
+            $('.product-card').on('click', function () {
                 // Lấy URL từ thuộc tính data-url
                 var detailUrl = $(this).data('url');
 
@@ -164,7 +169,7 @@
 
             // Ngăn chặn sự kiện click lan truyền khi click vào link chi tiết bên trong card
             // Đảm bảo chỉ khi click vào thẻ chính mới chuyển hướng
-            $('.product-card a').on('click', function(e) {
+            $('.product-card a').on('click', function (e) {
                 e.stopPropagation();
             });
         });

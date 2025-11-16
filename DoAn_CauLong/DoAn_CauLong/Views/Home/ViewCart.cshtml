@@ -1,4 +1,4 @@
-﻿﻿@model List<DoAn_CauLong.ViewModels.CartItemViewModel>
+﻿@model List<DoAn_CauLong.ViewModels.CartItemViewModel>
 
 @{
     ViewBag.Title = "Giỏ hàng của bạn (DB)";
@@ -17,7 +17,7 @@
 }
 else
 {
-    <table class="cart-table">
+    <table class="cart-table table">
         <thead>
             <tr>
                 <th>Ảnh</th>
@@ -34,7 +34,10 @@ else
             {
                 <tr>
                     <td>
-                        <img src="/Content/images/@item.HinhAnh" alt="@item.TenSanPham" class="cart-item-img" />
+                        <img src="/Content/images/@item.HinhAnh"
+                             alt="@item.TenSanPham"
+                             class="cart-item-img"
+                             style="width: 80px; height: auto; object-fit: contain; border-radius: 4px;" />
                     </td>
                     <td>@item.TenSanPham</td>
                     <td>
@@ -55,9 +58,11 @@ else
         </tbody>
     </table>
 
-    <div class="cart-summary">
-        <h3>Tổng tiền giỏ hàng: @total.ToString("N0") đ</h3>
-        <button class="btn-checkout">Tiến hành Thanh toán</button>
+    <div class="cart-summary" style="text-align: right; margin-top: 20px;">
+        <h3>Tổng tiền giỏ hàng: <span style="color: #f36f21;">@total.ToString("N0") đ</span></h3>
+        <a href="@Url.Action("Checkout", "DonHang")" class="btn btn-primary btn-checkout" style="background-color: #f36f21; border-color: #f36f21; padding: 10px 20px;">
+            Tiến hành Thanh toán
+        </a>
     </div>
 }
 
