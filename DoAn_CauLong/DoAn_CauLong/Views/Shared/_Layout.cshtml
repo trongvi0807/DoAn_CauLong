@@ -77,6 +77,16 @@
                                     </a>
                                     @* Thêm các link quản lý khác tại đây *@
                                     <hr style="margin: 5px 0;" />
+                                    // tạo view cho phần thông báo và gửi cảnh báo về nếu đánh giá <=2
+                                    <div class="cart-section">
+                                        <a href="@Url.Action("Index", "QuanLyTaiKhoan")" class="user-menu-item" style="font-weight: bold; background: #eee;">
+                                            <i class="fa-solid fa-bell"></i>
+                                            <span class="cart-text">Thông Báo</span>
+                                            <span class="cart-count">
+                                                @(Session["GioHangCount"] ?? 0)
+                                            </span>
+                                        </a>
+                                    </div>                                    
                                 }
                                 @if (maQuyen == 2)
                                 {
