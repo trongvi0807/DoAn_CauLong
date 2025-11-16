@@ -1,14 +1,10 @@
 ﻿using DoAn_CauLong.Models;
 using DoAn_CauLong.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.SqlClient;
+using System.Data.Entity; // Cần thiết cho EntityState.Modified
 using System.Linq;
-using System.Reflection;
-using System.Web;
 using System.Web.Mvc;
+// Không cần thêm các using không dùng (như System.Data, System.Reflection)
 
 namespace QLDN_CauLong.Controllers
 {
@@ -20,16 +16,16 @@ namespace QLDN_CauLong.Controllers
         public ActionResult Index()
         {
             var sp = data.SanPhams
-                         .Include("LoaiSanPham")
+                         .Include(p => p.LoaiSanPham) // Sử dụng Lambda Expression
                          .ToList();
             return View(sp);
         }
 
-
         // Action: Hiển thị chi tiết sản phẩm
         public ActionResult ChiTietSanPham(int id)
         {
-            // 1. Lấy dữ liệu Sản phẩm chính
+            // Logic chi tiết sản phẩm không thay đổi
+            // ... (Giữ nguyên ChiTietSanPham logic)
             var sanPham = data.SanPhams
                 .Include(sp => sp.Hang)
                 .Include(sp => sp.KhuyenMai)
@@ -40,7 +36,6 @@ namespace QLDN_CauLong.Controllers
                 return HttpNotFound();
             }
 
-            // 2. Lấy tất cả biến thể chi tiết
             var variants = data.ChiTietSanPhams
                 .Where(cts => cts.MaSanPham == id)
                 .Include(cts => cts.MauSac)
@@ -48,7 +43,6 @@ namespace QLDN_CauLong.Controllers
                 .Include(cts => cts.ThongSoVots)
                 .ToList();
 
-            // 3. Lấy thông tin Đánh giá
             var reviews = data.PhanHois
                 .Where(ph => ph.MaSanPham == id)
                 .ToList();
@@ -56,7 +50,6 @@ namespace QLDN_CauLong.Controllers
             double averageRating = reviews.Any() ? reviews.Average(ph => (double)ph.DanhGia) : 0;
             int reviewCount = reviews.Count();
 
-            // 4. Chuẩn bị ViewModel
             var viewModel = new ProductDetailViewModel
             {
                 SanPham = sanPham,
@@ -67,26 +60,30 @@ namespace QLDN_CauLong.Controllers
                 AvailableSizes = variants.Where(v => v.Size != null).Select(v => v.Size).Distinct().ToList(),
             };
 
-            // 5. Truyền ViewModel sang View
             return View(viewModel);
+        }
+
+        // Hàm helper để cập nhật số lượng Giỏ hàng trong Session
+        private void UpdateCartSession(int maKhachHang)
+        {
+            // Cần đảm bảo rằng data (DbContext) được khai báo và có thể truy cập ở đây
+            int cartCount = data.GioHangs
+                                .Where(g => g.MaKhachHang == maKhachHang)
+                                .Sum(g => (int?)g.SoLuong) ?? 0;
+
+            // Cập nhật giá trị vào Session
+            Session["GioHangCount"] = cartCount;
         }
 
         // Action: Thêm sản phẩm vào giỏ hàng
         [HttpPost]
+        [Authorize]
         public ActionResult AddToCart(int chiTietId, int quantity)
         {
-            // 1. KIỂM TRA ĐĂNG NHẬP
-            if (!User.Identity.IsAuthenticated)
-            {
-                string returnUrl = Request.Url?.ToString() ?? Url.Action("Index", "Home");
-                // ĐÃ SỬA: Chuyển hướng đến TaiKhoan/DangNhap
-                return RedirectToAction("DangNhap", "TaiKhoan", new { returnUrl = returnUrl });
-            }
-
-            // 2. Lấy MaKhachHang hiện tại
+            // 1. Lấy MaKhachHang hiện tại (Đã xác thực)
             int maKhachHang = GetMaKhachHangFromLoggedInUser(User.Identity.Name);
 
-            // 3. Tìm xem mục hàng đã có trong DB chưa
+            // 2. Tìm xem mục hàng đã có trong DB chưa
             var existingCartItem = data.GioHangs
                 .SingleOrDefault(g => g.MaKhachHang == maKhachHang && g.MaChiTietSanPham == chiTietId);
 
@@ -110,7 +107,12 @@ namespace QLDN_CauLong.Controllers
                 data.Entry(existingCartItem).State = EntityState.Modified;
             }
 
+            // 3. Lưu thay đổi vào Database
             data.SaveChanges();
+
+            // ✅ BƯỚC KHẮC PHỤC: Cập nhật Session Giỏ hàng sau khi lưu vào DB
+            UpdateCartSession(maKhachHang);
+
             TempData["SuccessMessage"] = "Đã thêm sản phẩm vào giỏ hàng!";
             return RedirectToAction("ViewCart");
         }
@@ -119,22 +121,19 @@ namespace QLDN_CauLong.Controllers
         private int GetMaKhachHangFromLoggedInUser(string userName)
         {
             // CẦN TỰ IMPLEMENT LOGIC TRUY VẤN DB THỰC TẾ Ở ĐÂY
+            // Ví dụ: return data.KhachHangs.Single(k => k.TaiKhoan.TenDangNhap == userName).MaKhachHang;
             return 1;
         }
 
         // Action: Xem Giỏ hàng
+        [Authorize] // 🛡️ ASP.NET MVC sẽ kiểm tra Cookie. Nếu không có, tự động chuyển hướng.
         public ActionResult ViewCart()
         {
-            // 1. KIỂM TRA ĐĂNG NHẬP
-            if (!User.Identity.IsAuthenticated)
-            {
-                // ĐÃ SỬA: Chuyển hướng đến TaiKhoan/DangNhap
-                return RedirectToAction("DangNhap", "TaiKhoan");
-            }
+            // ❌ ĐÃ LOẠI BỎ KHỐI IF KIỂM TRA ĐĂNG NHẬP THỦ CÔNG
 
             int maKhachHang = GetMaKhachHangFromLoggedInUser(User.Identity.Name);
 
-            // 2. Tối ưu hóa truy vấn bằng Projection (.Select)
+            // Tối ưu hóa truy vấn bằng Projection (.Select)
             var cartViewModels = data.GioHangs
                 .Where(g => g.MaKhachHang == maKhachHang)
                 .OrderByDescending(g => g.NgayThem)
@@ -144,15 +143,17 @@ namespace QLDN_CauLong.Controllers
                     MaChiTietSanPham = g.MaChiTietSanPham.Value,
                     SoLuong = g.SoLuong.Value,
 
+                    // Đảm bảo các Navigation Property là NOT NULL trong truy vấn
                     TenSanPham = g.ChiTietSanPham.SanPham.TenSanPham,
                     GiaBan = g.ChiTietSanPham.GiaBan ?? 0,
                     HinhAnh = g.ChiTietSanPham.HinhAnh ?? g.ChiTietSanPham.SanPham.HinhAnhDaiDien,
                     TenMau = g.ChiTietSanPham.MauSac.TenMau,
-                    TenSize = g.ChiTietSanPham.Size.TenSize
+                    TenSize = g.ChiTietSanPham.Size.TenSize,
                 })
                 .ToList();
 
-            // 3. Hiển thị View Giỏ hàng
+            int totalItems = cartViewModels.Sum(item => item.SoLuong);
+            Session["GioHangCount"] = totalItems; // <-- Thêm dòng này
             return View(cartViewModels);
         }
     }

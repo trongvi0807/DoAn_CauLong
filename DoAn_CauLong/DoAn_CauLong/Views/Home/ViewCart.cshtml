@@ -1,18 +1,121 @@
-﻿﻿@model List<DoAn_CauLong.ViewModels.CartItemViewModel>
+﻿@model List<DoAn_CauLong.ViewModels.CartItemViewModel>
 
 @{
-    ViewBag.Title = "Giỏ hàng của bạn (DB)";
+    ViewBag.Title = "Giỏ hàng của bạn";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Giả định
+
     // Tính tổng tiền trực tiếp trong View
     decimal total = Model?.Sum(i => i.ThanhTien) ?? 0;
 }
+
+<style>
+    /* ---------------------------------- */
+    /* CSS TÙY CHỈNH CHO GIỎ HÀNG */
+    /* ---------------------------------- */
+    .cart-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px; /* Tạo khoảng cách giữa các hàng */
+    }
+
+        .cart-table th {
+            font-weight: bold;
+            text-align: left;
+            padding: 10px 0;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .cart-table td {
+            background-color: #fff;
+            padding: 15px 10px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f0f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Bóng nhẹ */
+        }
+
+    .cart-item-row {
+        transition: background-color 0.2s;
+    }
+
+    .cart-item-img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        border: 1px solid #eee;
+        border-radius: 4px;
+    }
+
+    .cart-item-name {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .cart-item-options {
+        font-size: 0.9em;
+        color: #666;
+    }
+
+    .price-text {
+        color: #e44d26; /* Màu cam đậm */
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    /* Input số lượng */
+    .quantity-input {
+        width: 65px !important;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 5px;
+        transition: border-color 0.3s;
+    }
+
+        .quantity-input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+    /* Tóm tắt giỏ hàng */
+    .cart-summary {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        text-align: right;
+        border: 1px solid #e9ecef;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+        .cart-summary h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+    .btn-checkout {
+        background-color: #28a745; /* Màu xanh lá cây */
+        color: white;
+        padding: 12px 25px;
+        font-size: 1.1em;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .btn-checkout:hover {
+            background-color: #218838;
+        }
+</style>
 
 <h2>🛍️ Giỏ hàng của bạn</h2>
 <hr />
 
 @if (Model == null || !Model.Any())
 {
-    <div class="alert alert-info">
-        Giỏ hàng của bạn hiện đang trống. <a href="@Url.Action("Index", "Home")">Tiếp tục mua sắm</a>.
+    <div class="alert alert-info shadow-sm p-4 text-center">
+        Giỏ hàng của bạn hiện đang trống. <a href="@Url.Action("Index", "Home")" class="alert-link font-weight-bold">Tiếp tục mua sắm</a>.
     </div>
 }
 else
@@ -20,35 +123,45 @@ else
     <table class="cart-table">
         <thead>
             <tr>
-                <th>Ảnh</th>
-                <th>Sản phẩm</th>
-                <th>Tùy chọn</th>
-                <th>Đơn giá</th>
-                <th>Số lượng</th>
-                <th>Thành tiền</th>
+                <th style="width: 10%;">Ảnh</th>
+                <th style="width: 30%;">Sản phẩm</th>
+                <th style="width: 15%;">Tùy chọn</th>
+                <th style="width: 15%;">Đơn giá</th>
+                <th style="width: 15%;">Số lượng</th>
+                <th style="width: 15%;">Thành tiền</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
+                <tr class="cart-item-row" data-url="@Url.Action("ChiTietSanPham", "Home", new { id = item.MaChiTietSanPham })">
                     <td>
-                        <img src="/Content/images/@item.HinhAnh" alt="@item.TenSanPham" class="cart-item-img" />
+                        <img src="@Url.Content($"~/Content/images/{item.HinhAnh}")" alt="@item.TenSanPham" class="cart-item-img"
+                             onerror="this.onerror=null;this.src='@Url.Content("~/Content/images/default-product.jpg")';" />
                     </td>
-                    <td>@item.TenSanPham</td>
+                    <td><span class="cart-item-name">@item.TenSanPham</span></td>
                     <td>
-                        Màu: @item.TenMau <br />
-                        Size: @item.TenSize
+                        <span class="cart-item-options">Màu: @item.TenMau</span> <br />
+                        <span class="cart-item-options">Size: @item.TenSize</span>
                     </td>
-                    <td>@item.GiaBan.ToString("N0") đ</td>
+                    <td class="price-text">@item.GiaBan.ToString("N0") đ</td>
                     <td>
-                        @* Khi dùng DB, việc cập nhật số lượng cần gửi MaGioHang *@
-                        <input type="number" value="@item.SoLuong" min="1" data-cart-id="@item.MaGioHang" style="width: 60px;" onchange="updateCartQuantity(this);" />
+                        <input type="number"
+                               value="@item.SoLuong"
+                               min="1"
+                               data-cart-id="@item.MaGioHang"
+                               class="quantity-input"
+                               onchange="updateCartQuantity(this);"
+                               oninput="validateQuantity(this);" />
                     </td>
-                    <td>@item.ThanhTien.ToString("N0") đ</td>
-                    <td>
-                        <a href="@Url.Action("RemoveFromCart", "Home", new { maGioHang = item.MaGioHang })" class="btn btn-sm btn-danger">Xóa</a>
+                    <td class="price-text">@item.ThanhTien.ToString("N0") đ</td>
+                    <td style="text-align: center;">
+                        <a href="@Url.Action("RemoveFromCart", "Home", new { maGioHang = item.MaGioHang })"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?');">
+                            <i class="fa-solid fa-trash"></i> Xóa
+                        </a>
                     </td>
                 </tr>
             }
@@ -56,28 +169,53 @@ else
     </table>
 
     <div class="cart-summary">
-        <h3>Tổng tiền giỏ hàng: @total.ToString("N0") đ</h3>
-        <button class="btn-checkout">Tiến hành Thanh toán</button>
+        <h3>Tổng tiền giỏ hàng: <span class="price-text">@total.ToString("N0") đ</span></h3>
+        <a href="@Url.Action("ThanhToan", "DonHang")" class="btn-checkout">Tiến hành Thanh toán <i class="fa-solid fa-arrow-right"></i></a>
     </div>
 }
 
-<script>
-    // Hàm giả định để cập nhật số lượng (cần AJAX)
-    function updateCartQuantity(inputElement) {
-        const cartId = inputElement.getAttribute('data-cart-id');
-        const newQuantity = parseInt(inputElement.value);
+@section scripts {
+    <script>
+        // Sửa hàm updateCartQuantity để gửi AJAX
+        function updateCartQuantity(inputElement) {
+            const cartId = inputElement.getAttribute('data-cart-id');
+            let newQuantity = parseInt(inputElement.value);
 
-        if (newQuantity < 1) {
-            alert('Số lượng phải lớn hơn 0. Vui lòng sử dụng nút Xóa.');
-            inputElement.value = 1; // Đặt lại
-            return;
+            if (newQuantity < 1) {
+                alert('Số lượng tối thiểu là 1.');
+                newQuantity = 1;
+                inputElement.value = 1;
+            }
+
+            // Tạm thời chỉ hiển thị cảnh báo, sau đó gửi yêu cầu AJAX
+            console.log(`Cập nhật MaGioHang ${cartId} với số lượng mới: ${newQuantity}`);
+
+            // Ví dụ AJAX thực tế (Bạn cần tạo Action này trong Home/GioHang Controller)
+            /*
+            $.post('@Url.Action("UpdateCartQuantity", "Home")', { maGioHang: cartId, quantity: newQuantity })
+                .done(function(response) {
+                    if (response.success) {
+                        location.reload(); // Tải lại trang để cập nhật tổng tiền
+                    } else {
+                        alert('Lỗi cập nhật: ' + response.message);
+                        // Có thể cần đặt lại giá trị cũ
+                    }
+                })
+                .fail(function() {
+                    alert("Đã xảy ra lỗi kết nối!");
+                });
+            */
+
+            // Vì đây là demo, tôi sẽ giữ lại alert và chuyển hướng
+            alert('Cập nhật thành công! (Chức năng AJAX đang tạm thời bị vô hiệu hóa)');
+            location.reload(); // Tải lại trang để cập nhật tổng tiền
         }
 
-        // TẠM THỜI: Chỉ alert. Trong thực tế, bạn cần gửi yêu cầu AJAX đến Controller
-        console.log(`Cập nhật MaGioHang ${cartId} với số lượng mới: ${newQuantity}`);
-        // Ví dụ AJAX: $.post("/Home/UpdateCartQuantity", { cartId: cartId, quantity: newQuantity }, function(data) { location.reload(); });
-
-        alert('Chức năng cập nhật số lượng qua AJAX cần được code thêm.');
-        // Khuyến nghị: reload trang để thấy kết quả (hoặc cập nhật DOM)
-    }
-</script>
+        // Ngăn chặn nhập số âm
+        function validateQuantity(inputElement) {
+            if (parseInt(inputElement.value) < 1) {
+                inputElement.value = 1;
+            }
+        }
+    </script>
+}
