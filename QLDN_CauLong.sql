@@ -1354,7 +1354,7 @@ BEGIN
         JOIN dbo.ChiTietSanPham CTSP ON CTDH.MaChiTietSanPham = CTSP.MaChiTiet
         WHERE DH.MaKhachHang = @MaKH           -- Khách hàng phải là người mua
           AND CTSP.MaSanPham = @MaSP           -- Sản phẩm phải nằm trong chi tiết đơn hàng
-          AND DH.TrangThai = N'Đã giao'        -- (Tùy chọn) Chỉ cho phép đánh giá sau khi đã nhận hàng
+          AND DH.TrangThai = N'Đã giao' or DH.TrangThai = N'Hoàn Thành' or DH.TrangThai = N'Dã Hoàn Thành'         -- (Tùy chọn) Chỉ cho phép đánh giá sau khi đã nhận hàng
     )
     BEGIN
         PRINT(N'Lỗi: Khách hàng chưa từng mua sản phẩm này hoặc đơn hàng chưa hoàn tất.')
@@ -1365,13 +1365,54 @@ BEGIN
     SELECT N'Thêm phản hồi thành công' AS ThongBao
 END
 GO
--- ************************************************************
--- ************************************************************
--- BATCH DUY NHẤT: KHAI BÁO, LẤY GIÁ TRỊ VÀ INSERT ĐƠN HÀNG
--- ************************************************************
+INSERT INTO TaiKhoan (TenDangNhap, MatKhau, Email, MaQuyen, NgayTao)
+VALUES ('levand', 'levand@123', 'levand@gmail.com', 3, GETDATE());
+GO
+INSERT INTO KhachHang (HoTen, Email, SoDienThoai, DiaChi, MaTaiKhoan, NgayTao)
+VALUES (N'Lê Văn D', 'levand@gmail.com', '0987654321', N'789 Trường Chinh, Q. Tân Bình, TP.HCM', 5, GETDATE()); 
 
--- 1. KHAI BÁO VÀ LẤY GIÁ TRỊ BIẾN
--- Lấy MaKhachHang của A và B
+
+DECLARE @MaKH_C INT = 3;
+DECLARE @MaCTSP_Vot88DPro4U INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-AX88DPRO2024-4U'); 
+DECLARE @MaCTSP_QuanYN INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-TSM3085-DEN-L'); 
+INSERT INTO DonHang (MaKhachHang, TrangThai, TongTien, TongTienSauGiam, DiaChiGiaoHang, SoDienThoaiNhanHang)
+VALUES (@MaKH_C, N'Đã Giao', 4938000.00, 4938000.00, N'789 Trường Chinh, Q. Tân Bình, TP.HCM', N'0987654321');
+DECLARE @MaDH2 INT = SCOPE_IDENTITY();
+---đơn hàng của khách hàng 3
+INSERT INTO ChiTietDonHang (MaDonHang, MaChiTietSanPham, SoLuong, DonGia, ThanhTien)
+VALUES  
+    (@MaDH2, @MaCTSP_Vot88DPro4U, 1, 4799000.00, 4799000.00), 
+    (@MaDH2, @MaCTSP_QuanYN, 1, 139000.00, 139000.00);
+
+	EXEC THEMPHANHOI
+    @NoiDung = N'Chất lượng vợt tuyệt vời, đánh rất đầm tay và trợ lực tốt.',
+    @DanhGia = 5,
+    @MaKH = 3, 
+    @MaSP = 2; 
+
+SELECT N'--- Kiểm tra PhanHoi ---' AS ThongBao;
+SELECT * FROM PhanHoi WHERE MaKhachHang = 3;
+---đơn hàng của khách hàng 2
+DECLARE @MaKH_C INT = 2;
+DECLARE @MaCTSP_Vot88DPro4U INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-AX88DPRO2024-4U'); 
+DECLARE @MaCTSP_Nanoflare INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-NNF1000Z-VANG-3U'); 
+INSERT INTO DonHang (MaKhachHang, TrangThai, TongTien, TongTienSauGiam, DiaChiGiaoHang, SoDienThoaiNhanHang)
+VALUES (@MaKH_C, N'Hoàn Thành', 9399000.00, 9399000.00, N'456 Lê Lợi, Q.3, TP.HCM', N'0909876543');
+DECLARE @MaDH2 INT = SCOPE_IDENTITY();
+
+-- Chi tiết đơn hàng 2
+INSERT INTO ChiTietDonHang (MaDonHang, MaChiTietSanPham, SoLuong, DonGia, ThanhTien)
+VALUES 
+    (@MaDH2, @MaCTSP_Vot88DPro4U, 1, 4799000.00, 4799000.00),    
+    (@MaDH2, @MaCTSP_Nanoflare, 1, 4600000.00, 4600000.00);
+
+	EXEC THEMPHANHOI
+    @NoiDung = N'Chất lượng vợt chưa tốt.',
+    @DanhGia = 2,
+    @MaKH = 2, 
+    @MaSP = 2; 
+
+
 DECLARE @MaKH_A INT = (SELECT MaKhachHang FROM KhachHang WHERE HoTen = N'Nguyễn Văn A');
 DECLARE @MaKH_B INT = (SELECT MaKhachHang FROM KhachHang WHERE HoTen = N'Trần Thị B');
 
