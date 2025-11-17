@@ -175,5 +175,73 @@ namespace DoAn_CauLong.Controllers
             }
             base.Dispose(disposing);
         }
+
+        public ActionResult DoiMatKhau()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [CheckLogin]
+        [ValidateAntiForgeryToken]
+        public ActionResult DoiMatKhau(string matKhauCu, string matKhauMoi, string xacNhanMoi)
+        {
+            if (matKhauMoi != xacNhanMoi)
+            {
+                ModelState.AddModelError("", "Mật khẩu mới không khớp.");
+                return View();
+            }
+
+            string tenDangNhap = Session["TenDangNhap"].ToString();
+            int maTaiKhoan = (int)Session["MaTaiKhoan"];
+
+            // ==========================================================
+            // ✨ SỬ DỤNG FUNCTION CỦA BẠN TẠI ĐÂY
+            // ==========================================================
+
+            // Gọi Function KiemTraDangNhap để kiểm tra mật khẩu CŨ
+            bool laMatKhauCuDung = data.Database
+                .SqlQuery<bool>("SELECT dbo.KiemTraDangNhap(@User, @Pass)",
+                    new SqlParameter("@User", tenDangNhap),
+                    new SqlParameter("@Pass", matKhauCu)
+                ).FirstOrDefault();
+
+            // ==========================================================
+
+            if (laMatKhauCuDung)
+            {
+                // Mật khẩu cũ đúng -> Cập nhật mật khẩu mới
+                var taiKhoan = data.TaiKhoans.Find(maTaiKhoan);
+                taiKhoan.MatKhau = matKhauMoi;
+                data.SaveChanges();
+
+                TempData["Success"] = "Đổi mật khẩu thành công!";
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                // Mật khẩu cũ sai
+                ModelState.AddModelError("", "Mật khẩu cũ không chính xác.");
+                return View();
+            }
+        }
+        [CheckLogin]
+        public ActionResult ThongTin()
+        {
+            int maTaiKhoan = (int)Session["MaTaiKhoan"];
+
+            // Lấy thông tin khách hàng
+            var khachHang = data.KhachHangs.FirstOrDefault(k => k.MaTaiKhoan == maTaiKhoan);
+
+            if (khachHang == null)
+            {
+                // Nếu là Admin/NV, chuyển họ về trang chủ
+                TempData["Error"] = "Tài khoản của bạn là tài khoản quản trị, không có thông tin khách hàng.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Gửi model KhachHang sang View
+            return View(khachHang);
+        }
     }
 }
