@@ -755,26 +755,20 @@ GO
 -- =====================================
 -- 1. Procedure: ThemDonHang
 CREATE PROCEDURE ThemDonHang
-    @MaKhachHang INT,
+@MaKhachHang INT,
     @DiaChi NVARCHAR(255),
     @SoDienThoai VARCHAR(15),
-    @GhiChu NVARCHAR(500)
+    @GhiChu NVARCHAR(500),
+    @MaDonHang_OUT INT OUTPUT -- Thêm tham số OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    DECLARE @MaDonHang INT;
+    -- Thêm TrangThai và cập nhật các trường mặc định khác
+    INSERT INTO DonHang (MaKhachHang, DiaChiGiaoHang, SoDienThoaiNhanHang, GhiChu, TongTien, TongTienSauGiam, NgayDat, TrangThai)
+    VALUES (@MaKhachHang, @DiaChi, @SoDienThoai, @GhiChu, 0, 0, GETDATE(), N'Chờ xác nhận');
 
-    -- Tạo đơn hàng rỗng ban đầu
-    INSERT INTO DonHang (MaKhachHang, DiaChiGiaoHang, SoDienThoaiNhanHang, GhiChu, TongTien, TongTienSauGiam)
-    VALUES (@MaKhachHang, @DiaChi, @SoDienThoai, @GhiChu, 0, 0);
-
-    SET @MaDonHang = SCOPE_IDENTITY();
-
-    PRINT N'Đã tạo đơn hàng mới với Mã: ' + CAST(@MaDonHang AS NVARCHAR(10));
-    PRINT N'Hãy thêm chi tiết đơn hàng cho mã này để cập nhật tổng tiền.';
-
-    RETURN @MaDonHang;
+    SET @MaDonHang_OUT = SCOPE_IDENTITY(); -- Gán MaDonHang vừa tạo vào biến OUTPUT
 END;
 GO
 
@@ -860,28 +854,28 @@ BEGIN
 END;
 GO
 
--- Ví dụ sử dụng các thành phần đã tạo:
--- 1. Procedure
-DECLARE @MaDon INT;
+---- Ví dụ sử dụng các thành phần đã tạo:
+---- 1. Procedure
+--DECLARE @MaDon INT;
 
-EXEC @MaDon = ThemDonHang   
-    @MaKhachHang = 10,
-    @DiaChi = N'22 Lê Lợi, Hà Nội',
-    @SoDienThoai = '0988123456',
-    @GhiChu = N'Giao sau giờ hành chính';
+--EXEC @MaDon = ThemDonHang   
+--    @MaKhachHang = 1,
+--    @DiaChi = N'22 Lê Lợi, Hà Nội',
+--    @SoDienThoai = '0988123456',
+--    @GhiChu = N'Giao sau giờ hành chính';
 
-PRINT 'Mã đơn hàng mới tạo: ' + CAST(@MaDon AS NVARCHAR(10));
+--PRINT 'Mã đơn hàng mới tạo: ' + CAST(@MaDon AS NVARCHAR(10));
 
--- 2. Function
-SELECT dbo.TinhTongTienDonHang(5) AS TongTien;
+---- 2. Function
+--SELECT dbo.TinhTongTienDonHang(1) AS TongTien;
 
--- 3. Trigger
-INSERT INTO ChiTietDonHang (MaDonHang, MaChiTietSanPham, SoLuong, DonGia, ThanhTien) VALUES
-(5, 101, 2, 150000, 2 * 150000);
+---- 3. Trigger
+--INSERT INTO ChiTietDonHang (MaDonHang, MaChiTietSanPham, SoLuong, DonGia, ThanhTien) VALUES
+--(1, 101, 2, 150000, 2 * 150000);
 
--- 4. Cursor
-EXEC KiemTraDonHangChuaThanhToan;
-GO
+---- 4. Cursor
+--EXEC KiemTraDonHangChuaThanhToan;
+--GO
 
 -- =====================================
 -- Trọng
@@ -1125,71 +1119,71 @@ BEGIN
 END
 GO
 
--- Ví dụ sử dụng các thành phần đã tạo:
+---- Ví dụ sử dụng các thành phần đã tạo:
 
--- Sử dụng procedure ThemSanPhamKhuyenMai
-EXEC ThemSanPhamKhuyenMai 
-    @TenSanPham = N'Vợt Yonex Nanoflare 800',
-    @MoTa = N'Vợt tấn công nhanh',
-    @GiaGoc = 3800000,
-    @HinhAnhDaiDien = 'nanoflare800.jpg',
-    @MaLoai = 1,
-    @MaNhaCungCap = 1,
-    @MaHang = 1,
-    @MaKhuyenMai = 1,
-    @CoSize = 0,
-    @CoMau = 1
+---- Sử dụng procedure ThemSanPhamKhuyenMai
+--EXEC ThemSanPhamKhuyenMai 
+--    @TenSanPham = N'Vợt Yonex Nanoflare 800',
+--    @MoTa = N'Vợt tấn công nhanh',
+--    @GiaGoc = 3800000,
+--    @HinhAnhDaiDien = 'nanoflare800.jpg',
+--    @MaLoai = 1,
+--    @MaNhaCungCap = 1,
+--    @MaHang = 1,
+--    @MaKhuyenMai = 1,
+--    @CoSize = 0,
+--    @CoMau = 1
 
--- Sử dụng function GiaSauKhuyenMai
-SELECT dbo.GiaSauKhuyenMai(1) AS GiaSauKhuyenMai
+---- Sử dụng function GiaSauKhuyenMai
+--SELECT dbo.GiaSauKhuyenMai(1) AS GiaSauKhuyenMai
 
 
 
---Ktra CapNhatGiaVaTonKho
--- Kiểm tra dữ liệu trước khi test
-SELECT MaChiTiet, GiaBan, SoLuongTon 
-FROM ChiTietSanPham 
-WHERE MaChiTiet = 1
+----Ktra CapNhatGiaVaTonKho
+---- Kiểm tra dữ liệu trước khi test
+--SELECT MaChiTiet, GiaBan, SoLuongTon 
+--FROM ChiTietSanPham 
+--WHERE MaChiTiet = 1
 
--- Test cập nhật thành công
-EXEC CapNhatGiaVaTonKho 
-    @MaChiTiet = 1,
-    @GiaBanMoi = 4300000,
-    @SoLuongTonMoi = 30,
-    @MucCoLap = 'READ_COMMITTED'
+---- Test cập nhật thành công
+--EXEC CapNhatGiaVaTonKho 
+--    @MaChiTiet = 1,
+--    @GiaBanMoi = 4300000,
+--    @SoLuongTonMoi = 30,
+--    @MucCoLap = 'READ_COMMITTED'
 
--- Kiểm tra kết quả
-SELECT * FROM ChiTietSanPham WHERE MaChiTiet = 1
-SELECT * FROM LichSuThayDoiGia WHERE MaChiTiet = 1
+---- Kiểm tra kết quả
+--SELECT * FROM ChiTietSanPham WHERE MaChiTiet = 1
+--SELECT * FROM LichSuThayDoiGia WHERE MaChiTiet = 1
 
--- Test giá âm
-EXEC CapNhatGiaVaTonKho 
-    @MaChiTiet = 1,
-    @GiaBanMoi = -1000,  -- Giá âm
-    @SoLuongTonMoi = 30
+---- Test giá âm
+--EXEC CapNhatGiaVaTonKho 
+--    @MaChiTiet = 1,
+--    @GiaBanMoi = -1000,  -- Giá âm
+--    @SoLuongTonMoi = 30
 
--- Test số lượng âm
-EXEC CapNhatGiaVaTonKho 
-    @MaChiTiet = 1,
-    @GiaBanMoi = 4300000,
-    @SoLuongTonMoi = -5   -- Số lượng âm
+---- Test số lượng âm
+--EXEC CapNhatGiaVaTonKho 
+--    @MaChiTiet = 1,
+--    @GiaBanMoi = 4300000,
+--    @SoLuongTonMoi = -5   -- Số lượng âm
 
--- Kiểm tra log lỗi
-SELECT * FROM LogLoiGiaoTac
+---- Kiểm tra log lỗi
+--SELECT * FROM LogLoiGiaoTac
 
--- Test với các mức isolation khác nhau
-EXEC CapNhatGiaVaTonKho 
-    @MaChiTiet = 2,
-    @GiaBanMoi = 1800000,
-    @SoLuongTonMoi = 20,
-    @MucCoLap = 'REPEATABLE_READ'
+---- Test với các mức isolation khác nhau
+--EXEC CapNhatGiaVaTonKho 
+--    @MaChiTiet = 2,
+--    @GiaBanMoi = 1800000,
+--    @SoLuongTonMoi = 20,
+--    @MucCoLap = 'REPEATABLE_READ'
 
-EXEC CapNhatGiaVaTonKho 
-    @MaChiTiet = 3,
-    @GiaBanMoi = 530000,
-    @SoLuongTonMoi = 40,
-    @MucCoLap = 'SERIALIZABLE'
-GO
+--EXEC CapNhatGiaVaTonKho 
+--    @MaChiTiet = 3,
+--    @GiaBanMoi = 530000,
+--    @SoLuongTonMoi = 40,
+--    @MucCoLap = 'SERIALIZABLE'
+--GO
 
 -- =====================================
 -- Đăng
@@ -1268,54 +1262,48 @@ GO
 DECLARE @MaTaiKhoan INT, @MaQuyen INT;
 DECLARE @MaQuyenMacDinh INT;
 
--- Lấy quyền mặc định
+-- Lấy quyền mặc định (Giả sử 'Khách hàng' đã tồn tại trong bảng PhanQuyen)
 SELECT @MaQuyenMacDinh = MaQuyen FROM PhanQuyen WHERE TenQuyen = N'Khách hàng';
 
-DECLARE Cur_KiemTraQuyen CURSOR FOR
-SELECT MaTaiKhoan, MaQuyen FROM TaiKhoan;
-
-OPEN Cur_KiemTraQuyen;
-FETCH NEXT FROM Cur_KiemTraQuyen INTO @MaTaiKhoan, @MaQuyen;
-
-WHILE @@FETCH_STATUS = 0
+-- Kiểm tra xem có lấy được quyền mặc định không
+IF @MaQuyenMacDinh IS NULL
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM PhanQuyen WHERE MaQuyen = @MaQuyen)
-    BEGIN
-        UPDATE TaiKhoan SET MaQuyen = @MaQuyenMacDinh WHERE MaTaiKhoan = @MaTaiKhoan;
-        PRINT N'Tài khoản ' + CAST(@MaTaiKhoan AS NVARCHAR) + N' có quyền không hợp lệ — đã đổi về Khách hàng';
-    END
-
-    FETCH NEXT FROM Cur_KiemTraQuyen INTO @MaTaiKhoan, @MaQuyen;
+    PRINT N'LỖI: Không tìm thấy quyền "Khách hàng" trong bảng PhanQuyen. Vui lòng thêm dữ liệu trước.';
 END
+ELSE
+BEGIN
+    DECLARE Cur_KiemTraQuyen CURSOR FOR
+    SELECT MaTaiKhoan, MaQuyen FROM TaiKhoan;
 
-CLOSE Cur_KiemTraQuyen;
-DEALLOCATE Cur_KiemTraQuyen;
+    OPEN Cur_KiemTraQuyen;
+    FETCH NEXT FROM Cur_KiemTraQuyen INTO @MaTaiKhoan, @MaQuyen;
 
--- 5. Transaction: Thay đổi quyền và rollback nếu cập nhật lỗi.
-BEGIN TRY
-    BEGIN TRANSACTION;
-
-    DECLARE @MaQuyenMoi INT;
-    SELECT @MaQuyenMoi = MaQuyen FROM PhanQuyen WHERE TenQuyen = N'Nhân viên';
-
-    IF @MaQuyenMoi IS NULL
+    WHILE @@FETCH_STATUS = 0
     BEGIN
-        RAISERROR(N'Không tìm thấy quyền Nhân viên!', 16, 1);
+      
+        -- Chỉ kiểm tra những tài khoản có MaQuyen KHÔNG NULL
+        IF @MaQuyen IS NOT NULL
+        BEGIN
+            -- Nếu MaQuyen không NULL, kiểm tra xem nó có tồn tại hợp lệ trong bảng PhanQuyen không
+            IF NOT EXISTS (SELECT 1 FROM PhanQuyen WHERE MaQuyen = @MaQuyen)
+            BEGIN
+                -- Nếu quyền này không tồn tại (bị mồ côi), thì mới cập nhật về mặc định
+                UPDATE TaiKhoan SET MaQuyen = @MaQuyenMacDinh WHERE MaTaiKhoan = @MaTaiKhoan;
+                PRINT N'Tài khoản ' + CAST(@MaTaiKhoan AS NVARCHAR) + N' có quyền ' + CAST(@MaQuyen AS NVARCHAR) + N' không hợp lệ — đã đổi về Khách hàng';
+            END
+            -- Ngược lại: Nếu quyền này (ví dụ: Admin, Nhân viên) tồn tại, khối IF này sẽ là FALSE và tài khoản được bỏ qua (an toàn)
+        END
+        -- ELSE: Nếu @MaQuyen LÀ NULL, chúng ta bỏ qua, không làm gì cả.
+        -- Đây chính là thay đổi để giữ nguyên các tài khoản Admin/Nhân viên có thể đang bị NULL.
+
+        FETCH NEXT FROM Cur_KiemTraQuyen INTO @MaTaiKhoan, @MaQuyen;
     END
 
-    -- Giả sử cập nhật tài khoản có mã = 1
-    UPDATE TaiKhoan
-    SET MaQuyen = @MaQuyenMoi
-    WHERE MaTaiKhoan = 1;
+    CLOSE Cur_KiemTraQuyen;
+    DEALLOCATE Cur_KiemTraQuyen;
 
-    COMMIT TRANSACTION;
-    PRINT N'Cập nhật quyền thành công!';
-END TRY
-BEGIN CATCH
-    ROLLBACK TRANSACTION;
-    PRINT N'Lỗi xảy ra! Giao dịch đã rollback.';
-    PRINT ERROR_MESSAGE();
-END CATCH;
+    PRINT N'Đã hoàn tất kiểm tra quyền tài khoản.';
+END
 GO
 
 -- =====================================
@@ -1365,108 +1353,108 @@ BEGIN
     SELECT N'Thêm phản hồi thành công' AS ThongBao
 END
 GO
-INSERT INTO TaiKhoan (TenDangNhap, MatKhau, Email, MaQuyen, NgayTao)
-VALUES ('levand', 'levand@123', 'levand@gmail.com', 3, GETDATE());
-GO
-INSERT INTO KhachHang (HoTen, Email, SoDienThoai, DiaChi, MaTaiKhoan, NgayTao)
-VALUES (N'Lê Văn D', 'levand@gmail.com', '0987654321', N'789 Trường Chinh, Q. Tân Bình, TP.HCM', 5, GETDATE()); 
+--INSERT INTO TaiKhoan (TenDangNhap, MatKhau, Email, MaQuyen, NgayTao)
+--VALUES ('levand', 'levand@123', 'levand@gmail.com', 3, GETDATE());
+--GO
+--INSERT INTO KhachHang (HoTen, Email, SoDienThoai, DiaChi, MaTaiKhoan, NgayTao)
+--VALUES (N'Lê Văn D', 'levand@gmail.com', '0987654321', N'789 Trường Chinh, Q. Tân Bình, TP.HCM', 5, GETDATE()); 
 
 
-DECLARE @MaKH_C INT = 3;
-DECLARE @MaCTSP_Vot88DPro4U INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-AX88DPRO2024-4U'); 
-DECLARE @MaCTSP_QuanYN INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-TSM3085-DEN-L'); 
-INSERT INTO DonHang (MaKhachHang, TrangThai, TongTien, TongTienSauGiam, DiaChiGiaoHang, SoDienThoaiNhanHang)
-VALUES (@MaKH_C, N'Đã Giao', 4938000.00, 4938000.00, N'789 Trường Chinh, Q. Tân Bình, TP.HCM', N'0987654321');
-DECLARE @MaDH2 INT = SCOPE_IDENTITY();
----đơn hàng của khách hàng 3
-INSERT INTO ChiTietDonHang (MaDonHang, MaChiTietSanPham, SoLuong, DonGia, ThanhTien)
-VALUES  
-    (@MaDH2, @MaCTSP_Vot88DPro4U, 1, 4799000.00, 4799000.00), 
-    (@MaDH2, @MaCTSP_QuanYN, 1, 139000.00, 139000.00);
+--DECLARE @MaKH_C INT = 3;
+--DECLARE @MaCTSP_Vot88DPro4U INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-AX88DPRO2024-4U'); 
+--DECLARE @MaCTSP_QuanYN INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-TSM3085-DEN-L'); 
+--INSERT INTO DonHang (MaKhachHang, TrangThai, TongTien, TongTienSauGiam, DiaChiGiaoHang, SoDienThoaiNhanHang)
+--VALUES (@MaKH_C, N'Đã Giao', 4938000.00, 4938000.00, N'789 Trường Chinh, Q. Tân Bình, TP.HCM', N'0987654321');
+--DECLARE @MaDH2 INT = SCOPE_IDENTITY();
+-----đơn hàng của khách hàng 3
+--INSERT INTO ChiTietDonHang (MaDonHang, MaChiTietSanPham, SoLuong, DonGia, ThanhTien)
+--VALUES  
+--    (@MaDH2, @MaCTSP_Vot88DPro4U, 1, 4799000.00, 4799000.00), 
+--    (@MaDH2, @MaCTSP_QuanYN, 1, 139000.00, 139000.00);
 
-	EXEC THEMPHANHOI
-    @NoiDung = N'Chất lượng vợt tuyệt vời, đánh rất đầm tay và trợ lực tốt.',
-    @DanhGia = 5,
-    @MaKH = 3, 
-    @MaSP = 2; 
+--	EXEC THEMPHANHOI
+--    @NoiDung = N'Chất lượng vợt tuyệt vời, đánh rất đầm tay và trợ lực tốt.',
+--    @DanhGia = 5,
+--    @MaKH = 3, 
+--    @MaSP = 2; 
 
-SELECT N'--- Kiểm tra PhanHoi ---' AS ThongBao;
-SELECT * FROM PhanHoi WHERE MaKhachHang = 3;
----đơn hàng của khách hàng 2
-DECLARE @MaKH_C INT = 2;
-DECLARE @MaCTSP_Vot88DPro4U INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-AX88DPRO2024-4U'); 
-DECLARE @MaCTSP_Nanoflare INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-NNF1000Z-VANG-3U'); 
-INSERT INTO DonHang (MaKhachHang, TrangThai, TongTien, TongTienSauGiam, DiaChiGiaoHang, SoDienThoaiNhanHang)
-VALUES (@MaKH_C, N'Hoàn Thành', 9399000.00, 9399000.00, N'456 Lê Lợi, Q.3, TP.HCM', N'0909876543');
-DECLARE @MaDH2 INT = SCOPE_IDENTITY();
+--SELECT N'--- Kiểm tra PhanHoi ---' AS ThongBao;
+--SELECT * FROM PhanHoi WHERE MaKhachHang = 3;
+-----đơn hàng của khách hàng 2
+--DECLARE @MaKH_C INT = 2;
+--DECLARE @MaCTSP_Vot88DPro4U INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-AX88DPRO2024-4U'); 
+--DECLARE @MaCTSP_Nanoflare INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-NNF1000Z-VANG-3U'); 
+--INSERT INTO DonHang (MaKhachHang, TrangThai, TongTien, TongTienSauGiam, DiaChiGiaoHang, SoDienThoaiNhanHang)
+--VALUES (@MaKH_C, N'Hoàn Thành', 9399000.00, 9399000.00, N'456 Lê Lợi, Q.3, TP.HCM', N'0909876543');
+--DECLARE @MaDH2 INT = SCOPE_IDENTITY();
 
--- Chi tiết đơn hàng 2
-INSERT INTO ChiTietDonHang (MaDonHang, MaChiTietSanPham, SoLuong, DonGia, ThanhTien)
-VALUES 
-    (@MaDH2, @MaCTSP_Vot88DPro4U, 1, 4799000.00, 4799000.00),    
-    (@MaDH2, @MaCTSP_Nanoflare, 1, 4600000.00, 4600000.00);
+---- Chi tiết đơn hàng 2
+--INSERT INTO ChiTietDonHang (MaDonHang, MaChiTietSanPham, SoLuong, DonGia, ThanhTien)
+--VALUES 
+--    (@MaDH2, @MaCTSP_Vot88DPro4U, 1, 4799000.00, 4799000.00),    
+--    (@MaDH2, @MaCTSP_Nanoflare, 1, 4600000.00, 4600000.00);
 
-	EXEC THEMPHANHOI
-    @NoiDung = N'Chất lượng vợt chưa tốt.',
-    @DanhGia = 2,
-    @MaKH = 2, 
-    @MaSP = 2; 
-
-
-DECLARE @MaKH_A INT = (SELECT MaKhachHang FROM KhachHang WHERE HoTen = N'Nguyễn Văn A');
-DECLARE @MaKH_B INT = (SELECT MaKhachHang FROM KhachHang WHERE HoTen = N'Trần Thị B');
-
--- Lấy MaChiTietSanPham
-DECLARE @MaCTSP_Vot100ZZ INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-AX100ZZ-4U'); 
-DECLARE @MaCTSP_QuanYN INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-TSM3085-DEN-L');
-DECLARE @MaCTSP_Giay65Z4 INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-SHB65Z4-TRANG-41'); 
-DECLARE @MaCTSP_AoLN INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'LN-A421-TRANG-M');
+--	EXEC THEMPHANHOI
+--    @NoiDung = N'Chất lượng vợt chưa tốt.',
+--    @DanhGia = 2,
+--    @MaKH = 2, 
+--    @MaSP = 2; 
 
 
--- 2. ĐƠN HÀNG 1: KHÁCH HÀNG NGUYỄN VĂN A (ĐÃ GIAO)
-INSERT INTO DonHang (MaKhachHang, TrangThai, TongTien, TongTienSauGiam, DiaChiGiaoHang, SoDienThoaiNhanHang)
-VALUES (@MaKH_A, N'Đã giao', 4500000.00 + 139000.00, 4639000.00, N'123 Nguyễn Trãi, Q.1, TP.HCM', N'0901234567');
+--DECLARE @MaKH_A INT = (SELECT MaKhachHang FROM KhachHang WHERE HoTen = N'Nguyễn Văn A');
+--DECLARE @MaKH_B INT = (SELECT MaKhachHang FROM KhachHang WHERE HoTen = N'Trần Thị B');
 
-DECLARE @MaDH1 INT = SCOPE_IDENTITY();
-
--- Chi tiết đơn hàng 1
-INSERT INTO ChiTietDonHang (MaDonHang, MaChiTietSanPham, SoLuong, DonGia, ThanhTien)
-VALUES (@MaDH1, @MaCTSP_Vot100ZZ, 1, 4500000.00, 4500000.00), 
-       (@MaDH1, @MaCTSP_QuanYN, 2, 139000.00, 278000.00); 
+---- Lấy MaChiTietSanPham
+--DECLARE @MaCTSP_Vot100ZZ INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-AX100ZZ-4U'); 
+--DECLARE @MaCTSP_QuanYN INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-TSM3085-DEN-L');
+--DECLARE @MaCTSP_Giay65Z4 INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'YN-SHB65Z4-TRANG-41'); 
+--DECLARE @MaCTSP_AoLN INT = (SELECT MaChiTiet FROM ChiTietSanPham WHERE SKU = 'LN-A421-TRANG-M');
 
 
--- 3. ĐƠN HÀNG 2: KHÁCH HÀNG TRẦN THỊ B (ĐANG XỬ LÝ)
-INSERT INTO DonHang (MaKhachHang, TrangThai, TongTien, TongTienSauGiam, DiaChiGiaoHang, SoDienThoaiNhanHang)
-VALUES (@MaKH_B, N'Đang xử lý', 2800000.00 + 130000.00, 2930000.00, N'456 Lê Lợi, Q.3, TP.HCM', N'0909876543');
+---- 2. ĐƠN HÀNG 1: KHÁCH HÀNG NGUYỄN VĂN A (ĐÃ GIAO)
+--INSERT INTO DonHang (MaKhachHang, TrangThai, TongTien, TongTienSauGiam, DiaChiGiaoHang, SoDienThoaiNhanHang)
+--VALUES (@MaKH_A, N'Đã giao', 4500000.00 + 139000.00, 4639000.00, N'123 Nguyễn Trãi, Q.1, TP.HCM', N'0901234567');
 
-DECLARE @MaDH2 INT = SCOPE_IDENTITY();
+--DECLARE @MaDH1 INT = SCOPE_IDENTITY();
 
--- Chi tiết đơn hàng 2
-INSERT INTO ChiTietDonHang (MaDonHang, MaChiTietSanPham, SoLuong, DonGia, ThanhTien)
-VALUES (@MaDH2, @MaCTSP_Giay65Z4, 1, 2800000.00, 2800000.00),
-       (@MaDH2, @MaCTSP_AoLN, 1, 130000.00, 130000.00);      
-GO
-EXEC THEMPHANHOI
-    @NoiDung = N'Chất lượng vợt tuyệt vời, đánh rất đầm tay và trợ lực tốt.',
-    @DanhGia = 5,
-    @MaKH = 1, 
-    @MaSP = 1; 
+---- Chi tiết đơn hàng 1
+--INSERT INTO ChiTietDonHang (MaDonHang, MaChiTietSanPham, SoLuong, DonGia, ThanhTien)
+--VALUES (@MaDH1, @MaCTSP_Vot100ZZ, 1, 4500000.00, 4500000.00), 
+--       (@MaDH1, @MaCTSP_QuanYN, 2, 139000.00, 278000.00); 
 
-SELECT N'--- Kiểm tra PhanHoi ---' AS ThongBao;
-SELECT * FROM PhanHoi WHERE MaKhachHang = 1;
---trường hợp sai 
-EXEC THEMPHANHOI
-    @NoiDung = N'Tôi muốn đánh giá vợt này nhưng chưa kịp mua.',
-    @DanhGia = 4,
-    @MaKH = 1,
-    @MaSP = 2;
-	--trường hợp sai vì chưa mua 
-	EXEC THEMPHANHOI
-    @NoiDung = N'Thử đánh giá giày, nhưng đơn hàng vẫn chưa nhận được.',
-    @DanhGia = 4,
-    @MaKH = 2, 
-    @MaSP = 28;
-GO
+
+---- 3. ĐƠN HÀNG 2: KHÁCH HÀNG TRẦN THỊ B (ĐANG XỬ LÝ)
+--INSERT INTO DonHang (MaKhachHang, TrangThai, TongTien, TongTienSauGiam, DiaChiGiaoHang, SoDienThoaiNhanHang)
+--VALUES (@MaKH_B, N'Đang xử lý', 2800000.00 + 130000.00, 2930000.00, N'456 Lê Lợi, Q.3, TP.HCM', N'0909876543');
+
+--DECLARE @MaDH2 INT = SCOPE_IDENTITY();
+
+---- Chi tiết đơn hàng 2
+--INSERT INTO ChiTietDonHang (MaDonHang, MaChiTietSanPham, SoLuong, DonGia, ThanhTien)
+--VALUES (@MaDH2, @MaCTSP_Giay65Z4, 1, 2800000.00, 2800000.00),
+--       (@MaDH2, @MaCTSP_AoLN, 1, 130000.00, 130000.00);      
+--GO
+--EXEC THEMPHANHOI
+--    @NoiDung = N'Chất lượng vợt tuyệt vời, đánh rất đầm tay và trợ lực tốt.',
+--    @DanhGia = 5,
+--    @MaKH = 1, 
+--    @MaSP = 1; 
+
+--SELECT N'--- Kiểm tra PhanHoi ---' AS ThongBao;
+--SELECT * FROM PhanHoi WHERE MaKhachHang = 1;
+----trường hợp sai 
+--EXEC THEMPHANHOI
+--    @NoiDung = N'Tôi muốn đánh giá vợt này nhưng chưa kịp mua.',
+--    @DanhGia = 4,
+--    @MaKH = 1,
+--    @MaSP = 2;
+--	--trường hợp sai vì chưa mua 
+--	EXEC THEMPHANHOI
+--    @NoiDung = N'Thử đánh giá giày, nhưng đơn hàng vẫn chưa nhận được.',
+--    @DanhGia = 4,
+--    @MaKH = 2, 
+--    @MaSP = 28;
+--GO
 
 -- 2. Function tính điểm trung bình đánh giá
 CREATE FUNCTION TrungBinhDanhGia (@MaSP int)
@@ -1482,14 +1470,14 @@ set @DiemTB = 0.0
 return @DiemTB
 end
 go
---đúng
-SELECT 
-    SP.MaSanPham, 
-    SP.TenSanPham, 
-    dbo.TrungBinhDanhGia(SP.MaSanPham) AS DiemTrungBinh
-FROM 
-    SanPham SP;
-	select * from PhanHoi;
+----đúng
+--SELECT 
+--    SP.MaSanPham, 
+--    SP.TenSanPham, 
+--    dbo.TrungBinhDanhGia(SP.MaSanPham) AS DiemTrungBinh
+--FROM 
+--    SanPham SP;
+--	select * from PhanHoi;
 
 
 --- 3. Trigger: XoaKhachHang_XoaPhanHoi – khi xóa khách hàng thì xóa luôn phản hồi.
@@ -1533,10 +1521,10 @@ BEGIN
         PRINT N'Lỗi khi xóa khách hàng: ' + ERROR_MESSAGE();
     END CATCH
 END;
-SELECT * FROM PhanHoi WHERE MaKhachHang = 1;
--- xóa dữ liệu
-DELETE FROM KhachHang WHERE MaKhachHang = 1;
---đã xóa hoàn toàn khách hàng 3
+--SELECT * FROM PhanHoi WHERE MaKhachHang = 1;
+---- xóa dữ liệu
+--DELETE FROM KhachHang WHERE MaKhachHang = 1;
+----đã xóa hoàn toàn khách hàng 3
 go
 -- 4. Cursor: Duyệt phản hồi có đánh giá <= 2 để gửi cảnh báo.
 Declare cs_DuyetPhanHoi cursor

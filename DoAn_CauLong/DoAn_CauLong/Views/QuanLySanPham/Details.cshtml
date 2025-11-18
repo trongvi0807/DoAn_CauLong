@@ -50,7 +50,7 @@
         </dt>
         <dd>
             @* SỬA: "GiaBan" -> "GiaGoc". Định dạng tiền tệ *@
-            @Model.GiaGoc.ToString("N0") VNĐ
+            @Model.GiaGoc.GetValueOrDefault(0m).ToString("N0") VNĐ
         </dd>
 
         <dt>
