@@ -25,6 +25,30 @@ namespace DoAn_CauLong.Controllers
                 {
                     return khachHang.MaKhachHang;
                 }
+                else
+                {
+                    // Tự động tạo thông tin nếu chưa có
+                    var taiKhoan = data.TaiKhoans.Find(maTaiKhoan);
+                    if (taiKhoan != null)
+                    {
+                        KhachHang newKh = new KhachHang();
+                        newKh.MaTaiKhoan = maTaiKhoan;
+
+
+                        newKh.HoTen = taiKhoan.TenDangNhap;
+
+                        newKh.Email = taiKhoan.Email;
+                        newKh.SoDienThoai = "0000000000";
+                        newKh.DiaChi = "Tại cửa hàng";
+                        newKh.NgayTao = DateTime.Now;
+
+                        data.KhachHangs.Add(newKh);
+                        data.SaveChanges();
+
+                        Session["HoTen"] = newKh.HoTen;
+                        return newKh.MaKhachHang;
+                    }
+                }
             }
             return -1; // Trả về -1 nếu không tìm thấy
         }
@@ -102,38 +126,38 @@ namespace DoAn_CauLong.Controllers
                 return RedirectToAction("ViewCart", "Home");
             }
 
-            // Dùng transaction để đảm bảo tất cả cùng thành công hoặc thất bại
             using (var transaction = data.Database.BeginTransaction())
             {
                 try
                 {
-                    // 1. Tạo Đơn Hàng
-                    DonHang newOrder = new DonHang
+                    // 1. TẠO ĐƠN HÀNG BẰNG STORED PROCEDURE
+                    var maDHParam = new System.Data.SqlClient.SqlParameter("@MaDonHang_OUT", System.Data.SqlDbType.Int)
                     {
-                        MaKhachHang = maKhachHang,
-                        NgayDat = DateTime.Now,
-                        TrangThai = "Chờ xác nhận", // Trạng thái mặc định
-                        DiaChiGiaoHang = DiaChiGiao,
-                        SoDienThoaiNhanHang = SoDienThoaiNhan,
-                        GhiChu = GhiChu,
-                        TongTien = 0 // Sẽ cập nhật sau
+                        Direction = System.Data.ParameterDirection.Output // Thiết lập là tham số đầu ra
                     };
-                    data.DonHangs.Add(newOrder);
-                    data.SaveChanges(); // Lưu để lấy MaDonHang
 
+                    // Thực thi SP và nhận lại MaDonHang
+                    data.Database.ExecuteSqlCommand(
+                        "EXEC ThemDonHang @MaKhachHang, @DiaChi, @SoDienThoai, @GhiChu, @MaDonHang_OUT OUTPUT",
+                        new System.Data.SqlClient.SqlParameter("@MaKhachHang", maKhachHang),
+                        new System.Data.SqlClient.SqlParameter("@DiaChi", DiaChiGiao),
+                        new System.Data.SqlClient.SqlParameter("@SoDienThoai", SoDienThoaiNhan),
+                        new System.Data.SqlClient.SqlParameter("@GhiChu", GhiChu),
+                        maDHParam // Tham số output
+                    );
+
+                    // Lấy MaDonHang vừa tạo
+                    int newMaDonHang = (int)maDHParam.Value;
                     decimal tongTienDonHang = 0;
 
-                    // 2. Chuyển sản phẩm từ Giỏ Hàng sang Chi Tiết Đơn Hàng
+                    // 2. CHUYỂN SANG CHI TIẾT ĐƠN HÀNG
                     foreach (var item in cartItems)
                     {
-                        // Lấy giá bán (và khuyến mãi nếu có)
                         decimal donGia = item.ChiTietSanPham.GiaBan ?? 0;
-
-                        // (Bạn có thể thêm logic tính lại KM phức tạp ở đây nếu cần)
 
                         var chiTietDH = new ChiTietDonHang
                         {
-                            MaDonHang = newOrder.MaDonHang,
+                            MaDonHang = newMaDonHang, // Dùng ID lấy từ SP
                             MaChiTietSanPham = item.MaChiTietSanPham,
                             SoLuong = item.SoLuong,
                             DonGia = donGia,
@@ -141,34 +165,33 @@ namespace DoAn_CauLong.Controllers
                         };
                         data.ChiTietDonHangs.Add(chiTietDH);
                         tongTienDonHang += chiTietDH.ThanhTien ?? 0;
-
-                        // (Tùy chọn: Giảm số lượng tồn kho)
-                        // var ctsp = data.ChiTietSanPhams.Find(item.MaChiTietSanPham);
-                        // if(ctsp != null) ctsp.SoLuongTon -= item.SoLuong;
                     }
 
-                    // 3. Cập nhật tổng tiền cho Đơn Hàng
-                    newOrder.TongTien = tongTienDonHang;
-                    data.Entry(newOrder).State = EntityState.Modified;
+                    // 3. CẬP NHẬT TỔNG TIỀN (Tìm lại đơn hàng và update)
+                    var newOrder = data.DonHangs.Find(newMaDonHang);
+                    if (newOrder != null)
+                    {
+                        newOrder.TongTien = tongTienDonHang;
+                        newOrder.TongTienSauGiam = tongTienDonHang; // Giả sử không có giảm giá
+                        data.Entry(newOrder).State = EntityState.Modified;
+                    }
 
                     // 4. Xóa các mục khỏi Giỏ Hàng
                     data.GioHangs.RemoveRange(cartItems);
 
-                    // 5. Lưu tất cả thay đổi
+                    // 5. Lưu và Hoàn tất
                     data.SaveChanges();
-                    transaction.Commit(); // Hoàn tất giao dịch
+                    transaction.Commit();
 
-                    // 6. Cập nhật giỏ hàng trên layout về 0
                     Session["GioHangCount"] = 0;
-
-                    TempData["Success"] = "Đặt hàng thành công! Cảm ơn bạn đã mua sắm.";
-                    return RedirectToAction("Index"); // Chuyển đến trang Lịch sử đơn hàng
+                    TempData["Success"] = "Đặt hàng thành công! Đơn hàng #" + newMaDonHang;
+                    return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback(); // Hoàn tác nếu có lỗi
+                    transaction.Rollback();
                     TempData["Error"] = "Đã xảy ra lỗi khi đặt hàng: " + ex.Message;
-                    return RedirectToAction("Checkout"); // Quay lại trang thanh toán
+                    return RedirectToAction("Checkout");
                 }
             }
         }
@@ -232,6 +255,77 @@ namespace DoAn_CauLong.Controllers
 
             // 4. Trả về View
             return View(order); // Gửi TOÀN BỘ đối tượng DonHang (đã .Include()) sang View
+        }
+
+        [HttpPost] // Dùng POST để bảo mật
+        [CheckLogin]
+        [ValidateAntiForgeryToken]
+        public ActionResult HuyDonHang(int id) // id là MaDonHang
+        {
+            int maKhachHang = GetMaKhachHangFromSession();
+            if (maKhachHang == -1)
+            {
+                // Chưa đăng nhập
+                return RedirectToAction("DangNhap", "TaiKhoan");
+            }
+
+            // Dùng transaction để đảm bảo an toàn dữ liệu
+            using (var transaction = data.Database.BeginTransaction())
+            {
+                try
+                {
+                    // 1. Tìm đơn hàng
+                    var order = data.DonHangs.FirstOrDefault(d => d.MaDonHang == id && d.MaKhachHang == maKhachHang);
+
+                    if (order == null)
+                    {
+                        TempData["Error"] = "Không tìm thấy đơn hàng.";
+                        return RedirectToAction("Index");
+                    }
+
+                    // 2. Chỉ cho phép hủy nếu là "Chờ xác nhận"
+                    if (order.TrangThai != "Chờ xác nhận")
+                    {
+                        TempData["Error"] = "Đơn hàng này đang được xử lý hoặc đã hoàn tất, không thể hủy.";
+                        return RedirectToAction("Index");
+                    }
+
+                    // 3. Cập nhật trạng thái
+                    order.TrangThai = "Đã hủy";
+                    data.Entry(order).State = EntityState.Modified;
+
+                    // ======================================================
+                    // ✨ SỬA Ở ĐÂY: Vô hiệu hóa khối code này
+                    // ======================================================
+                    // 4. (TẮT HOÀN TRẢ KHO) - Vì kho chưa bị trừ ở bước "Chờ xác nhận"
+                    /*
+                    var chiTietItems = data.ChiTietDonHangs.Where(ct => ct.MaDonHang == id).ToList();
+                    foreach (var item in chiTietItems)
+                    {
+                        var sanPhamTonKho = data.ChiTietSanPhams.Find(item.MaChiTietSanPham);
+                        if (sanPhamTonKho != null)
+                        {
+                            sanPhamTonKho.SoLuongTon = (sanPhamTonKho.SoLuongTon ?? 0) + (item.SoLuong ?? 0);
+                            data.Entry(sanPhamTonKho).State = EntityState.Modified;
+                        }
+                    }
+                    */
+                    // ======================================================
+
+                    // 5. Lưu tất cả
+                    data.SaveChanges();
+                    transaction.Commit();
+
+                    TempData["Success"] = "Đã hủy đơn hàng #" + id + " thành công.";
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    TempData["Error"] = "Lỗi khi hủy đơn hàng: " + ex.Message;
+                }
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

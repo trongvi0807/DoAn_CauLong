@@ -7,37 +7,9 @@
 }
 
 <style>
-<<<<<<< HEAD
-    .promo-section { margin: 28px 0; }
-    .promo-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-    .promo-title { font-size:1.25rem; font-weight:700; }
-    .promo-grid { display:flex; flex-wrap:wrap; gap:16px; }
-    .promo-card { width: calc(25% - 12px); background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 6px 20px rgba(0,0,0,0.06); position:relative; }
-    .promo-card img { width:100%; height:220px; object-fit:contain; background:#fafafa; }
-    .promo-body { padding:12px; }
-    .promo-title-item { font-weight:600; font-size:14px; min-height:44px; }
-    .promo-price { color:#e51c23; font-weight:800; font-size:16px; }
-    .promo-old { text-decoration:line-through; color:#9e9e9e; margin-left:8px; }
-    .promo-badge { position:absolute; background:#c62828; color:#fff; padding:6px 10px; border-radius:12px; top:12px; left:12px; font-weight:700; font-size:13px; }
-    /* Responsive: rely on bootstrap grid or simple percentage layout */
-    @@media (max-width: 992px) { .promo-card { width: calc(33.333% - 12px); } }
-    @@media (max-width: 768px) { .promo-card { width: calc(50% - 12px); } }
-    @@media (max-width: 480px) { .promo-card { width: 100%; } }
-=======
+    /* CSS Cốt lõi */
     .promo-section {
         margin: 28px 0;
-    }
-
-    .promo-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-    }
-
-    .promo-title {
-        font-size: 1.25rem;
-        font-weight: 700;
     }
 
     .promo-grid {
@@ -51,7 +23,7 @@
         background: #fff;
         border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
         position: relative;
     }
 
@@ -95,26 +67,8 @@
         font-weight: 700;
         font-size: 13px;
     }
-    /* Responsive: rely on bootstrap grid or simple percentage layout */
-    @@media (max-width: 992px) {
-        .promo-card {
-            width: calc(33.333% - 12px);
-        }
-    }
 
-    @@media (max-width: 768px) {
-        .promo-card {
-            width: calc(50% - 12px);
-        }
-    }
-
-    @@media (max-width: 480px) {
-        .promo-card {
-            width: 100%;
-        }
-    }
-
->>>>>>> f56eb37b1e04d8f15733b4cd2df7b91befa0cd54
+    /* CSS Tùy chỉnh cho Header (Màu sắc, Biểu tượng) */
     .promo-header {
         /* Đảm bảo căn giữa theo chiều dọc tốt hơn */
         display: flex;
@@ -136,7 +90,7 @@
 
         /* Thêm biểu tượng hoặc hiệu ứng vào tiêu đề */
         .promo-title::before {
-            content: '🔥'; /* Thêm biểu tượng cảm xúc (ví dụ: lửa, loa) */
+            content: '🔥'; /* Thêm biểu tượng cảm xúc */
             position: absolute;
             left: 0;
             top: 50%;
@@ -159,10 +113,25 @@
         border-radius: 20px; /* Làm nút bo tròn */
         font-weight: 600;
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> f56eb37b1e04d8f15733b4cd2df7b91befa0cd54
+    /* Responsive: Giữ nguyên logic responsive */
+    @@media (max-width: 992px) {
+        .promo-card {
+            width: calc(33.333% - 12px);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .promo-card {
+            width: calc(50% - 12px);
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .promo-card {
+            width: 100%;
+        }
+    }
 </style>
 <div class="container">
     <h2 class="mt-3">Sản phẩm khuyến mãi</h2>
@@ -200,6 +169,7 @@
                         var newPrice = oldPrice;
                         if (discountPercent > 0)
                         {
+                            // Tính giá mới: GiaGoc - (GiaGoc * %Giam / 100)
                             newPrice = Math.Max(0, oldPrice - (oldPrice * discountPercent / 100));
                         }
 
