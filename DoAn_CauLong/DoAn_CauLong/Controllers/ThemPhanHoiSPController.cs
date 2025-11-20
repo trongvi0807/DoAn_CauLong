@@ -49,7 +49,7 @@ namespace DoAn_CauLong.Controllers
 
                 // optional nhưng an toàn
                 data.SaveChanges();
-
+                //Session["SoThongBao"] = data.PhanHois.Where(x => x.DanhGia <= 2).Count();//cập nhật số thông báo
                 TempData["Message"] = "Gửi đánh giá thành công!";
             }
             catch (Exception ex)

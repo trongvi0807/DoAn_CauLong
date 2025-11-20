@@ -1,0 +1,27 @@
+﻿@model IEnumerable<DoAn_CauLong.ViewModels.ThongBaoViewModel>
+
+<h2>Danh sách thông báo đánh giá thấp</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Mã PH</th>
+            <th>Khách hàng</th>
+            <th>Sản phẩm</th>
+            <th>Đánh giá</th>
+            <th>Nội dung</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MaPhanHoi</td>
+                <td>@item.HoTen (@item.MaKhachHang)</td>
+                <td>@item.TenSanPham</td>
+                <td style="color:red; font-weight:bold">@item.DanhGia sao</td>
+                <td>@item.NoiDung</td>
+            </tr>
+        }
+    </tbody>
+</table>

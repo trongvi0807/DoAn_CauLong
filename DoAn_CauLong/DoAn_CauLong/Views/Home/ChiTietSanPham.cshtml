@@ -152,6 +152,11 @@
         .btn-review-action:hover {
             background-color: #218838;
         }
+    .review-box {
+        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+    }
+
 </style>
 
 
@@ -241,6 +246,25 @@
         }
 
         <hr>
+        <hr />
+
+        <h3>Phản hồi của khách hàng (@Model.ReviewCount)</h3>
+        @if (!Model.Reviews.Any())
+        {
+            <p>Chưa có phản hồi nào.</p>
+        }
+        else
+        {
+            foreach (var ph in Model.Reviews)
+            {
+                <div class="review-box" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+                    <strong>Khách hàng #@ph.MaKhachHang</strong>
+                    <span>- @ph.DanhGia sao</span>
+                    <p>@ph.NoiDung</p>
+                    <small>@ph.NgayPhanHoi</small>
+                </div>
+            }
+        }
 
         @using (Html.BeginForm("AddToCart", "Home", FormMethod.Post))
         {

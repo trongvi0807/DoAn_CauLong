@@ -136,6 +136,7 @@
     <Compile Include="Controllers\QuanLyDonHangController.cs" />
     <Compile Include="Controllers\QuanLySanPhamController.cs" />
     <Compile Include="Controllers\QuanLyTaiKhoanController.cs" />
+    <Compile Include="Controllers\QuanLyThongBaoController.cs" />
     <Compile Include="Controllers\SanPhamController.cs" />
     <Compile Include="Controllers\TaiKhoanController.cs" />
     <Compile Include="Global.asax.cs">
@@ -213,6 +214,7 @@
     <Compile Include="ViewModels\ProductDetailViewModel.cs" />
     <Compile Include="ViewModels\TaiKhoanViewModel.cs" />
     <Compile Include="Controllers\ThemPhanHoiSPController.cs" />
+    <Compile Include="ViewModels\ThongBaoViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />
@@ -363,6 +365,7 @@
     <Content Include="Views\QuanLySanPham\Details.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\ThemPhanHoiSP\ReviewForm.cshtml" />
+    <Content Include="Views\QuanLyThongBao\ThongBao.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -16,5 +16,7 @@ namespace DoAn_CauLong.ViewModels
         public ThongSoVot ThongSoVot { get; set; }
         public List<MauSac> AvailableColors { get; set; }
         public List<Models.Size> AvailableSizes { get; set; }
+        //hiển thị phản hồi
+        public List<PhanHoi> Reviews { get; set; }
     }
 }
