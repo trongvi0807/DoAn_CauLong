@@ -93,7 +93,10 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
                 .Count();
 
             // ...
-
+            var reviews = data.PhanHois
+            .Where(ph => ph.MaSanPham == id)
+             .OrderByDescending(ph => ph.NgayPhanHoi) // phản hồi mới nhất sẽ thêm ở đầu
+            .ToList();
             // 4. Chuẩn bị ViewModel
             var viewModel = new ProductDetailViewModel
             {
@@ -106,7 +109,9 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
 
                 // SỬA: Bổ sung ThongSoVot (bị thiếu) để View hoạt động
                 // Lấy thông số từ biến thể đầu tiên tìm thấy
-                ThongSoVot = variants.SelectMany(v => v.ThongSoVots).FirstOrDefault()
+                ThongSoVot = variants.SelectMany(v => v.ThongSoVots).FirstOrDefault(),
+
+                  Reviews = reviews
             };
 
             // 5. Truyền ViewModel sang View
@@ -303,5 +308,8 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
             // 5. Quay lại trang giỏ hàng
             return RedirectToAction("ViewCart");
         }
+
+        //
+        
     }
 }
