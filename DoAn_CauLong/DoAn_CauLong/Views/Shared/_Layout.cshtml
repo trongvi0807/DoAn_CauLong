@@ -1,4 +1,4 @@
-﻿﻿@using System.Web.Mvc
+﻿@using System.Web.Mvc
 @{
     ViewBag.Title = "Cửa Hàng Cầu Lông Online";
 }
@@ -71,11 +71,17 @@
                                         <i class="fa-solid fa-boxes-stacked"></i>
                                         Quản lý tài khoản
                                     </a>
-                                    <a href="@Url.Action("ViewCart", "Home")" class="user-menu-item" style="font-weight: bold; background: #eee;">
+                                    <a href="@Url.Action("Index", "QuanLyDonHang")" class="user-menu-item" style="font-weight: bold; background: #eee;">
                                         <i class="fa-solid fa-file-invoice"></i>
                                         Quản lý Đơn hàng
                                     </a>
                                     @* Thêm các link quản lý khác tại đây *@
+                                    <hr style="margin: 5px 0;" />
+                                    <div class="cart-section">
+                                        <a href="@Url.Action("Dashboard", "QuanLySanPham")" class="user-menu-item" style="font-weight: bold; background: #eee;">
+                                            <i class="fa-solid fa-chart-line"></i> Dashboard
+                                        </a>
+                                    </div>
                                     <hr style="margin: 5px 0;" />
                                     // tạo view cho phần thông báo và gửi cảnh báo về nếu đánh giá <=2
                                     <div class="cart-section">
@@ -84,10 +90,11 @@
                                            style="font-weight: bold; background: #eee;">
                                             <i class="fa-solid fa-bell"></i>
                                             <span class="cart-text">Thông Báo</span>
-                                    <span class="cart-count">@Html.Action("SoThongBao", "QuanLyThongBao")</span>
+                                            <span class="cart-count">@Html.Action("SoThongBao", "QuanLyThongBao")</span>
                                             @* không thể hiển thị số lượng thông báo *@
                                         </a>
                                     </div>
+                                    // tạo view cho phần thông báo và gửi cảnh báo về nếu đánh giá <=2
                                 }
                                 @if (maQuyen == 2)
                                 {
@@ -100,7 +107,17 @@
                                         Quản lý Đơn hàng
                                     </a>
                                     @* Thêm các link quản lý khác tại đây *@
-                                    <hr style="margin: 5px 0;" />
+                                    <hr style="margin: 5px 0;" /> // tạo view cho phần thông báo và gửi cảnh báo về nếu đánh giá <=2
+                                    <div class="cart-section">
+                                        <a href="@Url.Action("ThongBao", "QuanLyThongBao")"
+                                           class="user-menu-item"
+                                           style="font-weight: bold; background: #eee;">
+                                            <i class="fa-solid fa-bell"></i>
+                                            <span class="cart-text">Thông Báo</span>
+                                            <span class="cart-count">@Html.Action("SoThongBao", "QuanLyThongBao")</span>
+                                            @* không thể hiển thị số lượng thông báo *@
+                                        </a>
+                                    </div>
                                 }
 
                                 @* Chức năng chung cho mọi tài khoản đã đăng nhập *@
@@ -441,4 +458,4 @@
 
     @RenderSection("scripts", required: false)
 </body>
-</html>
+</html> 

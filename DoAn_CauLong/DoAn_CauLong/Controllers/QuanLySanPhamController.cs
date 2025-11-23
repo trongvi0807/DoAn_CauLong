@@ -1,13 +1,15 @@
 ﻿using DoAn_CauLong.Filters;
 using DoAn_CauLong.Models;
+using DoAn_CauLong.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.SqlClient;
+using System.IO; 
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using System.IO; 
 
 namespace DoAn_CauLong.Controllers
 {
@@ -112,7 +114,7 @@ namespace DoAn_CauLong.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            // SỬA LỖI: Đổi 'db' thành 'data'
+            // SỬA LỖI: Đổi 'data' thành 'data'
             SanPham sanPham = data.SanPhams.Find(id);
             if (sanPham == null)
             {
@@ -205,7 +207,7 @@ namespace DoAn_CauLong.Controllers
         {
             SanPham sanPham = data.SanPhams.Find(id);
 
-            // (Quan trọng: Xóa file ảnh trên server trước khi xóa record trong DB)
+            // (Quan trọng: Xóa file ảnh trên server trước khi xóa record trong data)
             if (!string.IsNullOrEmpty(sanPham.HinhAnhDaiDien))
             {
                 string path = Path.Combine(Server.MapPath("~/Content/Images"), sanPham.HinhAnhDaiDien);
@@ -222,7 +224,7 @@ namespace DoAn_CauLong.Controllers
             return RedirectToAction("Index");
         }
 
-        // Giải phóng tài nguyên DbContext
+        // Giải phóng tài nguyên dataContext
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -231,5 +233,66 @@ namespace DoAn_CauLong.Controllers
             }
             base.Dispose(disposing);
         }
+
+
+
+
+        public ActionResult Dashboard(int? nam)
+        {
+            int namHienTai = nam ?? DateTime.Now.Year;
+
+            // 1. Doanh thu theo năm (trả về 1 record)
+            var doanhThuNam = data.Database.SqlQuery<DoanhThuNamViewModel>(
+                "EXEC ThongKeDoanhThuNam @Nam",
+                new SqlParameter("@Nam", namHienTai)
+            ).FirstOrDefault();
+
+            // List chứa đúng 1 dòng
+            var lstDoanhThuNam = new List<DoanhThuNamViewModel>();
+            if (doanhThuNam != null)
+                lstDoanhThuNam.Add(doanhThuNam);
+
+            // 2. Doanh thu theo quý
+            var doanhThuQuy = data.Database.SqlQuery<DoanhThuQuyViewModel>(
+                "EXEC ThongKeDoanhThu_Quy @Nam",
+                new SqlParameter("@Nam", namHienTai)
+            ).ToList();
+
+            // 3. Doanh thu theo tháng
+            var doanhThuThang = data.Database.SqlQuery<DoanhThuThangViewModel>(
+                "EXEC ThongKeDoanhThuTheoThang @Nam",
+                new SqlParameter("@Nam", namHienTai)
+            ).ToList();
+
+            // 4. Sản phẩm bán chạy
+            var sanPhamBanChay = new List<SanPhamBanChayViewModel>();
+            for (int maSP = 1; maSP <= 10; maSP++)
+            {
+                var sp = data.Database.SqlQuery<SanPhamBanChayViewModel>(
+                    "SELECT * FROM dbo.Tong_SPDaBan(@MaSP)",
+                    new SqlParameter("@MaSP", maSP)
+                ).FirstOrDefault();
+
+                if (sp != null)
+                    sanPhamBanChay.Add(sp);
+            }
+
+            // Ghép vào ViewModel
+            var model = new AdminDashboardViewModel
+            {
+                TongDoanhThuNam = doanhThuNam?.TongDoanhThu ?? 0,
+                SoLuongDonNam = doanhThuNam?.SoLuongDon ?? 0,
+                Nam = namHienTai,
+                DoanhThuNam = lstDoanhThuNam,          // <-- BẮT BUỘC PHẢI CÓ
+                DoanhThuQuy = doanhThuQuy,
+                DoanhThuThang = doanhThuThang,
+                SanPhamBanChay = sanPhamBanChay
+            };
+
+            return View(model);
+        }
+
+
     }
+
 }
