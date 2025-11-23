@@ -19,7 +19,7 @@
     }
 
     string priceDisplay = (discountPercent.HasValue && discountPercent.Value > 0)
-        ? discountedPrice.ToString("N0") + "đ" + " <span style=\"text-decoration:line-through;color:#9e9e9e;margin-left:8px;\">" + originalPrice.ToString("N0") + "đ</span>"
+        ? discountedPrice.ToString("N0") + "đ" + " <span class=\"original-price\">" + originalPrice.ToString("N0") + "đ</span>"
         : originalPrice.ToString("N0") + "đ";
 
     // Lấy ID biến thể mặc định
@@ -28,41 +28,50 @@
     // Lấy URL hình ảnh đại diện mặc định
     string mainImageUrl = "/Content/images/" + (Model.SanPham.HinhAnhDaiDien ?? "default.jpg");
 
-    // Kiểm tra xem có ảnh chi tiết nào khác ngoài ảnh đại diện không
-    bool hasThumbnails = Model.Variants.Any(v => !string.IsNullOrEmpty(v.HinhAnh) && !string.Equals(v.HinhAnh, Model.SanPham.HinhAnhDaiDien));
-
     // Lấy thông số vợt nếu có (Giả sử Model.ThongSoVot đã được gán từ Controller)
     var thongSoVot = Model.ThongSoVot;
-    // Giả sử Loại Sản Phẩm có MaLoai = X là Vợt
-    // Trong ví dụ này, ta chỉ kiểm tra nếu Model.ThongSoVot != null thì hiển thị.
     bool isRacket = thongSoVot != null;
 }
 
 <style>
-    /* CSS Cơ bản cho bố cục giữ nguyên */
+    /* RESET và Typography */
+    .product-container h1 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    /* Layout (Giữ nguyên cấu trúc flex cơ bản) */
     .product-container {
         display: flex;
         max-width: 1200px;
-        margin: 20px auto;
+        margin: 30px auto; /* Tăng margin cho thoáng hơn */
         gap: 40px;
+        padding: 0 15px;
+        background: #fff; /* Nền trắng cho nổi bật */
+        border-radius: 8px;
     }
 
     .media-column {
         flex: 1.5;
         text-align: center;
+        padding: 20px 0;
     }
 
     .info-column {
         flex: 1;
+        padding: 20px 0;
     }
 
     .main-image-box {
         position: relative;
-        padding-bottom: 75%; /* Tỷ lệ khung hình 4:3 */
+        padding-bottom: 75%;
         height: 0;
         overflow: hidden;
-        margin-bottom: 10px;
-        border: 1px solid #eee;
+        margin-bottom: 20px;
+        border: 1px solid #ddd; /* Khung ảnh rõ ràng hơn */
+        border-radius: 4px;
     }
 
         .main-image-box img {
@@ -72,91 +81,197 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            background-color: #f9f9f9;
+            background-color: #fcfcfc;
         }
-    /* Loại bỏ style thumbnails nếu không dùng */
-    /* ... (Giữ nguyên các style khác: option-group, price, btn-action, v.v.) ... */
-    .option-group button.selected {
-        border-color: #f36f21;
-        background-color: #fff4ed;
-        font-weight: bold;
+
+    /* Rating & Reviews */
+    .rating {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+        color: #666;
+        font-size: 14px;
+    }
+
+    .rating-stars {
+        color: #ffc107; /* Màu vàng đậm hơn */
+        font-size: 18px;
+    }
+
+    /* Price Styling */
+    .price-box {
+        padding: 15px 20px;
+        background-color: #fef0e9; /* Nền màu nhẹ cho khu vực giá */
+        border-radius: 4px;
+        margin: 20px 0;
     }
 
     .price {
-        font-size: 28px;
+        font-size: 32px; /* To hơn */
         color: #f36f21;
-        font-weight: bold;
-        margin: 10px 0;
+        font-weight: 700;
+        display: inline-block;
     }
 
-    .btn-action {
-        padding: 12px 25px;
+    .original-price {
+        text-decoration: line-through;
+        color: #9e9e9e;
+        margin-left: 15px;
+        font-size: 20px;
+        font-weight: 400;
+    }
+
+    /* Options Styling */
+    .option-selection h4 {
         font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .option-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+        .option-group button {
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #fff;
+            transition: all 0.2s;
+        }
+
+            .option-group button:hover {
+                border-color: #f36f21;
+            }
+
+            .option-group button.selected {
+                border-color: #f36f21;
+                background-color: #fff4ed;
+                font-weight: 600;
+                color: #f36f21;
+            }
+
+    /* Action Buttons (CTA) */
+    .btn-action {
+        padding: 15px 30px; /* To hơn */
+        font-size: 18px;
         margin-right: 15px;
         border: none;
-        border-radius: 6px;
+        border-radius: 8px; /* Bo góc nhiều hơn */
         cursor: pointer;
+        transition: background-color 0.2s;
     }
 
     .btn-add-cart {
         background-color: #fff;
-        border: 1px solid #f36f21;
+        border: 2px solid #f36f21; /* Đường viền dày hơn */
         color: #f36f21;
     }
+
+        .btn-add-cart:hover {
+            background-color: #f36f21;
+            color: #fff;
+        }
 
     .btn-buy-now {
         background-color: #f36f21;
         color: #fff;
     }
 
+        .btn-buy-now:hover {
+            background-color: #d15d18;
+        }
+
     .quantity-control {
+        margin-top: 20px;
+        margin-bottom: 20px;
         display: flex;
         align-items: center;
+        gap: 15px;
     }
 
-    .rating-stars {
-        color: gold;
-    }
-    /* CSS cho Bảng thông số vợt */
+        .quantity-control input {
+            text-align: center;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+    /* Specs Table */
     .racket-specs-table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 20px;
-        font-size: 14px;
+        margin-top: 15px;
+        font-size: 15px;
+        border: 1px solid #eee;
     }
 
         .racket-specs-table th, .racket-specs-table td {
-            padding: 10px;
-            border: 1px solid #eee;
+            padding: 12px;
+            border: none;
+            border-bottom: 1px solid #eee;
             text-align: left;
         }
 
         .racket-specs-table th {
-            background-color: #f7f7f7;
+            background-color: #f9f9f9;
             font-weight: 600;
             width: 40%;
+            color: #333;
         }
 
-    /* CSS cho nút Đánh giá */
+    /* Review Action Button */
     .btn-review-action {
+        display: inline-block; /* Quan trọng cho thẻ <a> giả làm button */
         background-color: #28a745;
         color: #fff;
-        padding: 8px 15px;
-        border: none;
+        padding: 10px 18px;
         border-radius: 4px;
         cursor: pointer;
         font-size: 15px;
         margin-top: 15px;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.2s;
     }
 
         .btn-review-action:hover {
             background-color: #218838;
+            color: #fff;
         }
-    .review-box {
-        border-bottom: 1px solid #eee;
-        padding: 10px 0;
+
+    /* Reviews List */
+    .review-list {
+        margin-top: 20px;
     }
 
+    .review-box {
+        border: 1px solid #f0f0f0;
+        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 10px;
+        background-color: #fcfcfc;
+    }
+
+        .review-box strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+
+        .review-box p {
+            margin: 5px 0;
+        }
+
+        .review-box small {
+            color: #999;
+            font-size: 12px;
+        }
 </style>
 
 
@@ -168,11 +283,21 @@
             <img id="main-product-image" src="@mainImageUrl" alt="@Model.SanPham.TenSanPham">
         </div>
 
+        @* PHẦN NÀY LÀ NƠI CHỨA THUMBNAILS NẾU CÓ *@
+        @* @if (Model.AvailableImages.Any())
+            {
+                <div class="thumbnails-gallery">
+                    // Logic hiển thị ảnh thu nhỏ
+                </div>
+            }*@
+
     </div>
 
     <div class="info-column">
 
         <h1>@Model.SanPham.TenSanPham</h1>
+        <hr />
+
         <div class="rating">
             <span class="rating-stars">
                 @for (int i = 0; i < (int)Math.Round(Model.AverageRating); i++)
@@ -182,23 +307,29 @@
             <span>| @Model.ReviewCount đánh giá</span>
         </div>
 
-        @*<button class="btn-review-action" onclick="alert('Chức năng gửi đánh giá sẽ được thêm tại đây.')">
-            Gửi đánh giá của bạn
-        </button>*@
+        @* Nút Gửi Đánh Giá (UI/UX Improvement: Đã chuyển nút vào thẻ A) *@
         @if (Session["MaKH"] != null)
         {
-            <a href="@Url.Action("ReviewForm", "ThemPhanHoiSP", new { maSP = Model.SanPham.MaSanPham })">
-                <button class="btn-review-action" type="button">
-                    Gửi đánh giá của bạn
-                </button>
+            <a href="@Url.Action("ReviewForm", "ThemPhanHoiSP", new { maSP = Model.SanPham.MaSanPham })"
+               class="btn-review-action">
+                Gửi đánh giá của bạn
             </a>
         }
         else
         {
-            <p>Bạn cần đăng nhập để gửi đánh giá.</p>
+            <p style="margin-top:15px; color:#f36f21;">Bạn cần đăng nhập để gửi đánh giá.</p>
         }
-        <div class="price" id="display-price">
-            @Html.Raw(priceDisplay)
+
+        <div class="price-box">
+            <span class="price" id="display-price">
+                @Html.Raw(priceDisplay)
+            </span>
+            @if (discountPercent.HasValue && discountPercent.Value > 0)
+            {
+                <span class="discount-badge" style="background-color: #f36f21; color: white; padding: 4px 8px; border-radius: 4px; font-size: 14px; margin-left: 10px;">
+                    -@discountPercent.Value%
+                </span>
+            }
         </div>
 
         <hr>
@@ -229,25 +360,49 @@
             </div>
         }
 
+        @using (Html.BeginForm("AddToCart", "Home", FormMethod.Post))
+        {
+            <input type="hidden" id="selected-chitiet-id" name="chiTietId" value="@defaultChiTietId">
+
+            <div class="quantity-control">
+                <span>Số lượng:</span>
+                <input type="number" name="quantity" id="quantity-input" value="1" min="1" max="999" style="width: 60px;">
+                <span id="stock-status" style="margin-left: 15px;">Vui lòng chọn tùy chọn</span>
+            </div>
+
+            <div style="margin-top: 25px;">
+                <button type="submit" class="btn-action btn-add-cart">
+                    <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
+                </button>
+                <button type="submit" class="btn-action btn-buy-now">
+                    Mua ngay
+                </button>
+            </div>
+        }
+
+        <hr style="margin-top: 30px; margin-bottom: 30px;" />
+
         @if (isRacket)
         {
-            <hr>
             <h3>Thông số chi tiết Vợt</h3>
             <table class="racket-specs-table">
                 <tbody>
-                    <tr><th>Hãng</th><td>@Model.SanPham.Hang.TenHang</td></tr>
-                    <tr><th>Độ cứng</th><td>@thongSoVot.DoCung</td></tr>
-                    <tr><th>Điểm cân bằng</th><td>@thongSoVot.DoCanBang</td></tr>
-                    <tr><th>Sức căng</th><td>@thongSoVot.SucCang</td></tr>
-                    <tr><th>Trọng lượng</th><td>@thongSoVot.TrongLuong</td></tr>
-                    <tr><th>Chiều dài</th><td>@thongSoVot.ChieuDai</td></tr>
+                    <tr><th>Hãng</th><td id="spec-hang">@Model.SanPham.Hang.TenHang</td></tr>
+                    <tr><th>Độ cứng</th><td id="spec-do-cung">@thongSoVot.DoCung</td></tr>
+                    <tr><th>Điểm cân bằng</th><td id="spec-diem-can-bang">@thongSoVot.DoCanBang</td></tr>
+                    <tr><th>Sức căng</th><td id="spec-suc-cang">@thongSoVot.SucCang</td></tr>
+                    <tr><th>Trọng lượng</th><td id="spec-trong-luong">@thongSoVot.TrongLuong</td></tr>
+                    <tr><th>Chiều dài</th><td id="spec-chieu-dai">@thongSoVot.ChieuDai</td></tr>
                 </tbody>
             </table>
         }
 
-        <hr>
-        <hr />
+    </div>
+</div>
 
+<div class="product-container" style="display: block; margin-top: 0;">
+    <hr />
+    <div class="review-list">
         <h3>Phản hồi của khách hàng (@Model.ReviewCount)</h3>
         @if (!Model.Reviews.Any())
         {
@@ -257,42 +412,35 @@
         {
             foreach (var ph in Model.Reviews)
             {
-                <div class="review-box" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
-                    <strong>Khách hàng #@ph.MaKhachHang</strong>
-                    <span>- @ph.DanhGia sao</span>
+                <div class="review-box">
+                    <strong>Khách hàng #@ph.MaKhachHang (@ph.DanhGia sao)</strong>
                     <p>@ph.NoiDung</p>
                     <small>@ph.NgayPhanHoi</small>
                 </div>
             }
         }
-
-        @using (Html.BeginForm("AddToCart", "Home", FormMethod.Post))
-        {
-            <input type="hidden" id="selected-chitiet-id" name="chiTietId" value="@defaultChiTietId">
-
-            <div class="quantity-control">
-                Số lượng:
-                <input type="number" name="quantity" id="quantity-input" value="1" min="1" max="999" style="width: 60px; margin-left: 10px;">
-                <span id="stock-status" style="margin-left: 15px;">Vui lòng chọn tùy chọn</span>
-            </div>
-
-            <div style="margin-top: 20px;">
-                <button type="submit" class="btn-action btn-add-cart">
-                    Thêm vào giỏ
-                </button>
-                <button type="submit" class="btn-action btn-buy-now">
-                    Mua ngay
-                </button>
-            </div>
-        }
     </div>
 </div>
 
+
 <script>
     // ===================================================================
-    // ✨ SỬA LỖI: Dòng code này chuyển Model.Variants (C#) thành biến 'allVariants' (JavaScript)
+    // ✨ FIX & ENHANCEMENT: Đưa tất cả thông tin cần thiết, bao gồm thông số vợt, vào biến thể (yêu cầu dữ liệu này được set từ Controller)
     // ===================================================================
-    const allVariants = @Html.Raw(Json.Encode(Model.Variants.Select(v => new { v.MaChiTiet, v.MaMau, v.MaSize, v.GiaBan, v.SoLuongTon, v.HinhAnh })));
+    const allVariants = @Html.Raw(Json.Encode(Model.Variants.Select(v => new {
+        v.MaChiTiet,
+        v.MaMau,
+        v.MaSize,
+        v.GiaBan,
+        v.SoLuongTon,
+        v.HinhAnh,
+        // CẦN ĐẢM BẢO CÁC TRƯỜNG SAU ĐÃ ĐƯỢC THÊM VÀO KHI TRUY VẤN MODEL Ở CONTROLLER
+        DoCung = v.ThongSoVots.FirstOrDefault()?.DoCung, 
+        DoCanBang = v.ThongSoVots.FirstOrDefault()?.DoCanBang, 
+        SucCang = v.ThongSoVots.FirstOrDefault()?.SucCang, 
+        TrongLuong = v.ThongSoVots.FirstOrDefault()?.TrongLuong, 
+        ChieuDai = v.ThongSoVots.FirstOrDefault()?.ChieuDai
+    })));
 
     // Khởi tạo MaMau/MaSize của biến thể đầu tiên để dễ dàng kiểm tra
     let selectedColorId = @(Model.AvailableColors.Any() ? Model.AvailableColors.First().MaMau : (int?)null);
@@ -305,6 +453,7 @@
     const defaultSoLuongTon = @(defaultVariant?.SoLuongTon ?? 0);
     const discountPercent = @((discountPercent.HasValue ? discountPercent.Value : 0).ToString(System.Globalization.CultureInfo.InvariantCulture));
     const hasDiscount = discountPercent > 0;
+    const isRacket = @(isRacket.ToString().ToLower()); // Biến kiểm tra xem có phải vợt không
 
     // Hàm format tiền tệ VNĐ
     const formatCurrency = (amount) => {
@@ -315,8 +464,8 @@
     const formatPriceWithDiscount = (originalPrice, hasDiscount, discountPercent) => {
         if (hasDiscount && discountPercent > 0) {
             const discountedPrice = Math.max(0, originalPrice - (originalPrice * discountPercent / 100));
-            return discountedPrice.toLocaleString('vi-VN') + 'đ' + 
-                   ' <span style="text-decoration:line-through;color:#9e9e9e;margin-left:8px;">' + 
+            return discountedPrice.toLocaleString('vi-VN') + 'đ' +
+                   ' <span class="original-price">' +
                    originalPrice.toLocaleString('vi-VN') + 'đ</span>';
         } else {
             return originalPrice.toLocaleString('vi-VN') + 'đ';
@@ -352,8 +501,17 @@
                 mainProductImage.src = "/Content/images/" + selectedVariant.HinhAnh;
             }
 
+            // ✨ FIX BUG: CẬP NHẬT THÔNG SỐ VỢT THEO BIẾN THỂ ĐƯỢC CHỌN
+            if (isRacket) {
+                document.getElementById('spec-do-cung').textContent = selectedVariant.DoCung || 'N/A';
+                document.getElementById('spec-diem-can-bang').textContent = selectedVariant.DoCanBang || 'N/A';
+                document.getElementById('spec-suc-cang').textContent = selectedVariant.SucCang || 'N/A';
+                document.getElementById('spec-trong-luong').textContent = selectedVariant.TrongLuong || 'N/A';
+                document.getElementById('spec-chieu-dai').textContent = selectedVariant.ChieuDai || 'N/A';
+            }
+
         } else {
-             // Trường hợp không tìm thấy biến thể hoặc sản phẩm không có tùy chọn (dùng mặc định)
+             // Trường hợp không tìm thấy biến thể
             stockElement.textContent = `Còn hàng (${defaultSoLuongTon})`;
             stockElement.style.color = defaultSoLuongTon > 0 ? 'green' : 'red';
 
@@ -371,6 +529,16 @@
             // Quay lại ảnh đại diện chính
             if (mainProductImage) {
                  mainProductImage.src = "@mainImageUrl";
+            }
+
+            // ✨ FIX BUG: CẬP NHẬT THÔNG SỐ VỢT VỀ MẶC ĐỊNH KHI KHÔNG TÌM THẤY BIẾN THỂ
+            if (isRacket) {
+                // Đặt lại về giá trị ban đầu nếu có, nếu không thì đặt thành '-'
+                document.getElementById('spec-do-cung').textContent = '@(thongSoVot?.DoCung ?? "-")';
+                document.getElementById('spec-diem-can-bang').textContent = '@(thongSoVot?.DoCanBang ?? "-")';
+                document.getElementById('spec-suc-cang').textContent = '@(thongSoVot?.SucCang ?? "-")';
+                document.getElementById('spec-trong-luong').textContent = '@(thongSoVot?.TrongLuong ?? "-")';
+                document.getElementById('spec-chieu-dai').textContent = '@(thongSoVot?.ChieuDai ?? "-")';
             }
         }
     }

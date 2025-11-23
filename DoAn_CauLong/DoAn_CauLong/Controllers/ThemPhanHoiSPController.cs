@@ -5,61 +5,97 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity; // Cần thêm để sử dụng DbContext
 
 namespace DoAn_CauLong.Controllers
 {
     public class ThemPhanHoiSPController : Controller
     {
-        // GET: ThemPhanHoiSP
         private QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
+
+        // Hàm hỗ trợ: Lấy MaKhachHang từ MaTaiKhoan
+        private int? GetMaKhachHangFromTaiKhoan(int maTaiKhoan)
+        {
+            // Thực hiện truy vấn để tìm KhachHang có MaTaiKhoan tương ứng.
+            // (Giả định bảng KhachHang có cột MaTaiKhoan)
+            var khachHang = data.KhachHangs.FirstOrDefault(kh => kh.MaTaiKhoan == maTaiKhoan);
+            return khachHang?.MaKhachHang;
+        }
+
         public ActionResult ReviewForm(int maSP)
         {
-            if (Session["MaKH"] == null)
+            if (Session["MaTaiKhoan"] == null)
             {
                 TempData["Message"] = "Bạn cần đăng nhập để gửi phản hồi!";
+                // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+                // Hoặc giữ nguyên logic chuyển về chi tiết sản phẩm
                 return RedirectToAction("ChiTietSanPham", "Home", new { id = maSP });
             }
-            ViewBag.MaSanPham = maSP; return View();
+            ViewBag.MaSanPham = maSP;
+            return View();
         }
+
         [HttpPost]
         public ActionResult SubmitReview(int maSP, int danhGia, string noiDung)
         {
-            if (Session["MaKH"] == null)
+            if (Session["MaTaiKhoan"] == null)
             {
                 TempData["Message"] = "Bạn cần đăng nhập để gửi phản hồi!";
                 return RedirectToAction("ChiTietSanPham", "Home", new { id = maSP });
             }
 
-            int maKH = (int)Session["MaKH"]; // Lấy MaKH từ session
+            int maTaiKhoan = (int)Session["MaTaiKhoan"]; // Lấy MaTaiKhoan
+
+            // 1. Lấy Mã Khách Hàng (MaKH) thực tế từ Mã Tài Khoản (MaTaiKhoan)
+            int? maKHNullable = GetMaKhachHangFromTaiKhoan(maTaiKhoan);
+
+            if (!maKHNullable.HasValue)
+            {
+                // Lỗi 1: Tài khoản đăng nhập không phải là Khách hàng
+                TempData["Message"] = "Lỗi: Tài khoản đăng nhập không phải là Khách hàng và không thể gửi đánh giá.";
+                return RedirectToAction("ChiTietSanPham", "Home", new { id = maSP });
+            }
+            int maKH = maKHNullable.Value;
 
             try
             {
                 var parameters = new[]
                 {
-            new SqlParameter("@NoiDung", noiDung ?? (object)DBNull.Value),
-            new SqlParameter("@DanhGia", danhGia),
-            new SqlParameter("@MaKH", maKH),
-            new SqlParameter("@MaSP", maSP)
-        };
+                    new SqlParameter("@NoiDung", noiDung ?? (object)DBNull.Value),
+                    new SqlParameter("@DanhGia", danhGia),
+                    new SqlParameter("@MaKH", maKH), // Dùng MaKH đã tra cứu
+                    new SqlParameter("@MaSP", maSP)
+                };
 
-                data.Database.ExecuteSqlCommand(
+                // 2. Thực thi Stored Procedure
+                int rowsAffected = data.Database.ExecuteSqlCommand(
                     "EXEC THEMPHANHOI @NoiDung, @DanhGia, @MaKH, @MaSP",
                     parameters
                 );
 
-                // optional nhưng an toàn
-                data.SaveChanges();
-                //Session["SoThongBao"] = data.PhanHois.Where(x => x.DanhGia <= 2).Count();//cập nhật số thông báo
-                TempData["Message"] = "Gửi đánh giá thành công!";
+                if (rowsAffected > 0)
+                {
+                    TempData["Message"] = "Gửi đánh giá thành công!";
+                }
+                else
+                {
+                    TempData["Message"] = "Thêm phản hồi thành công";
+                }
             }
             catch (Exception ex)
             {
-                TempData["Message"] = "Lỗi khi gửi đánh giá: " + ex.Message;
+                // Lỗi 3: Lỗi cấp Database (Constraint Violation, SQL Error)
+                string errorMessage = ex.Message;
+                if (ex.InnerException is SqlException sqlEx)
+                {
+                    // Trích xuất lỗi SQL chi tiết để dễ dàng chẩn đoán
+                    errorMessage = $"Lỗi SQL ({sqlEx.Number}): {sqlEx.Message}";
+                }
+
+                TempData["Message"] = "Lỗi hệ thống khi gửi đánh giá: " + errorMessage;
             }
 
             return RedirectToAction("ChiTietSanPham", "Home", new { id = maSP });
         }
-
-
     }
 }
