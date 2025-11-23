@@ -290,7 +290,9 @@ VALUES
 GO
 
 INSERT INTO KhachHang (HoTen, Email, SoDienThoai, DiaChi, MaTaiKhoan)
-VALUES 
+VALUES
+(N'Admin', 'admin@shopcaulong.com', '0000000000', N'Tại cửa hàng', 1),
+(N'Nhân Viên', 'nhanvien1@shopcaulong.com', '0000000000', N'Tại cửa hàng', 2),
 (N'Nguyễn Văn A', 'nguyenvana@gmail.com', '0901234567', N'123 Nguyễn Trãi, Q.1, TP.HCM', 3),
 (N'Trần Thị B', 'tranthib@gmail.com', '0909876543', N'456 Lê Lợi, Q.3, TP.HCM', 4);
 GO
@@ -933,7 +935,7 @@ BEGIN
 END
 GO
 
--- 3. Trigger: KiemTraGiaDuong – không cho chèn giá âm
+-- 3. Trigger: trg_SanPham_ResetKhuyenMaiHetHan
 CREATE TRIGGER trg_SanPham_ResetKhuyenMaiHetHan
 ON SanPham
 AFTER INSERT, UPDATE
@@ -1310,7 +1312,7 @@ GO
 -- Vĩ
 -- =====================================
 -- 1. procedure thêm phản hồi và có kiểm tra xem sản phẩm có tồn tại hay không
-Create PROCEDURE THEMPHANHOI
+CREATE PROCEDURE THEMPHANHOI
     @NoiDung NVARCHAR(300),
     @DanhGia INT,
     @MaKH INT,
@@ -1318,38 +1320,34 @@ Create PROCEDURE THEMPHANHOI
 AS    
 BEGIN
     SET NOCOUNT ON;
+    
+    -- 1. Kiểm tra Đánh giá hợp lệ (Giữ nguyên)
     IF @DanhGia IS NULL OR @DanhGia < 1 OR @DanhGia > 5
     BEGIN
-        PRINT(N'Lỗi: Đánh giá không hợp lệ (phải nằm trong khoảng từ 1 sao đến 5 sao)')
+        -- Sử dụng RAISERROR thay vì PRINT và RETURN để báo lỗi rõ ràng hơn trong C#
+        RAISERROR(N'Lỗi: Đánh giá không hợp lệ (phải nằm trong khoảng từ 1 sao đến 5 sao)', 16, 1)
         RETURN
     END
-    -- 2. Kiểm tra Khách hàng và Sản phẩm tồn tại (giữ nguyên để đảm bảo khóa ngoại)
+    
+    -- 2. Kiểm tra Khách hàng tồn tại (Giữ nguyên)
     IF NOT EXISTS(SELECT 1 FROM KhachHang WHERE MaKhachHang = @MaKH)
     BEGIN
-        PRINT(N'Lỗi: Không tìm thấy khách hàng này.')
+        RAISERROR(N'Lỗi: Không tìm thấy khách hàng này.', 16, 1)
         RETURN
     END
+    
+    -- 3. Kiểm tra Sản phẩm tồn tại (Giữ nguyên)
     IF NOT EXISTS(SELECT 1 FROM SanPham WHERE MaSanPham = @MaSP)
     BEGIN    
-        PRINT(N'Lỗi: Không tìm thấy sản phẩm.')
+        RAISERROR(N'Lỗi: Không tìm thấy sản phẩm.', 16, 1)
         RETURN
     END   
-   --kiểm tra khách hàng đã mua hàng hay chưa để có thể được phản hồi
-    IF NOT EXISTS (
-        SELECT 1
-        FROM dbo.DonHang DH
-        JOIN dbo.ChiTietDonHang CTDH ON DH.MaDonHang = CTDH.MaDonHang
-        JOIN dbo.ChiTietSanPham CTSP ON CTDH.MaChiTietSanPham = CTSP.MaChiTiet
-        WHERE DH.MaKhachHang = @MaKH           -- Khách hàng phải là người mua
-          AND CTSP.MaSanPham = @MaSP           -- Sản phẩm phải nằm trong chi tiết đơn hàng
-          AND DH.TrangThai = N'Đã giao' or DH.TrangThai = N'Hoàn Thành' or DH.TrangThai = N'Dã Hoàn Thành'         -- (Tùy chọn) Chỉ cho phép đánh giá sau khi đã nhận hàng
-    )
-    BEGIN
-        PRINT(N'Lỗi: Khách hàng chưa từng mua sản phẩm này hoặc đơn hàng chưa hoàn tất.')
-        RETURN
-    END
+    
+    -- 4. Thực hiện INSERT
     INSERT INTO PhanHoi (NoiDung, NgayPhanHoi, DanhGia, MaKhachHang, MaSanPham)
     VALUES (@NoiDung, GETDATE(), @DanhGia, @MaKH, @MaSP)
+    
+    -- Thông báo thành công
     SELECT N'Thêm phản hồi thành công' AS ThongBao
 END
 GO
@@ -1527,25 +1525,23 @@ END;
 ----đã xóa hoàn toàn khách hàng 3
 go
 -- 4. Cursor: Duyệt phản hồi có đánh giá <= 2 để gửi cảnh báo.
-Declare cs_DuyetPhanHoi cursor
-for 
-select MaPhanHoi,NoiDung,DanhGia,MaKhachHang
-from PhanHoi
-where DanhGia <= 2
-open cs_DuyetPhanHoi
-Declare @MaPH int, @NoiDung nvarchar(255),@DanhGia int,@MaKH int
-  fetch next from cs_DuyetPhanHoi into @MaPH,@NoiDung,@DanhGia,@MaKH
-  while @@FETCH_STATUS = 0
-  begin
-  PRINT N'Cảnh báo: Phản hồi mã sản phẩm ' + cast(@MaPH as varchar(10))
-          + N' của khách hàng ' + cast(@MaKH as varchar(10))
-          + N' có đánh giá thấp (' + cast(@DanhGia as varchar(10)) + N').';
-    PRINT N'Nội dung: ' + ISNULL(@NoiDung, N'[Không có nội dung]');
-	fetch next from cs_DuyetPhanHoi into @MaPH,@NoiDung,@DanhGia,@MaKH
-  end
-  close cs_DuyetPhanHoi
-  deallocate cs_DuyetPhanHoi
-  go
+Create PROCEDURE SP_ThongBaoDanhGiaThap
+AS
+BEGIN
+    SELECT 
+        PH.MaPhanHoi,
+        PH.NoiDung,
+        PH.DanhGia,
+        PH.MaKhachHang,
+        KH.HoTen,
+        SP.TenSanPham
+    FROM PhanHoi PH
+    JOIN KhachHang KH ON PH.MaKhachHang = KH.MaKhachHang
+    JOIN SanPham SP ON PH.MaSanPham = SP.MaSanPham
+    WHERE PH.DanhGia <= 2
+    ORDER BY PH.MaPhanHoi DESC;
+END
+GO
 
 -- =====================================
 -- Lam
@@ -1583,7 +1579,7 @@ BEGIN
           COUNT(dh.MaDonHang) AS SoLuongDon
      FROM DonHang dh
      WHERE MONTH(dh.NgayDat) = @Thang AND YEAR(dh.NgayDat) = @Nam
-           AND dh.TrangThai = N'Hoàn thành'
+           AND dh.TrangThai = N'Đã hoàn thành'
      GROUP BY MONTH(dh.NgayDat), YEAR(dh.NgayDat)
 END
 GO
@@ -1603,7 +1599,7 @@ BEGIN
         COUNT(MaDonHang) AS SoLuongDon
     FROM DonHang
     WHERE YEAR(NgayDat) = @Nam
-          AND TrangThai = N'Hoàn thành'
+          AND TrangThai = N'Đã hoàn thành'
     GROUP BY DATEPART(QUARTER, NgayDat), YEAR(NgayDat)
     ORDER BY Quy;
 END
@@ -1624,7 +1620,7 @@ BEGIN
         COUNT(MaDonHang) AS SoLuongDon
     FROM DonHang
     WHERE YEAR(NgayDat) = @Nam
-          AND TrangThai = N'Hoàn thành'
+          AND TrangThai = N'Đã hoàn thành'
     GROUP BY YEAR(NgayDat)
 END
 GO
@@ -1644,7 +1640,7 @@ BEGIN
         DECLARE @TongDoanhThu DECIMAL(15,2)
         SET @TongDoanhThu = (SELECT SUM(TongTienSauGiam) AS TONGDOANHTHU
 							FROM DonHang
-							WHERE TrangThai = N'Hoàn thành')
+							WHERE TrangThai = N'Đã hoàn thành')
         PRINT N'Tổng doanh thu cửa hàng hiện tại: ' + CAST(@TongDoanhThu AS NVARCHAR) + 'VND'
     END
 END;
@@ -1662,24 +1658,16 @@ GO
 GO
 
 -- 4. CURSOR: Duyệt doanh thu cửa hàng từng tháng trong năm
-DECLARE cur_DoanhThu CURSOR 
-FOR SELECT MONTH(NgayDat), SUM(TongTienSauGiam)
-	FROM DonHang
-	WHERE YEAR(NgayDat) = 2025 AND TrangThai = N'Hoàn thành'
-	GROUP BY MONTH(NgayDat)
-
-OPEN cur_DoanhThu
-
-DECLARE @Thang INT, @DoanhThu DECIMAL(15,2)
-FETCH NEXT FROM cur_DoanhThu INTO @Thang, @DoanhThu
-
-PRINT N'Báo cáo doanh thu năm 2025:'
-WHILE @@FETCH_STATUS = 0
+CREATE PROCEDURE ThongKeDoanhThuTheoThang
+    @Nam INT
+AS
 BEGIN
-    PRINT N'Tháng ' + CAST(@Thang AS NVARCHAR) + '  :' + CAST(@DoanhThu AS NVARCHAR)
-    FETCH NEXT FROM cur_DoanhThu INTO @Thang, @DoanhThu
+    SELECT 
+        MONTH(NgayDat) AS Thang,
+        SUM(TongTienSauGiam) AS TongDoanhThu
+    FROM DonHang
+    WHERE YEAR(NgayDat) = @Nam
+          AND TrangThai = N'Đã hoàn thành'
+    GROUP BY MONTH(NgayDat)
+    ORDER BY Thang
 END
-
-CLOSE cur_DoanhThu
-DEALLOCATE cur_DoanhThu
-GO
