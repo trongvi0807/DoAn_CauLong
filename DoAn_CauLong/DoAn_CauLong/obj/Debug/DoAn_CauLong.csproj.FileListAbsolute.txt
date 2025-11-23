@@ -1,83 +1,83 @@
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\DoAn_CauLong.dll.config
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\DoAn_CauLong.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\DoAn_CauLong.pdb
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\csc.exe
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\csc.exe.config
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\csc.rsp
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\csi.exe
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\csi.exe.config
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\csi.rsp
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.CodeAnalysis.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.CSharp.Core.targets
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.Managed.Core.targets
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.VisualBasic.Core.targets
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.Win32.Primitives.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.AppContext.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Collections.Immutable.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Console.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Diagnostics.DiagnosticSource.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Diagnostics.FileVersionInfo.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Diagnostics.StackTrace.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Globalization.Calendars.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.IO.Compression.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.IO.Compression.ZipFile.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.IO.FileSystem.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.IO.FileSystem.Primitives.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Net.Http.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Net.Sockets.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Reflection.Metadata.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Runtime.InteropServices.RuntimeInformation.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Security.Cryptography.Algorithms.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Security.Cryptography.Encoding.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Security.Cryptography.Primitives.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Security.Cryptography.X509Certificates.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Text.Encoding.CodePages.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Threading.Tasks.Extensions.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.ValueTuple.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Xml.ReaderWriter.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Xml.XmlDocument.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Xml.XPath.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Xml.XPath.XDocument.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\vbc.exe
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\vbc.exe.config
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\vbc.rsp
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\VBCSCompiler.exe
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\VBCSCompiler.exe.config
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\Antlr3.Runtime.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\EntityFramework.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\EntityFramework.SqlServer.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\Microsoft.Web.Infrastructure.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\Newtonsoft.Json.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Helpers.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Mvc.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Optimization.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Razor.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.WebPages.Deployment.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.WebPages.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.WebPages.Razor.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\WebGrease.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\EntityFramework.xml
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\EntityFramework.SqlServer.xml
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Helpers.xml
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Mvc.xml
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Optimization.xml
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Razor.xml
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.WebPages.xml
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.WebPages.Deployment.xml
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.WebPages.Razor.xml
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\Newtonsoft.Json.xml
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\Antlr3.Runtime.pdb
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\obj\Debug\DoAn_CauLong.csproj.AssemblyReference.cache
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\obj\Debug\DoAn_CauLong.csproj.CoreCompileInputs.cache
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\obj\Debug\DoAn_Cau.5CCBC33A.Up2Date
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\obj\Debug\DoAn_CauLong.dll
-C:\Users\Ho Si Khai\Downloads\Do_An\CSDL\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\obj\Debug\DoAn_CauLong.pdb
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\DoAn_CauLong.dll.config
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\DoAn_CauLong.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\DoAn_CauLong.pdb
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\csc.exe
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\csc.exe.config
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\csc.rsp
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\csi.exe
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\csi.exe.config
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\csi.rsp
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.CodeAnalysis.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.CSharp.Core.targets
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.Managed.Core.targets
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.VisualBasic.Core.targets
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\Microsoft.Win32.Primitives.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.AppContext.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Collections.Immutable.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Console.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Diagnostics.DiagnosticSource.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Diagnostics.FileVersionInfo.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Diagnostics.StackTrace.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Globalization.Calendars.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.IO.Compression.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.IO.Compression.ZipFile.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.IO.FileSystem.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.IO.FileSystem.Primitives.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Net.Http.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Net.Sockets.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Reflection.Metadata.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Runtime.InteropServices.RuntimeInformation.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Security.Cryptography.Algorithms.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Security.Cryptography.Encoding.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Security.Cryptography.Primitives.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Security.Cryptography.X509Certificates.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Text.Encoding.CodePages.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Threading.Tasks.Extensions.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.ValueTuple.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Xml.ReaderWriter.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Xml.XmlDocument.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Xml.XPath.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\System.Xml.XPath.XDocument.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\vbc.exe
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\vbc.exe.config
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\vbc.rsp
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\VBCSCompiler.exe
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\roslyn\VBCSCompiler.exe.config
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\Antlr3.Runtime.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\EntityFramework.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\EntityFramework.SqlServer.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\Microsoft.Web.Infrastructure.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\Newtonsoft.Json.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Helpers.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Mvc.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Optimization.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Razor.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.WebPages.Deployment.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.WebPages.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.WebPages.Razor.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\WebGrease.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\EntityFramework.xml
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\EntityFramework.SqlServer.xml
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Helpers.xml
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Mvc.xml
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Optimization.xml
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.Razor.xml
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.WebPages.xml
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.WebPages.Deployment.xml
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\System.Web.WebPages.Razor.xml
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\Newtonsoft.Json.xml
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\Antlr3.Runtime.pdb
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\obj\Debug\DoAn_CauLong.csproj.AssemblyReference.cache
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\obj\Debug\DoAn_CauLong.csproj.CoreCompileInputs.cache
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\obj\Debug\DoAn_Cau.5CCBC33A.Up2Date
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\obj\Debug\DoAn_CauLong.dll
+D:\DoAn_CauLong\DoAn_CauLong\DoAn_CauLong\obj\Debug\DoAn_CauLong.pdb
