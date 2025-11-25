@@ -200,10 +200,9 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
         }
 
         // Action: Xem Giỏ hàng
-        [CheckLogin] // SỬA: [CheckLogin] đã xử lý việc kiểm tra, không cần if bên trong
+        [CheckLogin]
         public ActionResult ViewCart()
         {
-            // 1. Lấy MaKhachHang
             int maKhachHang = GetMaKhachHangFromSession();
             if (maKhachHang == -1)
             {
@@ -211,28 +210,47 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
                 return RedirectToAction("Index");
             }
 
-            // 2. Tối ưu hóa truy vấn bằng Projection (.Select)
-            var cartViewModels = data.GioHangs
+            // 1. Lấy dữ liệu thô từ Database
+            var cartItems = data.GioHangs
+                .Include(g => g.ChiTietSanPham)
+                .Include(g => g.ChiTietSanPham.SanPham)
+                .Include(g => g.ChiTietSanPham.SanPham.KhuyenMai) // Dòng này cực kỳ quan trọng
+                .Include(g => g.ChiTietSanPham.MauSac)
+                .Include(g => g.ChiTietSanPham.Size)
                 .Where(g => g.MaKhachHang == maKhachHang)
                 .OrderByDescending(g => g.NgayThem)
-                .Select(g => new CartItemViewModel // Giả sử bạn có ViewModel này
-                {
-                    MaGioHang = g.MaGioHang,
-                    // SỬA: Xử lý giá trị Nullable
-                    MaChiTietSanPham = g.MaChiTietSanPham ?? 0,
-                    SoLuong = g.SoLuong ?? 0,
-
-                    TenSanPham = g.ChiTietSanPham.SanPham.TenSanPham,
-                    GiaBan = g.ChiTietSanPham.GiaBan ?? 0,
-                    HinhAnh = g.ChiTietSanPham.HinhAnh ?? g.ChiTietSanPham.SanPham.HinhAnhDaiDien,
-
-                    // SỬA: Xử lý an toàn (tránh lỗi nếu MauSac/Size là null)
-                    TenMau = g.ChiTietSanPham.MauSac != null ? g.ChiTietSanPham.MauSac.TenMau : "N/A",
-                    TenSize = g.ChiTietSanPham.Size != null ? g.ChiTietSanPham.Size.TenSize : "N/A"
-                })
                 .ToList();
 
-            // 3. Hiển thị View Giỏ hàng
+            var cartViewModels = new List<CartItemViewModel>();
+
+            foreach (var item in cartItems)
+            {
+                // --- FIX: Tải thủ công Khuyến Mãi nếu Include thất bại (Phòng hờ) ---
+                if (item.ChiTietSanPham.SanPham.KhuyenMai == null && item.ChiTietSanPham.SanPham.MaKhuyenMai != null)
+                {
+                    // Load trực tiếp từ DB nếu object KhuyenMai chưa có
+                    var kmDb = data.KhuyenMais.Find(item.ChiTietSanPham.SanPham.MaKhuyenMai);
+                    item.ChiTietSanPham.SanPham.KhuyenMai = kmDb;
+                }
+
+                // Tính giá
+                decimal giaDaGiam = TinhGiaBanThucTe(item.ChiTietSanPham);
+
+                var viewModel = new CartItemViewModel
+                {
+                    MaGioHang = item.MaGioHang,
+                    MaChiTietSanPham = item.MaChiTietSanPham ?? 0,
+                    SoLuong = item.SoLuong ?? 0,
+                    TenSanPham = item.ChiTietSanPham.SanPham.TenSanPham,
+                    GiaBan = giaDaGiam, // Giá đã tính toán
+                    HinhAnh = item.ChiTietSanPham.HinhAnh ?? item.ChiTietSanPham.SanPham.HinhAnhDaiDien,
+                    TenMau = item.ChiTietSanPham.MauSac != null ? item.ChiTietSanPham.MauSac.TenMau : "N/A",
+                    TenSize = item.ChiTietSanPham.Size != null ? item.ChiTietSanPham.Size.TenSize : "N/A"
+                };
+
+                cartViewModels.Add(viewModel);
+            }
+
             return View(cartViewModels);
         }
 
@@ -309,7 +327,52 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
             return RedirectToAction("ViewCart");
         }
 
-        //
-        
+        // HÀM HỖ TRỢ: TÍNH GIÁ BÁN THỰC TẾ (CÓ TRỪ KHUYẾN MÃI)
+        private decimal TinhGiaBanThucTe(ChiTietSanPham item)
+        {
+            // 1. Lấy giá gốc (ưu tiên giá biến thể, nếu null thì lấy giá sản phẩm cha)
+            decimal giaGoc = item.SanPham.GiaGoc ?? item.GiaBan ?? 0;
+            decimal giaBanHienTai = giaGoc;
+
+            // 2. Lấy thông tin khuyến mãi từ sản phẩm cha
+            var khuyenMai = item.SanPham.KhuyenMai;
+
+            // 3. Kiểm tra logic khuyến mãi
+            if (khuyenMai != null)
+            {
+                DateTime now = DateTime.Now;
+
+                // XỬ LÝ NGÀY KẾT THÚC: Nếu có ngày kết thúc, ta cho phép khuyến mãi đến hết giây cuối cùng của ngày đó (23:59:59)
+                // Nếu NgayKetThuc trong DB là 00:00:00, ta cộng thêm 1 ngày rồi trừ 1 tick để thành cuối ngày.
+                DateTime? ngayBatDau = khuyenMai.NgayBatDau;
+                DateTime? ngayKetThuc = khuyenMai.NgayKetThuc;
+
+                if (ngayKetThuc.HasValue && ngayKetThuc.Value.TimeOfDay == TimeSpan.Zero)
+                {
+                    ngayKetThuc = ngayKetThuc.Value.Date.AddDays(1).AddTicks(-1);
+                }
+
+                // Kiểm tra ngày bắt đầu và kết thúc
+                bool isActive = (ngayBatDau == null || ngayBatDau <= now) &&
+                                (ngayKetThuc == null || ngayKetThuc >= now);
+
+                if (isActive)
+                {
+                    decimal phanTram = khuyenMai.PhanTramGiam ?? 0;
+                    decimal soTienGiam = giaGoc * (phanTram / 100);
+
+                    // Kiểm tra mức giảm tối đa (nếu có)
+                    if (khuyenMai.GiamToiDa.HasValue && soTienGiam > khuyenMai.GiamToiDa.Value)
+                    {
+                        soTienGiam = khuyenMai.GiamToiDa.Value;
+                    }
+
+                    giaBanHienTai = giaGoc - soTienGiam;
+                }
+            }
+
+            return giaBanHienTai;
+        }
+
     }
 }
