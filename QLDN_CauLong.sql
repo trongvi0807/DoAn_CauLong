@@ -1218,6 +1218,29 @@ BEGIN
     PRINT N'Tạo tài khoản mới thành công!';
 END
 GO
+--Test--
+--EXEC ThemTaiKhoanMoi
+--    @TenDangNhap = 'khachhang_test_01',
+--    @MatKhau = 'pass123',
+--    @Email = 'test1@gmail.com';
+--GO
+
+--EXEC ThemTaiKhoanMoi
+--    @TenDangNhap = 'nhanvien',
+--    @MatKhau = 'pass123',
+--    @Email = 'nhanvien@gmail.com';
+--GO
+
+--EXEC ThemTaiKhoanMoi
+--    @TenDangNhap = 'admin2',
+--    @MatKhau = 'pass123',
+--    @Email = 'admin2@gmail.com';
+--GO
+
+--SELECT* FROM TaiKhoan
+--GO
+
+
 
 -- 2. Function: KiemTraDangNhap(@User, @Pass) – kiểm tra đăng nhập.
 CREATE FUNCTION KiemTraDangNhap
@@ -1238,6 +1261,12 @@ BEGIN
     RETURN @KetQua;
 END
 GO
+-- Test đăng nhập sai
+--SELECT CASE WHEN dbo.KiemTraDangNhap('admin', 'abcd') = 1
+--            THEN N'-> Kết quả: Đăng nhập thành công (ĐÚNG)'
+--            ELSE N'-> Kết quả: Đăng nhập thất bại (SAI)'
+--       END AS KetQua;
+--GO
 
 -- 3. Trigger: KiemTraEmailTrung – không cho 2 tài khoản cùng email.
 CREATE TRIGGER KiemTraEmailTrung
@@ -1258,54 +1287,61 @@ BEGIN
     END
 END
 GO
+--PRINT N'Test 3.1: Thử INSERT tài khoản mới TRÙNG EMAIL (nguyenvana@gmail.com)...';
+--BEGIN TRY
+--    INSERT INTO TaiKhoan (TenDangNhap, MatKhau, Email, MaQuyen)
+--    VALUES ('levand', 'pass456', 'nguyenvana@gmail.com', 3);
+--    PRINT N'-> Kết quả: INSERT thành công (SAI - Trigger không chạy)';
+--END TRY
+--BEGIN CATCH
+--    PRINT N'-> Kết quả: LỖI BỊ BẮT (ĐÚNG) - ' + ERROR_MESSAGE();
+--END CATCH;
+--GO
+
+--PRINT N'Test 3.2: Thử UPDATE tài khoản TRÙNG EMAIL (đổi email "nhanvien_banhang" thành "nguyenvana@gmail.com")...';
+--BEGIN TRY
+--    UPDATE TaiKhoan
+--    SET Email = 'nguyenvana@gmail.com' -- Email này đã tồn tại của 'Nguyễn Văn A'
+--    WHERE TenDangNhap = 'nhanvien_banhang';
+--    PRINT N'-> Kết quả: UPDATE thành công (SAI - Trigger không chạy)';
+--END TRY
+--BEGIN CATCH
+--    PRINT N'-> Kết quả: LỖI BỊ BẮT (ĐÚNG) - ' + ERROR_MESSAGE();
+--END CATCH;
+--GO
+
 
 -- 4. Cursor: Duyệt danh sách tài khoản chưa gán quyền.
---Cursor kiểm tra xem MaQuyen có tồn tại trong bảng PhanQuyen hay không, nếu không còn(quyền bị xóa) thì gán quyền mặc định là khách hàng
-DECLARE @MaTaiKhoan INT, @MaQuyen INT;
-DECLARE @MaQuyenMacDinh INT;
+DECLARE @MaTaiKhoan INT,
+        @TenDangNhap VARCHAR(50),
+        @Email VARCHAR(100);
 
--- Lấy quyền mặc định (Giả sử 'Khách hàng' đã tồn tại trong bảng PhanQuyen)
-SELECT @MaQuyenMacDinh = MaQuyen FROM PhanQuyen WHERE TenQuyen = N'Khách hàng';
+DECLARE Cursor_TaiKhoan_ChuaGanQuyen CURSOR FOR
+    SELECT MaTaiKhoan, TenDangNhap, Email
+    FROM TaiKhoan
+    WHERE MaQuyen IS NULL;   -- Chưa gán quyền
 
--- Kiểm tra xem có lấy được quyền mặc định không
-IF @MaQuyenMacDinh IS NULL
+OPEN Cursor_TaiKhoan_ChuaGanQuyen;
+
+FETCH NEXT FROM Cursor_TaiKhoan_ChuaGanQuyen
+INTO @MaTaiKhoan, @TenDangNhap, @Email;
+
+WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT N'LỖI: Không tìm thấy quyền "Khách hàng" trong bảng PhanQuyen. Vui lòng thêm dữ liệu trước.';
-END
-ELSE
-BEGIN
-    DECLARE Cur_KiemTraQuyen CURSOR FOR
-    SELECT MaTaiKhoan, MaQuyen FROM TaiKhoan;
+    PRINT N'Tài khoản chưa gán quyền: ' 
+          + CAST(@MaTaiKhoan AS VARCHAR) 
+          + ' - ' + @TenDangNhap 
+          + ' - ' + ISNULL(@Email, 'Không có email');
 
-    OPEN Cur_KiemTraQuyen;
-    FETCH NEXT FROM Cur_KiemTraQuyen INTO @MaTaiKhoan, @MaQuyen;
+    FETCH NEXT FROM Cursor_TaiKhoan_ChuaGanQuyen
+    INTO @MaTaiKhoan, @TenDangNhap, @Email;
+END;
 
-    WHILE @@FETCH_STATUS = 0
-    BEGIN
-      
-        -- Chỉ kiểm tra những tài khoản có MaQuyen KHÔNG NULL
-        IF @MaQuyen IS NOT NULL
-        BEGIN
-            -- Nếu MaQuyen không NULL, kiểm tra xem nó có tồn tại hợp lệ trong bảng PhanQuyen không
-            IF NOT EXISTS (SELECT 1 FROM PhanQuyen WHERE MaQuyen = @MaQuyen)
-            BEGIN
-                -- Nếu quyền này không tồn tại (bị mồ côi), thì mới cập nhật về mặc định
-                UPDATE TaiKhoan SET MaQuyen = @MaQuyenMacDinh WHERE MaTaiKhoan = @MaTaiKhoan;
-                PRINT N'Tài khoản ' + CAST(@MaTaiKhoan AS NVARCHAR) + N' có quyền ' + CAST(@MaQuyen AS NVARCHAR) + N' không hợp lệ — đã đổi về Khách hàng';
-            END
-            -- Ngược lại: Nếu quyền này (ví dụ: Admin, Nhân viên) tồn tại, khối IF này sẽ là FALSE và tài khoản được bỏ qua (an toàn)
-        END
-        -- ELSE: Nếu @MaQuyen LÀ NULL, chúng ta bỏ qua, không làm gì cả.
-        -- Đây chính là thay đổi để giữ nguyên các tài khoản Admin/Nhân viên có thể đang bị NULL.
-
-        FETCH NEXT FROM Cur_KiemTraQuyen INTO @MaTaiKhoan, @MaQuyen;
-    END
-
-    CLOSE Cur_KiemTraQuyen;
-    DEALLOCATE Cur_KiemTraQuyen;
-
-    PRINT N'Đã hoàn tất kiểm tra quyền tài khoản.';
-END
+CLOSE Cursor_TaiKhoan_ChuaGanQuyen;
+DEALLOCATE Cursor_TaiKhoan_ChuaGanQuyen;
+INSERT INTO TaiKhoan (TenDangNhap, MatKhau, Email, MaQuyen)
+VALUES
+('user_khongquyen', 'pass123', NULL, NULL);
 GO
 
 -- =====================================
