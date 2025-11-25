@@ -1,6 +1,6 @@
 ﻿using DoAn_CauLong.Models;
 using DoAn_CauLong.ViewModels;
-using DoAn_CauLong.Filters; // << QUAN TRỌNG: Đảm bảo có 'using' này
+using DoAn_CauLong.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,56 @@ namespace DoAn_CauLong.Controllers
     {
         QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
 
-        // Hàm này lấy MaKhachHang dựa trên MaTaiKhoan trong Session
+        // ===================================================================
+        // HÀM HỖ TRỢ: TÍNH GIÁ BÁN THỰC TẾ (CÓ TRỪ KHUYẾN MÃI)
+        // ===================================================================
+        // HÀM HỖ TRỢ: TÍNH GIÁ BÁN THỰC TẾ (CÓ TRỪ KHUYẾN MÃI)
+        private decimal TinhGiaBanThucTe(ChiTietSanPham item)
+        {
+            // 1. Lấy giá gốc (ưu tiên giá biến thể, nếu null thì lấy giá sản phẩm cha)
+            decimal giaGoc = item.GiaBan ?? item.SanPham.GiaGoc ?? 0;
+            decimal giaBanHienTai = giaGoc;
+
+            // 2. Lấy thông tin khuyến mãi từ sản phẩm cha
+            var khuyenMai = item.SanPham.KhuyenMai;
+
+            // 3. Kiểm tra logic khuyến mãi
+            if (khuyenMai != null)
+            {
+                DateTime now = DateTime.Now;
+
+                // XỬ LÝ NGÀY KẾT THÚC: Nếu có ngày kết thúc, ta cho phép khuyến mãi đến hết giây cuối cùng của ngày đó (23:59:59)
+                // Nếu NgayKetThuc trong DB là 00:00:00, ta cộng thêm 1 ngày rồi trừ 1 tick để thành cuối ngày.
+                DateTime? ngayBatDau = khuyenMai.NgayBatDau;
+                DateTime? ngayKetThuc = khuyenMai.NgayKetThuc;
+
+                if (ngayKetThuc.HasValue && ngayKetThuc.Value.TimeOfDay == TimeSpan.Zero)
+                {
+                    ngayKetThuc = ngayKetThuc.Value.Date.AddDays(1).AddTicks(-1);
+                }
+
+                // Kiểm tra ngày bắt đầu và kết thúc
+                bool isActive = (ngayBatDau == null || ngayBatDau <= now) &&
+                                (ngayKetThuc == null || ngayKetThuc >= now);
+
+                if (isActive)
+                {
+                    decimal phanTram = khuyenMai.PhanTramGiam ?? 0;
+                    decimal soTienGiam = giaGoc * (phanTram / 100);
+
+                    // Kiểm tra mức giảm tối đa (nếu có)
+                    if (khuyenMai.GiamToiDa.HasValue && soTienGiam > khuyenMai.GiamToiDa.Value)
+                    {
+                        soTienGiam = khuyenMai.GiamToiDa.Value;
+                    }
+
+                    giaBanHienTai = giaGoc - soTienGiam;
+                }
+            }
+
+            return giaBanHienTai;
+        }
+
         private int GetMaKhachHangFromSession()
         {
             if (Session["MaTaiKhoan"] != null)
@@ -27,16 +76,12 @@ namespace DoAn_CauLong.Controllers
                 }
                 else
                 {
-                    // Tự động tạo thông tin nếu chưa có
                     var taiKhoan = data.TaiKhoans.Find(maTaiKhoan);
                     if (taiKhoan != null)
                     {
                         KhachHang newKh = new KhachHang();
                         newKh.MaTaiKhoan = maTaiKhoan;
-
-
                         newKh.HoTen = taiKhoan.TenDangNhap;
-
                         newKh.Email = taiKhoan.Email;
                         newKh.SoDienThoai = "0000000000";
                         newKh.DiaChi = "Tại cửa hàng";
@@ -50,13 +95,13 @@ namespace DoAn_CauLong.Controllers
                     }
                 }
             }
-            return -1; // Trả về -1 nếu không tìm thấy
+            return -1;
         }
 
         // ===================================================================
-        // ACTION (GET): HIỂN THỊ TRANG THANH TOÁN (Bạn đã có)
+        // ACTION (GET): HIỂN THỊ TRANG THANH TOÁN
         // ===================================================================
-        [CheckLogin] // Bắt buộc đăng nhập
+        [CheckLogin]
         public ActionResult Checkout()
         {
             int maKhachHang = GetMaKhachHangFromSession();
@@ -65,43 +110,56 @@ namespace DoAn_CauLong.Controllers
                 return RedirectToAction("DangNhap", "TaiKhoan");
             }
 
-            // 1. Lấy thông tin khách hàng (để điền sẵn vào form)
             var khachHang = data.KhachHangs.Find(maKhachHang);
 
-            // 2. Lấy giỏ hàng
-            var cartItems = data.GioHangs
+            // Lấy giỏ hàng kèm theo thông tin Khuyến Mãi để tính toán
+            var cartRawItems = data.GioHangs
                 .Where(g => g.MaKhachHang == maKhachHang)
-                .Select(g => new CartItemViewModel
-                {
-                    MaChiTietSanPham = g.MaChiTietSanPham ?? 0,
-                    SoLuong = g.SoLuong ?? 0,
-                    TenSanPham = g.ChiTietSanPham.SanPham.TenSanPham,
-                    GiaBan = g.ChiTietSanPham.GiaBan ?? 0,
-                    HinhAnh = g.ChiTietSanPham.HinhAnh ?? g.ChiTietSanPham.SanPham.HinhAnhDaiDien,
-                    TenMau = g.ChiTietSanPham.MauSac != null ? g.ChiTietSanPham.MauSac.TenMau : "N/A",
-                    TenSize = g.ChiTietSanPham.Size != null ? g.ChiTietSanPham.Size.TenSize : "N/A"
-                })
+                .Include(g => g.ChiTietSanPham)
+                .Include(g => g.ChiTietSanPham.SanPham)
+                .Include(g => g.ChiTietSanPham.SanPham.KhuyenMai) // <--- Include bảng Khuyến Mãi
+                .Include(g => g.ChiTietSanPham.MauSac)
+                .Include(g => g.ChiTietSanPham.Size)
                 .ToList();
 
-            if (!cartItems.Any())
+            if (!cartRawItems.Any())
             {
                 TempData["Error"] = "Giỏ hàng của bạn trống. Không thể thanh toán.";
                 return RedirectToAction("ViewCart", "Home");
             }
 
-            // 3. Tạo một ViewModel để gửi 2 loại dữ liệu sang View
+            // Chuyển đổi sang ViewModel và tính giá đã giảm
+            var cartViewModels = new List<CartItemViewModel>();
+            foreach (var item in cartRawItems)
+            {
+                decimal giaThucTe = TinhGiaBanThucTe(item.ChiTietSanPham);
+
+                cartViewModels.Add(new CartItemViewModel
+                {
+                    MaChiTietSanPham = item.MaChiTietSanPham ?? 0,
+                    SoLuong = item.SoLuong ?? 0,
+                    TenSanPham = item.ChiTietSanPham.SanPham.TenSanPham,
+                    // GÁN GIÁ ĐÃ GIẢM VÀO ĐÂY
+                    GiaBan = giaThucTe,
+                    HinhAnh = item.ChiTietSanPham.HinhAnh ?? item.ChiTietSanPham.SanPham.HinhAnhDaiDien,
+                    TenMau = item.ChiTietSanPham.MauSac != null ? item.ChiTietSanPham.MauSac.TenMau : "N/A",
+                    TenSize = item.ChiTietSanPham.Size != null ? item.ChiTietSanPham.Size.TenSize : "N/A"
+                });
+            }
+
             var viewModel = new CheckoutViewModel
             {
                 CustomerInfo = khachHang,
-                CartItems = cartItems,
-                Total = cartItems.Sum(item => item.ThanhTien)
+                CartItems = cartViewModels,
+                // Tổng tiền sẽ được tính dựa trên giá đã giảm
+                Total = cartViewModels.Sum(item => item.ThanhTien)
             };
 
             return View(viewModel);
         }
 
         // ===================================================================
-        // ACTION (POST): XỬ LÝ ĐẶT HÀNG (Đây là code mới)
+        // ACTION (POST): XỬ LÝ ĐẶT HÀNG VÀ LƯU DATABASE
         // ===================================================================
         [HttpPost]
         [CheckLogin]
@@ -114,10 +172,12 @@ namespace DoAn_CauLong.Controllers
                 return RedirectToAction("DangNhap", "TaiKhoan");
             }
 
-            // Lấy lại giỏ hàng từ DB
+            // Lấy lại giỏ hàng kèm thông tin Khuyến Mãi
             var cartItems = data.GioHangs
                                 .Where(g => g.MaKhachHang == maKhachHang)
-                                .Include(g => g.ChiTietSanPham) // Lấy ChiTietSanPham
+                                .Include(g => g.ChiTietSanPham)
+                                .Include(g => g.ChiTietSanPham.SanPham)
+                                .Include(g => g.ChiTietSanPham.SanPham.KhuyenMai) // <--- Quan trọng
                                 .ToList();
 
             if (!cartItems.Any())
@@ -130,56 +190,55 @@ namespace DoAn_CauLong.Controllers
             {
                 try
                 {
-                    // 1. TẠO ĐƠN HÀNG BẰNG STORED PROCEDURE
+                    // 1. TẠO ĐƠN HÀNG
                     var maDHParam = new System.Data.SqlClient.SqlParameter("@MaDonHang_OUT", System.Data.SqlDbType.Int)
                     {
-                        Direction = System.Data.ParameterDirection.Output // Thiết lập là tham số đầu ra
+                        Direction = System.Data.ParameterDirection.Output
                     };
 
-                    // Thực thi SP và nhận lại MaDonHang
                     data.Database.ExecuteSqlCommand(
                         "EXEC ThemDonHang @MaKhachHang, @DiaChi, @SoDienThoai, @GhiChu, @MaDonHang_OUT OUTPUT",
                         new System.Data.SqlClient.SqlParameter("@MaKhachHang", maKhachHang),
                         new System.Data.SqlClient.SqlParameter("@DiaChi", DiaChiGiao),
                         new System.Data.SqlClient.SqlParameter("@SoDienThoai", SoDienThoaiNhan),
                         new System.Data.SqlClient.SqlParameter("@GhiChu", GhiChu),
-                        maDHParam // Tham số output
+                        maDHParam
                     );
 
-                    // Lấy MaDonHang vừa tạo
                     int newMaDonHang = (int)maDHParam.Value;
                     decimal tongTienDonHang = 0;
 
-                    // 2. CHUYỂN SANG CHI TIẾT ĐƠN HÀNG
+                    // 2. LƯU CHI TIẾT ĐƠN HÀNG VỚI GIÁ ĐÃ GIẢM
                     foreach (var item in cartItems)
                     {
-                        decimal donGia = item.ChiTietSanPham.GiaBan ?? 0;
+                        // Gọi hàm tính giá đã giảm
+                        decimal giaDaGiam = TinhGiaBanThucTe(item.ChiTietSanPham);
 
                         var chiTietDH = new ChiTietDonHang
                         {
-                            MaDonHang = newMaDonHang, // Dùng ID lấy từ SP
+                            MaDonHang = newMaDonHang,
                             MaChiTietSanPham = item.MaChiTietSanPham,
                             SoLuong = item.SoLuong,
-                            DonGia = donGia,
-                            ThanhTien = (item.SoLuong ?? 0) * donGia
+                            // Lưu giá thực tế (đã giảm) vào Database
+                            DonGia = giaDaGiam,
+                            ThanhTien = (item.SoLuong ?? 0) * giaDaGiam
                         };
                         data.ChiTietDonHangs.Add(chiTietDH);
                         tongTienDonHang += chiTietDH.ThanhTien ?? 0;
                     }
 
-                    // 3. CẬP NHẬT TỔNG TIỀN (Tìm lại đơn hàng và update)
+                    // 3. CẬP NHẬT TỔNG TIỀN CHO ĐƠN HÀNG
                     var newOrder = data.DonHangs.Find(newMaDonHang);
                     if (newOrder != null)
                     {
                         newOrder.TongTien = tongTienDonHang;
-                        newOrder.TongTienSauGiam = tongTienDonHang; // Giả sử không có giảm giá
+                        newOrder.TongTienSauGiam = tongTienDonHang;
                         data.Entry(newOrder).State = EntityState.Modified;
                     }
 
-                    // 4. Xóa các mục khỏi Giỏ Hàng
+                    // 4. Xóa giỏ hàng
                     data.GioHangs.RemoveRange(cartItems);
 
-                    // 5. Lưu và Hoàn tất
                     data.SaveChanges();
                     transaction.Commit();
 
@@ -197,7 +256,7 @@ namespace DoAn_CauLong.Controllers
         }
 
         // ===================================================================
-        // ACTION (GET): HIỂN THỊ DANH SÁCH ĐƠN HÀNG (Mục "ĐƠN HÀNG")
+        // CÁC ACTION KHÁC (GIỮ NGUYÊN NHƯ CŨ)
         // ===================================================================
         [CheckLogin]
         public ActionResult Index()
@@ -208,9 +267,8 @@ namespace DoAn_CauLong.Controllers
                 return RedirectToAction("DangNhap", "TaiKhoan");
             }
 
-            // Lấy tất cả đơn hàng của khách, sắp xếp mới nhất lên đầu
             var orders = data.DonHangs
-                             .Include(d => d.KhachHang) // << ✨ THÊM DÒNG NÀY
+                             .Include(d => d.KhachHang)
                              .Where(d => d.MaKhachHang == maKhachHang)
                              .OrderByDescending(d => d.NgayDat)
                              .ToList();
@@ -218,114 +276,76 @@ namespace DoAn_CauLong.Controllers
             return View(orders);
         }
 
-        // Thêm hàm Dispose
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                data.Dispose();
-            }
-            base.Dispose(disposing);
-        }
         [CheckLogin]
-        public ActionResult Details(int id) // 'id' này là MaDonHang
+        public ActionResult Details(int id)
         {
-            // 1. Lấy MaKhachHang từ session để bảo mật,
-            // đảm bảo người này CHỈ xem được đơn hàng của mình.
             int maKhachHang = GetMaKhachHangFromSession();
             if (maKhachHang == -1)
             {
                 return RedirectToAction("DangNhap", "TaiKhoan");
             }
 
-            // 2. Lấy đơn hàng VÀ tất cả chi tiết liên quan
             var order = data.DonHangs
-                .Include(d => d.KhachHang) // Lấy info Khách hàng
-                .Include(d => d.ChiTietDonHangs.Select(ct => ct.ChiTietSanPham.SanPham)) // Lấy info Sản phẩm
-                .Include(d => d.ChiTietDonHangs.Select(ct => ct.ChiTietSanPham.MauSac))  // Lấy info Màu
-                .Include(d => d.ChiTietDonHangs.Select(ct => ct.ChiTietSanPham.Size))    // Lấy info Size
-                .FirstOrDefault(d => d.MaDonHang == id && d.MaKhachHang == maKhachHang); // Quan trọng: chỉ lấy đơn của khách này
+                .Include(d => d.KhachHang)
+                .Include(d => d.ChiTietDonHangs.Select(ct => ct.ChiTietSanPham.SanPham))
+                .Include(d => d.ChiTietDonHangs.Select(ct => ct.ChiTietSanPham.MauSac))
+                .Include(d => d.ChiTietDonHangs.Select(ct => ct.ChiTietSanPham.Size))
+                .FirstOrDefault(d => d.MaDonHang == id && d.MaKhachHang == maKhachHang);
 
-            // 3. Kiểm tra
             if (order == null)
             {
-                TempData["Error"] = "Không tìm thấy đơn hàng hoặc bạn không có quyền xem đơn hàng này.";
+                TempData["Error"] = "Không tìm thấy đơn hàng.";
                 return RedirectToAction("Index");
             }
 
-            // 4. Trả về View
-            return View(order); // Gửi TOÀN BỘ đối tượng DonHang (đã .Include()) sang View
+            return View(order);
         }
 
-        [HttpPost] // Dùng POST để bảo mật
+        [HttpPost]
         [CheckLogin]
         [ValidateAntiForgeryToken]
-        public ActionResult HuyDonHang(int id) // id là MaDonHang
+        public ActionResult HuyDonHang(int id)
         {
             int maKhachHang = GetMaKhachHangFromSession();
-            if (maKhachHang == -1)
-            {
-                // Chưa đăng nhập
-                return RedirectToAction("DangNhap", "TaiKhoan");
-            }
+            if (maKhachHang == -1) return RedirectToAction("DangNhap", "TaiKhoan");
 
-            // Dùng transaction để đảm bảo an toàn dữ liệu
             using (var transaction = data.Database.BeginTransaction())
             {
                 try
                 {
-                    // 1. Tìm đơn hàng
                     var order = data.DonHangs.FirstOrDefault(d => d.MaDonHang == id && d.MaKhachHang == maKhachHang);
-
                     if (order == null)
                     {
                         TempData["Error"] = "Không tìm thấy đơn hàng.";
                         return RedirectToAction("Index");
                     }
 
-                    // 2. Chỉ cho phép hủy nếu là "Chờ xác nhận"
                     if (order.TrangThai != "Chờ xác nhận")
                     {
-                        TempData["Error"] = "Đơn hàng này đang được xử lý hoặc đã hoàn tất, không thể hủy.";
+                        TempData["Error"] = "Đơn hàng đang xử lý, không thể hủy.";
                         return RedirectToAction("Index");
                     }
 
-                    // 3. Cập nhật trạng thái
                     order.TrangThai = "Đã hủy";
                     data.Entry(order).State = EntityState.Modified;
-
-                    // ======================================================
-                    // ✨ SỬA Ở ĐÂY: Vô hiệu hóa khối code này
-                    // ======================================================
-                    // 4. (TẮT HOÀN TRẢ KHO) - Vì kho chưa bị trừ ở bước "Chờ xác nhận"
-                    /*
-                    var chiTietItems = data.ChiTietDonHangs.Where(ct => ct.MaDonHang == id).ToList();
-                    foreach (var item in chiTietItems)
-                    {
-                        var sanPhamTonKho = data.ChiTietSanPhams.Find(item.MaChiTietSanPham);
-                        if (sanPhamTonKho != null)
-                        {
-                            sanPhamTonKho.SoLuongTon = (sanPhamTonKho.SoLuongTon ?? 0) + (item.SoLuong ?? 0);
-                            data.Entry(sanPhamTonKho).State = EntityState.Modified;
-                        }
-                    }
-                    */
-                    // ======================================================
-
-                    // 5. Lưu tất cả
                     data.SaveChanges();
                     transaction.Commit();
 
-                    TempData["Success"] = "Đã hủy đơn hàng #" + id + " thành công.";
+                    TempData["Success"] = "Đã hủy đơn hàng #" + id;
                 }
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    TempData["Error"] = "Lỗi khi hủy đơn hàng: " + ex.Message;
+                    TempData["Error"] = "Lỗi: " + ex.Message;
                 }
             }
-
             return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) data.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

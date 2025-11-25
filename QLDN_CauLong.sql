@@ -228,7 +228,7 @@ INSERT INTO KhuyenMai (TenChuongTrinh, MoTa, NgayBatDau, NgayKetThuc, PhanTramGi
 (N'Back To School', N'Đồng hành cùng học sinh sinh viên', '2025-08-15', '2025-09-10', 10, 100000, 300),
 (N'Siêu Sale 9.9', N'Săn sale ngày đôi tháng 9', '2025-09-09', '2025-09-11', 25, 500000, 50),
 (N'Black Friday 2025', N'Lễ hội mua sắm lớn nhất năm', '2025-11-28', '2025-11-30', 40, 1000000, 100),
-(N'Giáng Sinh An Lành', N'Quà tặng giáng sinh cho lông thủ', '2025-12-20', '2025-12-25', 15, 200000, 100),
+(N'Giáng Sinh An Lành', N'Quà tặng giáng sinh cho lông thủ', '2025-11-20', '2025-12-25', 15, 200000, 100),
 (N'Xả kho cuối năm', N'Thanh lý các mẫu vợt đời cũ', '2025-12-26', '2025-12-31', 50, NULL, 20),
 (N'Khách hàng thân thiết', N'Tri ân khách hàng đã mua trên 5 triệu', '2025-01-01', '2025-12-31', 5, 500000, NULL);
 GO
@@ -303,17 +303,17 @@ VALUES
 (N'Vợt Cầu Lông Yonex Astrox 100ZZ', N'Yonex Astrox 100ZZ Kurenai là phiên bản nâng cấp của Astrox 100ZZ (ra mắt 2020), nổi bật với màu đỏ thẫm và công nghệ cải tiến cho lối chơi tấn công mạnh mẽ. Đây là cây vợt tiêu biểu của Yonex, được nhiều vận động viên hàng đầu như Viktor Axelsen (top 1 thế giới) sử dụng.', 4500000, 'astrox100zz.jpg', 1, 2, 1, NULL, 1, 1),
 (N'Vợt Cầu Lông Yonex Astrox 88D Pro 2024', N'Chuyên dụng cho đánh đôi, vị trí cầu sau, thiên về tấn công.', 4799000, 'astrox88dpro.jpg', 1, 2, 1, NULL, 1, 1),
 (N'Vợt Cầu Lông Yonex Astrox 88S Pro 2024', N'Chuyên dụng cho đánh đôi, vị trí cầu trước, thiên về tốc độ và kiểm soát.', 4799000, 'astrox88spro.jpg', 1, 2, 1, NULL, 1, 1),
-(N'Vợt Cầu Lông Yonex Astrox 99 Pro', N'Vợt nặng đầu, thiên công, dành cho VĐV chuyên nghiệp.', 4190000, 'astrox99pro.jpg', 1, 2, 1, 5, 1, 1), -- Áp dụng Black Friday
+(N'Vợt Cầu Lông Yonex Astrox 99 Pro', N'Vợt nặng đầu, thiên công, dành cho VĐV chuyên nghiệp.', 4190000, 'astrox99pro.jpg', 1, 2, 1, 8, 1, 1), -- Áp dụng Black Friday
 (N'Vợt Cầu Lông Yonex Astrox 77 Pro', N'Vợt cân bằng, linh hoạt, dễ chơi, phù hợp cho người chơi phong trào.', 3900000, 'astrox77pro.jpg', 1, 2, 1, NULL, 1, 1),
 (N'Vợt Cầu Lông Yonex Nanoflare 1000Z', N'Dòng vợt nhẹ đầu, tốc độ nhanh nhất, phù hợp cho phản tạt.', 4600000, 'nanoflare1000z.jpg', 1, 2, 1, NULL, 1, 1),
-(N'Vợt Cầu Lông Yonex Nanoflare 700 Pro', N'Vợt nhẹ đầu, tốc độ cao, hỗ trợ phản tạt nhanh.', 4489000, 'nanoflare700pro.jpg', 1, 2, 1, 2, 1, 1), -- Áp dụng Chào Hè
+(N'Vợt Cầu Lông Yonex Nanoflare 700 Pro', N'Vợt nhẹ đầu, tốc độ cao, hỗ trợ phản tạt nhanh.', 4489000, 'nanoflare700pro.jpg', 1, 2, 1, 8, 1, 1), -- Áp dụng Chào Hè
 (N'Vợt Cầu Lông Yonex Arcsaber 11 Pro', N'Dòng vợt cân bằng, kiểm soát cầu tuyệt vời, huyền thoại trở lại.', 4100000, 'arcsaber11pro.jpg', 1, 2, 1, NULL, 1, 1),
 
 (N'Vợt Cầu Lông Lining Aeronaut 9000C', N'Dòng vợt tấn công, nặng đầu, khung vát gió', 4300000, 'lining_aero9000c.jpg', 1, 2, 2, NULL, 1, 1),
-(N'Vợt Cầu Lông Lining Aeronaut 9000I', N'Dòng vợt chuyên đánh tốc độ, phản tạt nhanh', 4300000, 'lining_aero9000i.jpg', 1, 2, 2, 1, 1, 1), -- Áp dụng KM 30/4
+(N'Vợt Cầu Lông Lining Aeronaut 9000I', N'Dòng vợt chuyên đánh tốc độ, phản tạt nhanh', 4300000, 'lining_aero9000i.jpg', 1, 2, 2, 8, 1, 1), -- Áp dụng KM 30/4
 (N'Vợt Cầu Lông Lining Tectonic 7', N'Vợt công thủ toàn diện, dễ thuần', 3200000, 'lining_tectonic7.jpg', 1, 2, 2, NULL, 1, 1),
 (N'Vợt Cầu Lông Lining Axforce 90 Max', N'Vợt "Rồng" chuyên công, rất nặng đầu', 4100000, 'lining_axforce90max.jpg', 1, 2, 2, NULL, 1, 1),
-(N'Vợt Cầu Lông Lining Axforce 80', N'Vợt tấn công, trợ lực tốt, dễ chơi hơn Axforce 90', 3900000, 'lining_axforce80.jpg', 1, 2, 2, 5, 1, 1), -- Áp dụng Black Friday
+(N'Vợt Cầu Lông Lining Axforce 80', N'Vợt tấn công, trợ lực tốt, dễ chơi hơn Axforce 90', 3900000, 'lining_axforce80.jpg', 1, 2, 2, 8, 1, 1), -- Áp dụng Black Friday
 (N'Vợt Cầu Lông Lining Calibar 600', N'Vợt tầm trung, thiên công, giá cả phải chăng', 3100000, 'lining_calibar600.jpg', 1, 2, 2, NULL, 1, 1),
 (N'Vợt Cầu Lông Lining Bladex 800', N'Dòng vợt mới, khung sắc, tốc độ nhanh', 4200000, 'lining_bladex800.jpg', 1, 2, 2, NULL, 1, 1),
 (N'Vợt Cầu Lông Lining Tectonic 9', N'Vợt cao cấp, nặng đầu, tăng cường lực đập', 3500000, 'lining_tectonic9.jpg', 1, 2, 2, NULL, 1, 1),
@@ -321,13 +321,13 @@ VALUES
 (N'Vợt Cầu Lông Victor Auraspeed 100X Ultra', N'Dòng vợt tốc độ, linh hoạt, công thủ toàn diện', 4100000, 'victor_as100x_ultra.jpg', 1, 3, 3, NULL, 1, 1),
 (N'Vợt Cầu Lông Victor TK Ryuga Metallic', N'Vợt chuyên công, thiết kế mạnh mẽ, đập cầu uy lực', 3500000, 'victor_ryuga_metallic.jpg', 1, 3, 3, NULL, 1, 1),
 (N'Vợt Cầu Lông Victor Brave Sword 12 Pro', N'Huyền thoại vợt "Kiếm", khung vát kim cương, tốc độ cực nhanh', 3200000, 'victor_brs12_pro.jpg', 1, 3, 3, NULL, 1, 1),
-(N'Vợt Cầu Lông Victor Jetspeed S 10', N'Vợt tốc độ, nhẹ, phản tạt nhanh, dễ điều khiển', 2850000, 'victor_js10.jpg', 1, 3, 3, 6, 1, 1), -- Áp dụng KM Giáng Sinh
+(N'Vợt Cầu Lông Victor Jetspeed S 10', N'Vợt tốc độ, nhẹ, phản tạt nhanh, dễ điều khiển', 2850000, 'victor_js10.jpg', 1, 3, 3, 8, 1, 1), -- Áp dụng KM Giáng Sinh
 (N'Vợt Cầu Lông Victor DriveX 12', N'Vợt công thủ toàn diện, kiểm soát cầu tốt', 3800000, 'victor_dx12.jpg', 1, 3, 3, NULL, 1, 1),
-(N'Vợt Cầu Lông Victor Thruster F Claw', N'Vợt thiên công, nặng đầu, biệt danh "Móng Vuốt"', 2150000, 'victor_tfclaw.jpg', 1, 3, 3, 5, 1, 1), -- Áp dụng Black Friday
+(N'Vợt Cầu Lông Victor Thruster F Claw', N'Vợt thiên công, nặng đầu, biệt danh "Móng Vuốt"', 2150000, 'victor_tfclaw.jpg', 1, 3, 3, 8, 1, 1), -- Áp dụng Black Friday
 
 (N'Vợt Cầu Lông Mizuno Fortius 10 Power', N'Vợt cao cấp, chuyên công, sản xuất tại Nhật Bản', 4800000, 'mizuno_f10power.jpg', 1, 4, 4, NULL, 1, 1),
 (N'Vợt Cầu Lông Mizuno Fortius 10 Quick', N'Vợt cao cấp, chuyên tốc độ, sản xuất tại Nhật Bản', 4800000, 'mizuno_f10quick.jpg', 1, 4, 4, NULL, 1, 1),
-(N'Vợt Cầu Lông Mizuno JPX Reserve Edition', N'Phiên bản đặc biệt, công thủ toàn diện', 4990000, 'mizuno_jpx_reserve.jpg', 1, 4, 4, 7, 1, 1), -- Áp dụng Xả Kho
+(N'Vợt Cầu Lông Mizuno JPX Reserve Edition', N'Phiên bản đặc biệt, công thủ toàn diện', 4990000, 'mizuno_jpx_reserve.jpg', 1, 4, 4, 8, 1, 1), -- Áp dụng Xả Kho
 (N'Vợt Cầu Lông Mizuno Fortius 70', N'Vợt tầm trung, nặng đầu, hỗ trợ tấn công', 3599000, 'mizuno_fortius70.jpg', 1, 4, 4, NULL, 1, 1),
 (N'Vợt Cầu Lông Mizuno Altius 01 Speed Limited', N'Vợt cân bằng, linh hoạt, dễ điều khiển', 4500000, 'mizuno_altius01speedlimited.jpg', 1, 4, 4, NULL, 1, 1),
 
@@ -1707,3 +1707,26 @@ BEGIN
     GROUP BY MONTH(NgayDat)
     ORDER BY Thang
 END
+
+
+
+
+
+
+--Các khuyến mãi còn hoạt động của sản phẩm--
+--SELECT 
+--    sp.TenSanPham,
+--    km.TenChuongTrinh,
+--    km.PhanTramGiam,
+--    km.NgayBatDau,
+--    km.NgayKetThuc,
+--    GETDATE() as [GioHienTai_Server], -- So sánh giờ này với NgayKetThuc
+--    CASE 
+--        WHEN km.MaKhuyenMai IS NULL THEN N'Không có KM'
+--        WHEN km.NgayBatDau > GETDATE() THEN N'Chưa bắt đầu'
+--        WHEN km.NgayKetThuc < GETDATE() THEN N'Đã hết hạn' -- Nếu rơi vào đây -> Giá sẽ về gốc
+--        ELSE N'Đang hoạt động'
+--    END as TrangThai
+--FROM SanPham sp
+--LEFT JOIN KhuyenMai km ON sp.MaKhuyenMai = km.MaKhuyenMai
+--WHERE km.MaKhuyenMai IS NOT NULL
