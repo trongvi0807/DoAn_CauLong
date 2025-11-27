@@ -13,7 +13,7 @@ namespace DoAn_CauLong.Controllers
     {
         QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
 
-        // SỬA 1: Thêm 'returnUrl' để biết đường quay lại
+        
         public ActionResult DangNhap(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
@@ -22,7 +22,7 @@ namespace DoAn_CauLong.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // SỬA 2: Thêm 'returnUrl' vào action POST
+      
         public ActionResult DangNhap(string TenDangNhap, string MatKhau, string returnUrl)
         {
             if (ModelState.IsValid)
@@ -39,15 +39,15 @@ namespace DoAn_CauLong.Controllers
 
                     if (khachHang != null && !string.IsNullOrEmpty(khachHang.HoTen))
                     {
-                        Session["MaKH"] = khachHang.MaKhachHang; // kiểm tra mã khách hàng-vừa thêm từ Vĩ
-                        Session["HoTen"] = khachHang.HoTen; // Dùng Họ Tên
+                        Session["MaKH"] = khachHang.MaKhachHang; 
+                        Session["HoTen"] = khachHang.HoTen; 
                     }
                     else
                     {
                         Session["HoTen"] = user.TenDangNhap;
                     }
 
-                    // SỬA 3: Cập nhật số lượng giỏ hàng vào Session
+                    
                     int cartCount = 0;
                     if (khachHang != null)
                     {
@@ -98,7 +98,7 @@ namespace DoAn_CauLong.Controllers
                     return View();
                 }
 
-                // (Code kiểm tra Email và TenDangNhap của bạn đã tốt)
+                
                 var emailLower = Email.ToLower();
                 var checkUser = data.TaiKhoans.Any(t => t.TenDangNhap == TenDangNhap);
                 var checkEmailTK = data.TaiKhoans.Any(t => t.Email != null && t.Email.ToLower() == emailLower);
@@ -135,7 +135,7 @@ namespace DoAn_CauLong.Controllers
                         HoTen = HoTen,
                         Email = Email,
                         MaTaiKhoan = newUser.MaTaiKhoan,
-                        NgayTao = DateTime.Now // Thêm NgayTao
+                        NgayTao = DateTime.Now 
                     };
                     data.KhachHangs.Add(newKhachHang);
                     data.SaveChanges();
@@ -146,7 +146,7 @@ namespace DoAn_CauLong.Controllers
                     Session["MaQuyen"] = newUser.MaQuyen;
                     Session["HoTen"] = newKhachHang.HoTen;
 
-                    // SỬA 5: Người dùng mới đăng ký, giỏ hàng = 0
+                  
                     Session["GioHangCount"] = 0;
 
                     return RedirectToAction("Index", "Home");
@@ -166,7 +166,7 @@ namespace DoAn_CauLong.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // Thêm hàm Dispose để giải phóng DbContext
+       
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -195,9 +195,7 @@ namespace DoAn_CauLong.Controllers
             string tenDangNhap = Session["TenDangNhap"].ToString();
             int maTaiKhoan = (int)Session["MaTaiKhoan"];
 
-            // ==========================================================
-            // ✨ SỬ DỤNG FUNCTION CỦA BẠN TẠI ĐÂY
-            // ==========================================================
+        
 
             // Gọi Function KiemTraDangNhap để kiểm tra mật khẩu CŨ
             bool laMatKhauCuDung = data.Database
@@ -206,7 +204,7 @@ namespace DoAn_CauLong.Controllers
                     new SqlParameter("@Pass", matKhauCu)
                 ).FirstOrDefault();
 
-            // ==========================================================
+            
 
             if (laMatKhauCuDung)
             {

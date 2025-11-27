@@ -21,7 +21,7 @@ namespace DoAn_CauLong.Filters
                 // Chỉ cho phép MaQuyen = 1 (Admin) hoặc 2 (Nhân viên)
                 if (maQuyen == 1 || maQuyen == 2)
                 {
-                    return true; // OK, cho phép truy cập
+                    return true; // cho phép truy cập
                 }
             }
             catch { }

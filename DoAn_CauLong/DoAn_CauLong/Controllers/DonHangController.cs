@@ -14,10 +14,6 @@ namespace DoAn_CauLong.Controllers
     {
         QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
 
-        // ===================================================================
-        // HÀM HỖ TRỢ: TÍNH GIÁ BÁN THỰC TẾ (CÓ TRỪ KHUYẾN MÃI)
-        // ===================================================================
-        // HÀM HỖ TRỢ: TÍNH GIÁ BÁN THỰC TẾ (CÓ TRỪ KHUYẾN MÃI)
         private decimal TinhGiaBanThucTe(ChiTietSanPham item)
         {
             // 1. Lấy giá gốc (ưu tiên giá biến thể, nếu null thì lấy giá sản phẩm cha)
@@ -51,7 +47,7 @@ namespace DoAn_CauLong.Controllers
                     decimal phanTram = khuyenMai.PhanTramGiam ?? 0;
                     decimal soTienGiam = giaGoc * (phanTram / 100);
 
-                    // Kiểm tra mức giảm tối đa (nếu có)
+                    // Kiểm tra mức giảm tối đa
                     if (khuyenMai.GiamToiDa.HasValue && soTienGiam > khuyenMai.GiamToiDa.Value)
                     {
                         soTienGiam = khuyenMai.GiamToiDa.Value;
@@ -98,9 +94,7 @@ namespace DoAn_CauLong.Controllers
             return -1;
         }
 
-        // ===================================================================
-        // ACTION (GET): HIỂN THỊ TRANG THANH TOÁN
-        // ===================================================================
+    
         [CheckLogin]
         public ActionResult Checkout()
         {
@@ -117,7 +111,7 @@ namespace DoAn_CauLong.Controllers
                 .Where(g => g.MaKhachHang == maKhachHang)
                 .Include(g => g.ChiTietSanPham)
                 .Include(g => g.ChiTietSanPham.SanPham)
-                .Include(g => g.ChiTietSanPham.SanPham.KhuyenMai) // <--- Include bảng Khuyến Mãi
+                .Include(g => g.ChiTietSanPham.SanPham.KhuyenMai) 
                 .Include(g => g.ChiTietSanPham.MauSac)
                 .Include(g => g.ChiTietSanPham.Size)
                 .ToList();
@@ -139,7 +133,7 @@ namespace DoAn_CauLong.Controllers
                     MaChiTietSanPham = item.MaChiTietSanPham ?? 0,
                     SoLuong = item.SoLuong ?? 0,
                     TenSanPham = item.ChiTietSanPham.SanPham.TenSanPham,
-                    // GÁN GIÁ ĐÃ GIẢM VÀO ĐÂY
+                    // GÁN GIÁ ĐÃ GIẢM
                     GiaBan = giaThucTe,
                     HinhAnh = item.ChiTietSanPham.HinhAnh ?? item.ChiTietSanPham.SanPham.HinhAnhDaiDien,
                     TenMau = item.ChiTietSanPham.MauSac != null ? item.ChiTietSanPham.MauSac.TenMau : "N/A",
@@ -158,9 +152,7 @@ namespace DoAn_CauLong.Controllers
             return View(viewModel);
         }
 
-        // ===================================================================
-        // ACTION (POST): XỬ LÝ ĐẶT HÀNG VÀ LƯU DATABASE
-        // ===================================================================
+      
         [HttpPost]
         [CheckLogin]
         [ValidateAntiForgeryToken]
@@ -177,7 +169,7 @@ namespace DoAn_CauLong.Controllers
                                 .Where(g => g.MaKhachHang == maKhachHang)
                                 .Include(g => g.ChiTietSanPham)
                                 .Include(g => g.ChiTietSanPham.SanPham)
-                                .Include(g => g.ChiTietSanPham.SanPham.KhuyenMai) // <--- Quan trọng
+                                .Include(g => g.ChiTietSanPham.SanPham.KhuyenMai) 
                                 .ToList();
 
             if (!cartItems.Any())
@@ -255,9 +247,6 @@ namespace DoAn_CauLong.Controllers
             }
         }
 
-        // ===================================================================
-        // CÁC ACTION KHÁC (GIỮ NGUYÊN NHƯ CŨ)
-        // ===================================================================
         [CheckLogin]
         public ActionResult Index()
         {

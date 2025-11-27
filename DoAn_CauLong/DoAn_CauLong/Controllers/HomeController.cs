@@ -9,9 +9,9 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
-using DoAn_CauLong.Filters; // << QUAN TRỌNG: Thêm 'using' này
+using DoAn_CauLong.Filters; 
 
-namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) để khớp
+namespace DoAn_CauLong.Controllers 
 {
     public class HomeController : Controller
     {
@@ -32,15 +32,14 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
             
             return View();
         }
-        // Action: Hiển thị chi tiết sản phẩm
+        
         public ActionResult ChiTietSanPham(int id)
         {
-            // 1. Lấy dữ liệu Sản phẩm chính
-            // SỬA: Dọn dẹp các .Include() bị lặp
+           
             var sanPham = data.SanPhams
                 .Include(sp => sp.Hang)
                 .Include(sp => sp.KhuyenMai)
-                .Include(sp => sp.KhuyenMai) // ensure promotion loaded
+                .Include(sp => sp.KhuyenMai) 
                 .Include(sp => sp.KhuyenMai)
                 .Include(sp => sp.KhuyenMai)
                 .Include(sp => sp.KhuyenMai)
@@ -67,15 +66,6 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
                 .Include(cts => cts.Size)
                 .Include(cts => cts.ThongSoVots) // Tên đúng là ThongSoVot (theo View)
                 .ToList();
-
-            // 3. Lấy thông tin Đánh giá
-            //var reviews = data.PhanHois
-            //    .Where(ph => ph.MaSanPham == id)
-            //    .ToList();
-
-            //double averageRating = reviews.Any() ? reviews.Average(ph => (double)ph.DanhGia) : 0;
-            //int reviewCount = reviews.Count();
-            // Sử dụng SqlQuery để gọi trực tiếp SQL Function
           
 
             //thêm câu truy vấn tính trung bình đánh giá
@@ -114,11 +104,10 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
                   Reviews = reviews
             };
 
-            // 5. Truyền ViewModel sang View
             return View(viewModel);
         }
 
-        // Action: Thêm sản phẩm vào giỏ hàng
+        
         [HttpPost]
         [CheckLogin] // Bắt buộc đăng nhập. Tự động chuyển đến trang Đăng nhập
         public ActionResult AddToCart(int chiTietId, int quantity)
@@ -148,7 +137,7 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
                 int soLuongMoi = 0;
                 if (existingCartItem != null)
                 {
-                    // Nếu đã có: Cộng dồn số lượng
+                    
                     soLuongMoi = (existingCartItem.SoLuong ?? 0) + quantity;
                 }
                 else
@@ -199,7 +188,7 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
             return Redirect(Request.UrlReferrer?.ToString() ?? Url.Action("Index"));
         }
 
-        // Action: Xem Giỏ hàng
+      
         [CheckLogin]
         public ActionResult ViewCart()
         {
@@ -210,11 +199,11 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
                 return RedirectToAction("Index");
             }
 
-            // 1. Lấy dữ liệu thô từ Database
+            
             var cartItems = data.GioHangs
                 .Include(g => g.ChiTietSanPham)
                 .Include(g => g.ChiTietSanPham.SanPham)
-                .Include(g => g.ChiTietSanPham.SanPham.KhuyenMai) // Dòng này cực kỳ quan trọng
+                .Include(g => g.ChiTietSanPham.SanPham.KhuyenMai) 
                 .Include(g => g.ChiTietSanPham.MauSac)
                 .Include(g => g.ChiTietSanPham.Size)
                 .Where(g => g.MaKhachHang == maKhachHang)
@@ -225,7 +214,7 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
 
             foreach (var item in cartItems)
             {
-                // --- FIX: Tải thủ công Khuyến Mãi nếu Include thất bại (Phòng hờ) ---
+                
                 if (item.ChiTietSanPham.SanPham.KhuyenMai == null && item.ChiTietSanPham.SanPham.MaKhuyenMai != null)
                 {
                     // Load trực tiếp từ DB nếu object KhuyenMai chưa có
@@ -233,7 +222,7 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
                     item.ChiTietSanPham.SanPham.KhuyenMai = kmDb;
                 }
 
-                // Tính giá
+                
                 decimal giaDaGiam = TinhGiaBanThucTe(item.ChiTietSanPham);
 
                 var viewModel = new CartItemViewModel
@@ -254,9 +243,7 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
             return View(cartViewModels);
         }
 
-        // ===================================================================
-        // SỬA: CÁC HÀM HỖ TRỢ MỚI
-        // ===================================================================
+      
 
         // Hàm này lấy MaKhachHang dựa trên MaTaiKhoan trong Session
         private int GetMaKhachHangFromSession()
@@ -283,7 +270,7 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
             Session["GioHangCount"] = totalItems;
         }
 
-        // SỬA: Thêm hàm Dispose để giải phóng DbContext
+        
         protected override void Dispose(bool disposing)
         {
             if (disposing)

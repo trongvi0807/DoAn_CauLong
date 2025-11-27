@@ -18,7 +18,7 @@ namespace DoAn_CauLong.Controllers
     {
         QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
 
-        // GET: QuanLySanPham
+        
         public ActionResult Index()
         {
             // Eager loading: Tải luôn LoaiSanPham và Hang để tránh lỗi N+1 query
@@ -26,7 +26,7 @@ namespace DoAn_CauLong.Controllers
             return View(sanPhams);
         }
 
-        // GET: QuanLySanPham/Details/5
+        
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -106,7 +106,7 @@ namespace DoAn_CauLong.Controllers
             return View(sanPham);
         }
 
-        // GET: QuanLySanPham/Edit/5
+      
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -114,15 +114,14 @@ namespace DoAn_CauLong.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            // SỬA LỖI: Đổi 'data' thành 'data'
+            
             SanPham sanPham = data.SanPhams.Find(id);
             if (sanPham == null)
             {
                 return HttpNotFound();
             }
 
-            // Tải danh sách cho các DropDownList
-            // Quan trọng: Truyền "sanPham.MaLoai" làm giá trị được chọn (selected value)
+            
             ViewBag.MaLoai = new SelectList(data.LoaiSanPhams, "MaLoai", "TenLoai", sanPham.MaLoai);
             ViewBag.MaNhaCungCap = new SelectList(data.NhaCungCaps, "MaNhaCungCap", "TenNhaCungCap", sanPham.MaNhaCungCap);
             ViewBag.MaHang = new SelectList(data.Hangs, "MaHang", "TenHang", sanPham.MaHang);
@@ -131,10 +130,10 @@ namespace DoAn_CauLong.Controllers
             return View(sanPham);
         }
 
-        // POST: QuanLySanPham/Edit/5
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ValidateInput(false)] // Cho phép nhập HTML
+        [ValidateInput(false)] 
         public ActionResult Edit([Bind(Include = "MaSanPham,TenSanPham,MoTa,GiaGoc,HinhAnhDaiDien,MaLoai,MaNhaCungCap,MaHang,MaKhuyenMai,CoSize,CoMau,NgayTao")] SanPham sanPham, HttpPostedFileBase HinhAnhUpload)
         {
             if (ModelState.IsValid)
@@ -177,7 +176,7 @@ namespace DoAn_CauLong.Controllers
             return View(sanPham);
         }
 
-        // GET: QuanLySanPham/Delete/5
+        
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -200,14 +199,14 @@ namespace DoAn_CauLong.Controllers
             return View(sanPham);
         }
 
-        // POST: QuanLySanPham/Delete/5
+       
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
             SanPham sanPham = data.SanPhams.Find(id);
 
-            // (Quan trọng: Xóa file ảnh trên server trước khi xóa record trong data)
+            // Xóa file ảnh trên server trước khi xóa record trong data
             if (!string.IsNullOrEmpty(sanPham.HinhAnhDaiDien))
             {
                 string path = Path.Combine(Server.MapPath("~/Content/Images"), sanPham.HinhAnhDaiDien);

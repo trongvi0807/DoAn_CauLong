@@ -90,7 +90,7 @@ namespace DoAn_CauLong.Controllers
             }
             return View("Create", model);
         }
-        // GET: QuanLyTaiKhoan/Edit/5
+        
         public ActionResult Edit(int id)
         {
             var taiKhoan = data.TaiKhoans.Find(id);
@@ -106,10 +106,8 @@ namespace DoAn_CauLong.Controllers
             viewModel.TenDangNhap = taiKhoan.TenDangNhap;
             viewModel.Email = taiKhoan.Email;
             viewModel.MaQuyen = taiKhoan.MaQuyen.Value;
-
-            // === THÊM DÒNG NÀY ĐỂ HIỂN THỊ MK HIỆN TẠI ===
             viewModel.MatKhau = taiKhoan.MatKhau;
-            // ===========================================
+           
 
             if (khachHang != null)
             {
@@ -122,7 +120,7 @@ namespace DoAn_CauLong.Controllers
             return View("Edit", viewModel);
         }
 
-        // POST: QuanLyTaiKhoan/Edit/5
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(TaiKhoanViewModel model)
@@ -144,11 +142,7 @@ namespace DoAn_CauLong.Controllers
                         var tkToUpdate = data.TaiKhoans.Find(model.MaTaiKhoan);
                         tkToUpdate.Email = model.Email;
                         tkToUpdate.MaQuyen = model.MaQuyen;
-
-                        // === THÊM DÒNG NÀY ĐỂ LƯU MẬT KHẨU MỚI ===
-                        // (Cảnh báo: xem giải thích bảo mật bên dưới)
                         tkToUpdate.MatKhau = model.MatKhau;
-                        // ========================================
 
                         var khToUpdate = data.KhachHangs.FirstOrDefault(k => k.MaTaiKhoan == model.MaTaiKhoan);
                         if (khToUpdate != null)
@@ -163,7 +157,7 @@ namespace DoAn_CauLong.Controllers
                         transaction.Commit();
 
                         TempData["Message"] = "Cập nhật tài khoản thành công!";
-                        return RedirectToAction("Index"); // Đã sửa từ "DanhSach"
+                        return RedirectToAction("Index"); 
                     }
                     catch (Exception ex)
                     {
@@ -175,22 +169,22 @@ namespace DoAn_CauLong.Controllers
             return View("Edit", model);
         }
 
-        // GET: QuanLyTaiKhoan/XacNhanXoa/5
+        
         public ActionResult Delete(int id)
         {
             var taiKhoan = data.TaiKhoans
                                .Include(t => t.PhanQuyen)
-                               .Include(t => t.KhachHangs) // <-- Sửa thành số nhiều
+                               .Include(t => t.KhachHangs) 
                                .FirstOrDefault(t => t.MaTaiKhoan == id);
             if (taiKhoan == null)
             {
                 return HttpNotFound();
             }
-            // Trả về View tên là "Delete.cshtml"
+           
             return View("Delete", taiKhoan);
         }
 
-        // POST: QuanLyTaiKhoan/XacNhanXoa/5
+   
         [HttpPost, ActionName("XacNhanXoa")]
         [ValidateAntiForgeryToken]
         public ActionResult XacNhanXoa(int id)

@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Data.Entity; // Cần thêm để sử dụng DbContext
+using System.Data.Entity; 
 
 namespace DoAn_CauLong.Controllers
 {
@@ -17,7 +17,7 @@ namespace DoAn_CauLong.Controllers
         private int? GetMaKhachHangFromTaiKhoan(int maTaiKhoan)
         {
             // Thực hiện truy vấn để tìm KhachHang có MaTaiKhoan tương ứng.
-            // (Giả định bảng KhachHang có cột MaTaiKhoan)
+            
             var khachHang = data.KhachHangs.FirstOrDefault(kh => kh.MaTaiKhoan == maTaiKhoan);
             return khachHang?.MaKhachHang;
         }
@@ -46,12 +46,11 @@ namespace DoAn_CauLong.Controllers
 
             int maTaiKhoan = (int)Session["MaTaiKhoan"]; // Lấy MaTaiKhoan
 
-            // 1. Lấy Mã Khách Hàng (MaKH) thực tế từ Mã Tài Khoản (MaTaiKhoan)
             int? maKHNullable = GetMaKhachHangFromTaiKhoan(maTaiKhoan);
 
             if (!maKHNullable.HasValue)
             {
-                // Lỗi 1: Tài khoản đăng nhập không phải là Khách hàng
+               
                 TempData["Message"] = "Lỗi: Tài khoản đăng nhập không phải là Khách hàng và không thể gửi đánh giá.";
                 return RedirectToAction("ChiTietSanPham", "Home", new { id = maSP });
             }
@@ -63,7 +62,7 @@ namespace DoAn_CauLong.Controllers
                 {
                     new SqlParameter("@NoiDung", noiDung ?? (object)DBNull.Value),
                     new SqlParameter("@DanhGia", danhGia),
-                    new SqlParameter("@MaKH", maKH), // Dùng MaKH đã tra cứu
+                    new SqlParameter("@MaKH", maKH), 
                     new SqlParameter("@MaSP", maSP)
                 };
 
@@ -84,7 +83,7 @@ namespace DoAn_CauLong.Controllers
             }
             catch (Exception ex)
             {
-                // Lỗi 3: Lỗi cấp Database (Constraint Violation, SQL Error)
+                
                 string errorMessage = ex.Message;
                 if (ex.InnerException is SqlException sqlEx)
                 {

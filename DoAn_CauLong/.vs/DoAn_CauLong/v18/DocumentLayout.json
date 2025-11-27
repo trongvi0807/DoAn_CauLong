@@ -3,7 +3,7 @@
   "WorkspaceRootPath": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|d:\\hoctap\\ltw\\doan_caulong\\doan_caulong\\doan_caulong\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -11,11 +11,67 @@
       "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\donhangcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|d:\\hoctap\\ltw\\doan_caulong\\doan_caulong\\doan_caulong\\models\\checkloginattribute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\models\\checkloginattribute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|d:\\hoctap\\ltw\\doan_caulong\\doan_caulong\\doan_caulong\\models\\checkadminattribute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\models\\checkadminattribute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|d:\\hoctap\\ltw\\doan_caulong\\doan_caulong\\doan_caulong\\models\\authorizeadmin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\models\\authorizeadmin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\controllers\\themphanhoispcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\themphanhoispcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\controllers\\taikhoancontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\taikhoancontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|d:\\hoctap\\ltw\\doan_caulong\\doan_caulong\\doan_caulong\\controllers\\sanphamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\sanphamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|d:\\hoctap\\ltw\\doan_caulong\\doan_caulong\\doan_caulong\\controllers\\quanlythongbaocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\quanlythongbaocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|d:\\hoctap\\ltw\\doan_caulong\\doan_caulong\\doan_caulong\\controllers\\quanlytaikhoancontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\quanlytaikhoancontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\controllers\\quanlysanphamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\quanlysanphamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|d:\\hoctap\\ltw\\doan_caulong\\doan_caulong\\doan_caulong\\controllers\\quanlydonhangcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\quanlydonhangcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|d:\\hoctap\\ltw\\doan_caulong\\doan_caulong\\doan_caulong\\controllers\\khuyenmaicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\khuyenmaicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\controllers\\giohangcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\giohangcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|d:\\hoctap\\ltw\\doan_caulong\\doan_caulong\\doan_caulong\\views\\quanlytaikhoan\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\views\\quanlytaikhoan\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|d:\\hoctap\\ltw\\doan_caulong\\doan_caulong\\doan_caulong\\views\\quanlytaikhoan\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\views\\quanlytaikhoan\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|d:\\hoctap\\ltw\\doan_caulong\\doan_caulong\\doan_caulong\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
       "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
@@ -23,24 +79,8 @@
       "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\global.asax.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\controllers\\taikhoancontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\taikhoancontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\views\\taikhoan\\doimatkhau.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\views\\taikhoan\\doimatkhau.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\controllers\\quanlysanphamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\quanlysanphamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\controllers\\themphanhoispcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\themphanhoispcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\controllers\\giohangcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|solutionrelative:doan_caulong\\controllers\\giohangcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CFBF7E65-F762-4511-B333-E6674DFC7EDE}|DoAn_CauLong\\DoAn_CauLong.csproj|D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\doan_caulong\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -90,7 +130,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 12,
+          "SelectedChildIndex": 22,
           "Children": [
             {
               "$type": "Bookmark",
@@ -130,7 +170,137 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CheckLoginAttribute.cs",
+              "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Models\\CheckLoginAttribute.cs",
+              "RelativeDocumentMoniker": "DoAn_CauLong\\Models\\CheckLoginAttribute.cs",
+              "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Models\\CheckLoginAttribute.cs",
+              "RelativeToolTip": "DoAn_CauLong\\Models\\CheckLoginAttribute.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T08:17:25.824Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "CheckAdminAttribute.cs",
+              "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Models\\CheckAdminAttribute.cs",
+              "RelativeDocumentMoniker": "DoAn_CauLong\\Models\\CheckAdminAttribute.cs",
+              "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Models\\CheckAdminAttribute.cs",
+              "RelativeToolTip": "DoAn_CauLong\\Models\\CheckAdminAttribute.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T08:17:08.398Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AuthorizeAdmin.cs",
+              "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Models\\AuthorizeAdmin.cs",
+              "RelativeDocumentMoniker": "DoAn_CauLong\\Models\\AuthorizeAdmin.cs",
+              "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Models\\AuthorizeAdmin.cs",
+              "RelativeToolTip": "DoAn_CauLong\\Models\\AuthorizeAdmin.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAQwBcAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T08:16:55.047Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "QuanLyThongBaoController.cs",
+              "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\QuanLyThongBaoController.cs",
+              "RelativeDocumentMoniker": "DoAn_CauLong\\Controllers\\QuanLyThongBaoController.cs",
+              "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\QuanLyThongBaoController.cs",
+              "RelativeToolTip": "DoAn_CauLong\\Controllers\\QuanLyThongBaoController.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAxwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T08:11:21.62Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "QuanLyTaiKhoanController.cs",
+              "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\QuanLyTaiKhoanController.cs",
+              "RelativeDocumentMoniker": "DoAn_CauLong\\Controllers\\QuanLyTaiKhoanController.cs",
+              "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\QuanLyTaiKhoanController.cs",
+              "RelativeToolTip": "DoAn_CauLong\\Controllers\\QuanLyTaiKhoanController.cs",
+              "ViewState": "AgIAAMQAAAAAAAAAAAAwwLoAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T08:09:54.025Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "QuanLyDonHangController.cs",
+              "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\QuanLyDonHangController.cs",
+              "RelativeDocumentMoniker": "DoAn_CauLong\\Controllers\\QuanLyDonHangController.cs",
+              "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\QuanLyDonHangController.cs",
+              "RelativeToolTip": "DoAn_CauLong\\Controllers\\QuanLyDonHangController.cs",
+              "ViewState": "AgIAAJkAAAAAAAAAAAAAAK8AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T08:04:33.98Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "KhuyenMaiController.cs",
+              "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\KhuyenMaiController.cs",
+              "RelativeDocumentMoniker": "DoAn_CauLong\\Controllers\\KhuyenMaiController.cs",
+              "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\KhuyenMaiController.cs",
+              "RelativeToolTip": "DoAn_CauLong\\Controllers\\KhuyenMaiController.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAQwCQAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T08:04:02.054Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Delete.cshtml",
+              "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\QuanLyTaiKhoan\\Delete.cshtml",
+              "RelativeDocumentMoniker": "DoAn_CauLong\\Views\\QuanLyTaiKhoan\\Delete.cshtml",
+              "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\QuanLyTaiKhoan\\Delete.cshtml",
+              "RelativeToolTip": "DoAn_CauLong\\Views\\QuanLyTaiKhoan\\Delete.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-27T07:53:51.569Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\QuanLyTaiKhoan\\Create.cshtml",
+              "RelativeDocumentMoniker": "DoAn_CauLong\\Views\\QuanLyTaiKhoan\\Create.cshtml",
+              "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\QuanLyTaiKhoan\\Create.cshtml",
+              "RelativeToolTip": "DoAn_CauLong\\Views\\QuanLyTaiKhoan\\Create.cshtml",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-27T07:53:44.443Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "SanPhamController.cs",
+              "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\SanPhamController.cs",
+              "RelativeDocumentMoniker": "DoAn_CauLong\\Controllers\\SanPhamController.cs",
+              "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\SanPhamController.cs",
+              "RelativeToolTip": "DoAn_CauLong\\Controllers\\SanPhamController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFoAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T07:52:25.485Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
               "Title": "Web.config",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Web.config",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Web.config",
@@ -143,7 +313,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 18,
               "Title": "Global.asax.cs",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Global.asax.cs",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Global.asax.cs",
@@ -155,7 +325,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 21,
               "Title": "ChiTietSanPham.cshtml",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\Home\\ChiTietSanPham.cshtml",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Views\\Home\\ChiTietSanPham.cshtml",
@@ -173,14 +343,14 @@
               "RelativeDocumentMoniker": "DoAn_CauLong\\Controllers\\HomeController.cs",
               "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\HomeController.cs",
               "RelativeToolTip": "DoAn_CauLong\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAACQBAAAAAAAAAAAgwDEBAABEAAAAAAAAAA==",
+              "ViewState": "AgIAACYAAAAAAAAAAAAgwDwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-18T09:20:16.827Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 23,
               "Title": "Details.cshtml",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\QuanLySanPham\\Details.cshtml",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Views\\QuanLySanPham\\Details.cshtml",
@@ -192,7 +362,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 25,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\KhuyenMai\\Index.cshtml",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Views\\KhuyenMai\\Index.cshtml",
@@ -204,7 +374,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 29,
               "Title": "CartItemViewModel.cs",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\ViewModels\\CartItemViewModel.cs",
               "RelativeDocumentMoniker": "DoAn_CauLong\\ViewModels\\CartItemViewModel.cs",
@@ -222,14 +392,14 @@
               "RelativeDocumentMoniker": "DoAn_CauLong\\Controllers\\DonHangController.cs",
               "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\DonHangController.cs",
               "RelativeToolTip": "DoAn_CauLong\\Controllers\\DonHangController.cs",
-              "ViewState": "AgIAAF4BAAAAAAAAAAAAAEsBAAApAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-18T07:00:34.113Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 20,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Views\\Home\\Index.cshtml",
@@ -241,19 +411,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 13,
               "Title": "GioHangController.cs",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\GioHangController.cs",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Controllers\\GioHangController.cs",
               "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\GioHangController.cs",
               "RelativeToolTip": "DoAn_CauLong\\Controllers\\GioHangController.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAxwA0AAAApAAAAAAAAAA==",
+              "ViewState": "AgIAABYAAAAAAAAAAAAQwBQAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-18T07:01:36.703Z"
+              "WhenOpened": "2025-11-18T07:01:36.703Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 26,
               "Title": "DangNhap.cshtml",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\TaiKhoan\\DangNhap.cshtml",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Views\\TaiKhoan\\DangNhap.cshtml",
@@ -265,7 +436,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 19,
               "Title": "DoiMatKhau.cshtml",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\TaiKhoan\\DoiMatKhau.cshtml",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Views\\TaiKhoan\\DoiMatKhau.cshtml",
@@ -277,7 +448,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 24,
               "Title": "Delete.cshtml",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\QuanLySanPham\\Delete.cshtml",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Views\\QuanLySanPham\\Delete.cshtml",
@@ -289,31 +460,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 10,
               "Title": "QuanLySanPhamController.cs",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\QuanLySanPhamController.cs",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Controllers\\QuanLySanPhamController.cs",
               "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\QuanLySanPhamController.cs",
               "RelativeToolTip": "DoAn_CauLong\\Controllers\\QuanLySanPhamController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAA0BAAAAAAAAAAAUwB4BAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-18T07:02:52.903Z"
+              "WhenOpened": "2025-11-18T07:02:52.903Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "TaiKhoanController.cs",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\TaiKhoanController.cs",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Controllers\\TaiKhoanController.cs",
               "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\TaiKhoanController.cs",
               "RelativeToolTip": "DoAn_CauLong\\Controllers\\TaiKhoanController.cs",
-              "ViewState": "AgIAAMEAAAAAAAAAAADwv1IAAAAkAAAAAAAAAA==",
+              "ViewState": "AgIAAN8AAAAAAAAAAADwv84AAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-18T07:41:08.039Z"
+              "WhenOpened": "2025-11-18T07:41:08.039Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 28,
               "Title": "Checkout.cshtml",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\DonHang\\Checkout.cshtml",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Views\\DonHang\\Checkout.cshtml",
@@ -325,7 +498,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 27,
               "Title": "Details.cshtml",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\DonHang\\Details.cshtml",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Views\\DonHang\\Details.cshtml",
@@ -337,7 +510,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 22,
               "Title": "ReviewForm.cshtml",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\ThemPhanHoiSP\\ReviewForm.cshtml",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Views\\ThemPhanHoiSP\\ReviewForm.cshtml",
@@ -349,19 +522,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 5,
               "Title": "ThemPhanHoiSPController.cs",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\ThemPhanHoiSPController.cs",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Controllers\\ThemPhanHoiSPController.cs",
               "ToolTip": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Controllers\\ThemPhanHoiSPController.cs",
               "RelativeToolTip": "DoAn_CauLong\\Controllers\\ThemPhanHoiSPController.cs",
-              "ViewState": "AgIAACwAAAAAAAAAAAAgwFAAAAARAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAACQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-18T07:01:50.912Z"
+              "WhenOpened": "2025-11-18T07:01:50.912Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 16,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "D:\\HocTap\\LTW\\DoAn_CauLong\\DoAn_CauLong\\DoAn_CauLong\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "DoAn_CauLong\\Views\\Shared\\_Layout.cshtml",
@@ -369,8 +543,7 @@
               "RelativeToolTip": "DoAn_CauLong\\Views\\Shared\\_Layout.cshtml",
               "ViewState": "AgIAAFIAAAAAAAAAAAAAAGEAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-15T12:42:42.543Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-15T12:42:42.543Z"
             }
           ]
         }
