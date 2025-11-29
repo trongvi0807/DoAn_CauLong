@@ -1,0 +1,43 @@
+﻿@model DoAn_CauLong.Models.KhuyenMai
+@{
+    ViewBag.Title = "Sửa Khuyến mãi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Sửa Khuyến mãi</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.MaKhuyenMai)
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.LabelFor(m => m.TenChuongTrinh, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">@Html.TextBoxFor(m => m.TenChuongTrinh, new { @class = "form-control" })</div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.MoTa, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">@Html.TextAreaFor(m => m.MoTa, new { @class = "form-control", rows = 3 })</div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.NgayBatDau, new { @class = "control-label col-md-2" })
+            <div class="col-md-4">@Html.TextBoxFor(m => m.NgayBatDau, new { @class = "form-control", type = "date" })</div>
+            @Html.LabelFor(m => m.NgayKetThuc, new { @class = "control-label col-md-2" })
+            <div class="col-md-4">@Html.TextBoxFor(m => m.NgayKetThuc, new { @class = "form-control", type = "date" })</div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.PhanTramGiam, new { @class = "control-label col-md-2" })
+            <div class="col-md-4">@Html.TextBoxFor(m => m.PhanTramGiam, new { @class = "form-control", type = "number", step = "0.01" })</div>
+            @Html.LabelFor(m => m.GiamToiDa, new { @class = "control-label col-md-2" })
+            <div class="col-md-4">@Html.TextBoxFor(m => m.GiamToiDa, new { @class = "form-control", type = "number", step = "0.01" })</div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.SoLuongSuDung, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">@Html.TextBoxFor(m => m.SoLuongSuDung, new { @class = "form-control", type = "number" })</div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" class="btn btn-success">Lưu</button>
+                <a href="@Url.Action("Index")" class="btn btn-default">Hủy</a>
+            </div>
+        </div>
+    </div>
+}

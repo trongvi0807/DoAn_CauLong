@@ -13,7 +13,7 @@ namespace DoAn_CauLong.Controllers
     {
         QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
 
-        // SỬA 1: Thêm 'returnUrl' để biết đường quay lại
+        
         public ActionResult DangNhap(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
@@ -22,7 +22,7 @@ namespace DoAn_CauLong.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // SỬA 2: Thêm 'returnUrl' vào action POST
+     
         public ActionResult DangNhap(string TenDangNhap, string MatKhau, string returnUrl)
         {
             if (ModelState.IsValid)
@@ -47,7 +47,7 @@ namespace DoAn_CauLong.Controllers
                         Session["HoTen"] = user.TenDangNhap;
                     }
 
-                    // SỬA 3: Cập nhật số lượng giỏ hàng vào Session
+                    
                     int cartCount = 0;
                     if (khachHang != null)
                     {
@@ -59,7 +59,7 @@ namespace DoAn_CauLong.Controllers
                     Session["GioHangCount"] = cartCount;
 
 
-                    // SỬA 4: Xử lý chuyển hướng 'returnUrl'
+                 
                     if (Url.IsLocalUrl(returnUrl))
                     {
                         return Redirect(returnUrl);
@@ -195,18 +195,14 @@ namespace DoAn_CauLong.Controllers
             string tenDangNhap = Session["TenDangNhap"].ToString();
             int maTaiKhoan = (int)Session["MaTaiKhoan"];
 
-            // ==========================================================
-            // ✨ SỬ DỤNG FUNCTION CỦA BẠN TẠI ĐÂY
-            // ==========================================================
-
-            // Gọi Function KiemTraDangNhap để kiểm tra mật khẩu CŨ
+         
             bool laMatKhauCuDung = data.Database
                 .SqlQuery<bool>("SELECT dbo.KiemTraDangNhap(@User, @Pass)",
                     new SqlParameter("@User", tenDangNhap),
                     new SqlParameter("@Pass", matKhauCu)
                 ).FirstOrDefault();
 
-            // ==========================================================
+   
 
             if (laMatKhauCuDung)
             {

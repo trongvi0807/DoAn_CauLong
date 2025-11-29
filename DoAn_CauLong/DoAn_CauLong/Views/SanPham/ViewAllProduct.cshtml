@@ -1,6 +1,4 @@
-﻿﻿@* File: Views/SanPham/Index.cshtml (Hoặc ViewAllProducts.cshtml) *@
-
-@model List<DoAn_CauLong.Models.SanPham>
+﻿@model List<DoAn_CauLong.Models.SanPham>
 
 @{
     // Title sẽ là tên loại sản phẩm (ví dụ: Vợt Cầu Lông)
@@ -9,9 +7,6 @@
 }
 
 <style>
-    /* ---------------------------------- */
-    /* CSS TÙY CHỈNH CHO DANH SÁCH SẢN PHẨM */
-    /* ---------------------------------- */
     .product-card {
         border: 1px solid #e0e0e0;
         border-radius: 8px;
@@ -94,8 +89,29 @@
         <div class="row">
             @foreach (var item in Model)
             {
-                // compute discount if any
-                var discountPercent = item.KhuyenMai?.PhanTramGiam ?? 0m;
+                // --- CODE MỚI: KIỂM TRA NGÀY KHUYẾN MÃI ---
+                var km = item.KhuyenMai;
+                bool isActivePromo = false;
+
+                if (km != null)
+                {
+                    DateTime now = DateTime.Now;
+                    DateTime? start = km.NgayBatDau;
+                    DateTime? end = km.NgayKetThuc;
+
+                    if (end.HasValue && end.Value.TimeOfDay == TimeSpan.Zero)
+                    {
+                        end = end.Value.Date.AddDays(1).AddTicks(-1);
+                    }
+
+                    if ((start == null || start <= now) && (end == null || end >= now))
+                    {
+                        isActivePromo = true;
+                    }
+                }
+
+                decimal discountPercent = isActivePromo ? (km?.PhanTramGiam ?? 0m) : 0m;
+
                 var oldPrice = item.GiaGoc ?? 0m;
                 var discountedPrice = oldPrice;
                 if (discountPercent > 0)
@@ -104,7 +120,6 @@
                 }
 
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    @* Thêm data-url để JS có thể lấy link chi tiết *@
                     <div class="card h-100 product-card"
                          data-url="@Url.Action("ChiTietSanPham", "Home", new { id = item.MaSanPham })">
 

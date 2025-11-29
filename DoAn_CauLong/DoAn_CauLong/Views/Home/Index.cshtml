@@ -146,16 +146,13 @@
 </style>
 @{
     int index = 0;
-
-    // Nhóm sản phẩm và chuyển thành List để tránh lỗi khi truy vấn lại
-    // Sắp xếp nhóm theo MaLoai để vị trí danh mục nhất quán (1:Vợt, 2:Giày, ...)
     var groups = Model.GroupBy(x => x.MaLoai).OrderBy(g => g.Key).ToList();
     var categoryImageMap = new Dictionary<int, string>
 {
-        { 1, "yonex.png" },      // Ảnh bạn muốn cho Vợt
-        { 2, "giay_lining.png" },      // Ảnh bạn muốn cho Giày
-        { 3, "aoquan.jpeg" },   // Ảnh bạn muốn cho Áo Quần
-        { 4, "banner-phukien.jpg" }    // Ảnh bạn muốn cho Phụ kiện
+        { 1, "yonex.png" },     
+        { 2, "giay_lining.png" },      
+        { 3, "aoquan.jpeg" },   
+        { 4, "banner-phukien.jpg" }  
     };
 }
 
@@ -172,15 +169,11 @@ else
         var tenLoai = g.First().LoaiSanPham?.TenLoai ?? "Danh mục";
         bool left = (index % 2 == 0);
 
-        // Chỉ lấy 6 sản phẩm đầu tiên của nhóm
         var limitedProducts = g.Where(p => p.MaLoai == g.Key).Take(6).ToList();
-
-        // Tạo tên file ảnh danh mục an toàn: thử theo tên loại (slug) rồi theo mã
 
         string defaultCategory = Url.Content("~/Content/images/default-category.jpg");
         string hinhAnhDaChon;
 
-        // Sửa lỗi: Kiểm tra g.Key (MaLoai) có bị null không
         // Nếu g.Key là null HOẶC không tìm thấy g.Key.Value trong "bản đồ"
         if (g.Key == null || !categoryImageMap.TryGetValue(g.Key.Value, out hinhAnhDaChon))
         {
@@ -210,8 +203,32 @@ else
                 <div class="grid">
                     @foreach (var sp in limitedProducts)
                     {
-                        // compute discounted price if any
-                        decimal discountPercent = sp.KhuyenMai?.PhanTramGiam ?? 0m;
+                        // --- CODE MỚI: KIỂM TRA NGÀY KHUYẾN MÃI ---
+                        var km = sp.KhuyenMai;
+                        bool isActivePromo = false;
+
+                        if (km != null)
+                        {
+                            DateTime now = DateTime.Now;
+                            DateTime? start = km.NgayBatDau;
+                            DateTime? end = km.NgayKetThuc;
+
+                            // Xử lý nếu giờ kết thúc là 00:00:00 thì tính là hết ngày đó
+                            if (end.HasValue && end.Value.TimeOfDay == TimeSpan.Zero)
+                            {
+                                end = end.Value.Date.AddDays(1).AddTicks(-1);
+                            }
+
+                            // Kiểm tra xem hiện tại có nằm trong khoảng thời gian không
+                            if ((start == null || start <= now) && (end == null || end >= now))
+                            {
+                                isActivePromo = true;
+                            }
+                        }
+
+                        // Chỉ lấy % giảm nếu khuyến mãi đang active
+                        decimal discountPercent = isActivePromo ? (km?.PhanTramGiam ?? 0m) : 0m;
+
                         decimal oldPrice = sp.GiaGoc.GetValueOrDefault(0m);
                         decimal newPrice = oldPrice;
                         if (discountPercent > 0)

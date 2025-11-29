@@ -14,23 +14,22 @@ namespace DoAn_CauLong.Controllers
 
         QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
 
-        // GET: SanPham
-        // optional parameters: loai (int id or short code/string), hang (brand name), ten (partial product name / model line)
+       
         public ActionResult Index(string loai = null, string hang = null, string ten = null)
         {
             var query = data.SanPhams.AsQueryable();
 
-            // filter by category (loai)
+            
             if (!string.IsNullOrEmpty(loai))
             {
-                // try parse numeric id
+               
                 if (int.TryParse(loai, out int maLoai))
                 {
                     query = query.Where(s => s.MaLoai == maLoai);
                 }
                 else
                 {
-                    // support short codes like Vot, Giay, AoQuan, PhuKien
+                    
                     var key = loai.Trim().ToLower();
                     if (key == "vot" || key == "votc" || key == "vot-cau-long")
                     {
@@ -50,17 +49,17 @@ namespace DoAn_CauLong.Controllers
                     }
                     else
                     {
-                        // fallback: match any LoaiSanPham containing the provided text
+                        
                         query = query.Where(s => s.LoaiSanPham.TenLoai.ToLower().Contains(key));
                     }
                 }
             }
 
-            // filter by brand (hang) - accept brand name
+            
             if (!string.IsNullOrEmpty(hang))
             {
                 var hangKey = hang.Trim();
-                // find brand id by name (case-insensitive)
+               
                 var hangEntity = data.Hangs.FirstOrDefault(h => h.TenHang.Equals(hangKey, StringComparison.OrdinalIgnoreCase));
                 if (hangEntity != null)
                 {
@@ -68,19 +67,19 @@ namespace DoAn_CauLong.Controllers
                 }
                 else
                 {
-                    // fallback: match by name contains
+                    
                     query = query.Where(s => s.Hang.TenHang.ToLower().Contains(hangKey.ToLower()));
                 }
             }
 
-            // filter by partial product name / model line
+            
             if (!string.IsNullOrEmpty(ten))
             {
                 var tenKey = ten.Trim().ToLower();
                 query = query.Where(s => s.TenSanPham.ToLower().Contains(tenKey));
             }
 
-            // include related entities for display (LoaiSanPham, Hang, KhuyenMai)
+            
             var result = query
                 .Include(s => s.LoaiSanPham)
                 .Include(s => s.Hang)

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<DoAn_CauLong.Models.KhuyenMai>
+@{
+    ViewBag.Title = "Quản lý Khuyến mãi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Quản lý khuyến mãi</h2>
+<p>
+    <a class="btn btn-primary" href="@Url.Action("Create")">Thêm khuyến mãi</a>
+</p>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tên chương trình</th>
+            <th>Thời gian</th>
+            <th>Phần trăm giảm</th>
+            <th>Giảm đối đa</th>
+            <th>Số lượng sử dụng</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var km in Model)
+    {
+        <tr>
+            <td>@km.TenChuongTrinh</td>
+            <td>@(km.NgayBatDau?.ToString("dd/MM/yyyy")) - @(km.NgayKetThuc?.ToString("dd/MM/yyyy"))</td>
+            <td>@km.PhanTramGiam</td>
+            <td>@km.GiamToiDa</td>
+            <td>@km.SoLuongSuDung</td>
+            <td>
+                <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", new { id = km.MaKhuyenMai })">Sửa</a>
+                <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = km.MaKhuyenMai })">Xóa</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -7,25 +7,24 @@ using System;
 
 namespace DoAn_CauLong.Controllers
 {
-    [CheckAdmin] // << BẢO VỆ TOÀN BỘ CONTROLLER
+    [CheckAdmin] 
     public class QuanLyDonHangController : Controller
     {
         QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
 
         // GET: /QuanLyDonHang/Index
-        // Hiển thị danh sách TẤT CẢ đơn hàng
+        
         public ActionResult Index()
         {
             var orders = data.DonHangs
-                             .Include(d => d.KhachHang) // Lấy tên Khách hàng
+                             .Include(d => d.KhachHang) 
                              .OrderByDescending(d => d.NgayDat)
                              .ToList();
             return View(orders);
         }
 
-        // GET: /QuanLyDonHang/Details/5
-        // Hiển thị chi tiết đơn hàng (giống trang của khách)
-        public ActionResult Details(int id) // id là MaDonHang
+       
+        public ActionResult Details(int id) 
         {
             var order = data.DonHangs
                 .Include(d => d.KhachHang)
@@ -44,7 +43,7 @@ namespace DoAn_CauLong.Controllers
         }
 
 
-        // POST: /QuanLyDonHang/SetTrangThai
+        
         // Action để cập nhật trạng thái đơn hàng
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -60,10 +59,9 @@ namespace DoAn_CauLong.Controllers
 
             string trangThaiCu = order.TrangThai;
 
-            // =========================================================================
+           
             // CASE 1: XÁC NHẬN ĐƠN (Chờ xác nhận -> Đang xử lý)
-            // Đây là lúc chúng ta TRỪ TỒN KHO
-            // =========================================================================
+           
             if (trangThaiCu == "Chờ xác nhận" && trangThaiMoi == "Đang xử lý")
             {
                 using (var transaction = data.Database.BeginTransaction())
@@ -109,10 +107,9 @@ namespace DoAn_CauLong.Controllers
                     }
                 }
             }
-            // =========================================================================
+           
             // CASE 2: ADMIN HỦY ĐƠN (Hủy đơn đã được xử lý)
-            // Đây là lúc chúng ta HOÀN TRẢ TỒN KHO
-            // =========================================================================
+          
             else if ((trangThaiCu == "Đang xử lý" || trangThaiCu == "Đang giao hàng") && trangThaiMoi == "Đã hủy")
             {
                 using (var transaction = data.Database.BeginTransaction())
@@ -145,10 +142,10 @@ namespace DoAn_CauLong.Controllers
                     }
                 }
             }
-            // =========================================================================
+            
             // CASE 3: CÁC THAY ĐỔI KHÁC (Không ảnh hưởng tồn kho)
             // (VD: Đang xử lý -> Đang giao hàng, Chờ xác nhận -> Đã hủy)
-            // =========================================================================
+           
             else
             {
                 try

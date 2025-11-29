@@ -11,7 +11,27 @@
     decimal originalPrice = variantPrice ?? basePrice;
 
     // Tính giá khuyến mãi nếu có
-    decimal? discountPercent = Model.SanPham.KhuyenMai?.PhanTramGiam;
+    decimal? discountPercent = 0;
+    var km = Model.SanPham.KhuyenMai;
+
+    if (km != null)
+    {
+        DateTime now = DateTime.Now;
+        DateTime? start = km.NgayBatDau;
+        DateTime? end = km.NgayKetThuc;
+
+        // Xử lý logic kết thúc vào cuối ngày (23:59:59) nếu DB lưu 00:00:00
+        if (end.HasValue && end.Value.TimeOfDay == TimeSpan.Zero)
+        {
+            end = end.Value.Date.AddDays(1).AddTicks(-1);
+        }
+
+        // Chỉ lấy % giảm nếu thời gian hợp lệ (Start <= Now <= End)
+        if ((start == null || start <= now) && (end == null || end >= now))
+        {
+            discountPercent = km.PhanTramGiam;
+        }
+    }
     decimal discountedPrice = originalPrice;
     if (discountPercent.HasValue && discountPercent.Value > 0)
     {
@@ -283,13 +303,6 @@
             <img id="main-product-image" src="@mainImageUrl" alt="@Model.SanPham.TenSanPham">
         </div>
 
-        @* PHẦN NÀY LÀ NƠI CHỨA THUMBNAILS NẾU CÓ *@
-        @* @if (Model.AvailableImages.Any())
-            {
-                <div class="thumbnails-gallery">
-                    // Logic hiển thị ảnh thu nhỏ
-                </div>
-            }*@
 
     </div>
 

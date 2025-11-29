@@ -12,15 +12,15 @@ namespace DoAn_CauLong.Controllers
         QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
 
         // GET: KhuyenMai
-        // Show all promotions and their products
+       
         public ActionResult Index()
         {
-            // load all promotions
+            
             var promotions = data.KhuyenMais
                 .OrderBy(k => k.NgayBatDau)
                 .ToList();
 
-            // mapping promotionId -> list of products
+            
             var promoProducts = new Dictionary<int, List<SanPham>>();
 
             foreach (var km in promotions)
@@ -38,7 +38,7 @@ namespace DoAn_CauLong.Controllers
             ViewBag.Promotions = promotions;
             ViewBag.PromoProducts = promoProducts;
 
-            // pass promotions list as model is optional; view will read ViewBag
+           
             return View("~/Views/KhuyenMai/Index.cshtml", new List<SanPham>());
         }
 

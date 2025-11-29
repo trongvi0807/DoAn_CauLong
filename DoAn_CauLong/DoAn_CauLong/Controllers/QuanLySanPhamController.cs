@@ -21,12 +21,12 @@ namespace DoAn_CauLong.Controllers
         // GET: QuanLySanPham
         public ActionResult Index()
         {
-            // Eager loading: Tải luôn LoaiSanPham và Hang để tránh lỗi N+1 query
+            
             var sanPhams = data.SanPhams.Include(s => s.LoaiSanPham).Include(s => s.Hang).OrderByDescending(s => s.NgayTao).ToList();
             return View(sanPhams);
         }
 
-        // GET: QuanLySanPham/Details/5
+        
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -40,9 +40,9 @@ namespace DoAn_CauLong.Controllers
                 .Include(s => s.LoaiSanPham)
                 .Include(s => s.NhaCungCap)
                 .Include(s => s.KhuyenMai)
-                .Include(s => s.ChiTietSanPhams) // Tải danh sách biến thể
-                .Include(s => s.ChiTietSanPhams.Select(ct => ct.MauSac)) // Tải màu của biến thể
-                .Include(s => s.ChiTietSanPhams.Select(ct => ct.Size)) // Tải size của biến thể
+                .Include(s => s.ChiTietSanPhams)
+                .Include(s => s.ChiTietSanPhams.Select(ct => ct.MauSac)) 
+                .Include(s => s.ChiTietSanPhams.Select(ct => ct.Size)) 
                 .FirstOrDefault(s => s.MaSanPham == id);
 
             if (sanPham == null)
@@ -56,7 +56,7 @@ namespace DoAn_CauLong.Controllers
         // GET: QuanLySanPham/Create
         public ActionResult Create()
         {
-            // Tải dữ liệu cho các DropDownList
+            
             ViewBag.MaLoai = new SelectList(data.LoaiSanPhams, "MaLoai", "TenLoai");
             ViewBag.MaNhaCungCap = new SelectList(data.NhaCungCaps, "MaNhaCungCap", "TenNhaCungCap");
             ViewBag.MaHang = new SelectList(data.Hangs, "MaHang", "TenHang");
@@ -68,7 +68,7 @@ namespace DoAn_CauLong.Controllers
         // POST: QuanLySanPham/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ValidateInput(false)] // Cho phép nhập HTML vào (ví dụ: CKEditor cho MoTa)
+        [ValidateInput(false)] 
         public ActionResult Create([Bind(Include = "TenSanPham,MoTa,GiaGoc,MaLoai,MaNhaCungCap,MaHang,MaKhuyenMai,CoSize,CoMau")] SanPham sanPham, HttpPostedFileBase HinhAnhUpload)
         {
             if (ModelState.IsValid)
@@ -97,7 +97,7 @@ namespace DoAn_CauLong.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Nếu ModelState không hợp lệ, tải lại DropDownList cho View
+           
             ViewBag.MaLoai = new SelectList(data.LoaiSanPhams, "MaLoai", "TenLoai", sanPham.MaLoai);
             ViewBag.MaNhaCungCap = new SelectList(data.NhaCungCaps, "MaNhaCungCap", "TenNhaCungCap", sanPham.MaNhaCungCap);
             ViewBag.MaHang = new SelectList(data.Hangs, "MaHang", "TenHang", sanPham.MaHang);
@@ -114,15 +114,14 @@ namespace DoAn_CauLong.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            // SỬA LỖI: Đổi 'data' thành 'data'
+            
             SanPham sanPham = data.SanPhams.Find(id);
             if (sanPham == null)
             {
                 return HttpNotFound();
             }
 
-            // Tải danh sách cho các DropDownList
-            // Quan trọng: Truyền "sanPham.MaLoai" làm giá trị được chọn (selected value)
+           
             ViewBag.MaLoai = new SelectList(data.LoaiSanPhams, "MaLoai", "TenLoai", sanPham.MaLoai);
             ViewBag.MaNhaCungCap = new SelectList(data.NhaCungCaps, "MaNhaCungCap", "TenNhaCungCap", sanPham.MaNhaCungCap);
             ViewBag.MaHang = new SelectList(data.Hangs, "MaHang", "TenHang", sanPham.MaHang);
@@ -134,7 +133,7 @@ namespace DoAn_CauLong.Controllers
         // POST: QuanLySanPham/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ValidateInput(false)] // Cho phép nhập HTML
+        [ValidateInput(false)] 
         public ActionResult Edit([Bind(Include = "MaSanPham,TenSanPham,MoTa,GiaGoc,HinhAnhDaiDien,MaLoai,MaNhaCungCap,MaHang,MaKhuyenMai,CoSize,CoMau,NgayTao")] SanPham sanPham, HttpPostedFileBase HinhAnhUpload)
         {
             if (ModelState.IsValid)
@@ -217,14 +216,14 @@ namespace DoAn_CauLong.Controllers
                 }
             }
 
-            // Xóa sản phẩm (CSDL sẽ tự xóa ChiTietSanPham do đã cài ON DELETE CASCADE)
+            
             data.SanPhams.Remove(sanPham);
             data.SaveChanges();
 
             return RedirectToAction("Index");
         }
 
-        // Giải phóng tài nguyên dataContext
+       
         protected override void Dispose(bool disposing)
         {
             if (disposing)
