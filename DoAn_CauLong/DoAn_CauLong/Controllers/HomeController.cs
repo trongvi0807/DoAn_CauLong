@@ -9,9 +9,9 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
-using DoAn_CauLong.Filters; // << QUAN TRỌNG: Thêm 'using' này
+using DoAn_CauLong.Filters; 
 
-namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) để khớp
+namespace DoAn_CauLong.Controllers 
 {
     public class HomeController : Controller
     {
@@ -32,15 +32,14 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
             
             return View();
         }
-        // Action: Hiển thị chi tiết sản phẩm
+        
         public ActionResult ChiTietSanPham(int id)
         {
-            // 1. Lấy dữ liệu Sản phẩm chính
-            // SỬA: Dọn dẹp các .Include() bị lặp
+           
             var sanPham = data.SanPhams
                 .Include(sp => sp.Hang)
                 .Include(sp => sp.KhuyenMai)
-                .Include(sp => sp.KhuyenMai) // ensure promotion loaded
+                .Include(sp => sp.KhuyenMai) 
                 .Include(sp => sp.KhuyenMai)
                 .Include(sp => sp.KhuyenMai)
                 .Include(sp => sp.KhuyenMai)
@@ -63,20 +62,12 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
             // 2. Lấy tất cả biến thể chi tiết
             var variants = data.ChiTietSanPhams
                 .Where(cts => cts.MaSanPham == id)
-                .Include(cts => cts.MauSac) // Tên đúng là MauSac (theo View)
+                .Include(cts => cts.MauSac) 
                 .Include(cts => cts.Size)
-                .Include(cts => cts.ThongSoVots) // Tên đúng là ThongSoVot (theo View)
+                .Include(cts => cts.ThongSoVots) 
                 .ToList();
 
-            // 3. Lấy thông tin Đánh giá
-            //var reviews = data.PhanHois
-            //    .Where(ph => ph.MaSanPham == id)
-            //    .ToList();
-
-            //double averageRating = reviews.Any() ? reviews.Average(ph => (double)ph.DanhGia) : 0;
-            //int reviewCount = reviews.Count();
-            // Sử dụng SqlQuery để gọi trực tiếp SQL Function
-          
+           
 
             //thêm câu truy vấn tính trung bình đánh giá
             var TrungBinhDanhGia = data.Database.SqlQuery<decimal?>(
@@ -92,7 +83,7 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
                 .Where(ph => ph.MaSanPham == id)
                 .Count();
 
-            // ...
+            
             var reviews = data.PhanHois
             .Where(ph => ph.MaSanPham == id)
              .OrderByDescending(ph => ph.NgayPhanHoi) // phản hồi mới nhất sẽ thêm ở đầu
@@ -107,8 +98,7 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
                 AvailableColors = variants.Where(v => v.MauSac != null).Select(v => v.MauSac).Distinct().ToList(),
                 AvailableSizes = variants.Where(v => v.Size != null).Select(v => v.Size).Distinct().ToList(),
 
-                // SỬA: Bổ sung ThongSoVot (bị thiếu) để View hoạt động
-                // Lấy thông số từ biến thể đầu tiên tìm thấy
+               
                 ThongSoVot = variants.SelectMany(v => v.ThongSoVots).FirstOrDefault(),
 
                   Reviews = reviews
@@ -118,9 +108,9 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
             return View(viewModel);
         }
 
-        // Action: Thêm sản phẩm vào giỏ hàng
+        // Thêm sản phẩm vào giỏ hàng
         [HttpPost]
-        [CheckLogin] // Bắt buộc đăng nhập. Tự động chuyển đến trang Đăng nhập
+        [CheckLogin] 
         public ActionResult AddToCart(int chiTietId, int quantity)
         {
             try
@@ -254,10 +244,7 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
             return View(cartViewModels);
         }
 
-        // ===================================================================
-        // SỬA: CÁC HÀM HỖ TRỢ MỚI
-        // ===================================================================
-
+    
         // Hàm này lấy MaKhachHang dựa trên MaTaiKhoan trong Session
         private int GetMaKhachHangFromSession()
         {
@@ -283,7 +270,7 @@ namespace DoAn_CauLong.Controllers // << SỬA: Đổi namespace (nếu cần) �
             Session["GioHangCount"] = totalItems;
         }
 
-        // SỬA: Thêm hàm Dispose để giải phóng DbContext
+       
         protected override void Dispose(bool disposing)
         {
             if (disposing)

@@ -14,10 +14,7 @@ namespace DoAn_CauLong.Controllers
     {
         QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
 
-        // ===================================================================
-        // HÀM HỖ TRỢ: TÍNH GIÁ BÁN THỰC TẾ (CÓ TRỪ KHUYẾN MÃI)
-        // ===================================================================
-        // HÀM HỖ TRỢ: TÍNH GIÁ BÁN THỰC TẾ (CÓ TRỪ KHUYẾN MÃI)
+       
         private decimal TinhGiaBanThucTe(ChiTietSanPham item)
         {
             // 1. Lấy giá gốc (ưu tiên giá biến thể, nếu null thì lấy giá sản phẩm cha)
@@ -98,9 +95,9 @@ namespace DoAn_CauLong.Controllers
             return -1;
         }
 
-        // ===================================================================
-        // ACTION (GET): HIỂN THỊ TRANG THANH TOÁN
-        // ===================================================================
+       
+        // HIỂN THỊ TRANG THANH TOÁN
+      
         [CheckLogin]
         public ActionResult Checkout()
         {
@@ -158,9 +155,9 @@ namespace DoAn_CauLong.Controllers
             return View(viewModel);
         }
 
-        // ===================================================================
-        // ACTION (POST): XỬ LÝ ĐẶT HÀNG VÀ LƯU DATABASE
-        // ===================================================================
+        
+        // XỬ LÝ ĐẶT HÀNG VÀ LƯU DATABASE
+        
         [HttpPost]
         [CheckLogin]
         [ValidateAntiForgeryToken]
@@ -177,7 +174,7 @@ namespace DoAn_CauLong.Controllers
                                 .Where(g => g.MaKhachHang == maKhachHang)
                                 .Include(g => g.ChiTietSanPham)
                                 .Include(g => g.ChiTietSanPham.SanPham)
-                                .Include(g => g.ChiTietSanPham.SanPham.KhuyenMai) // <--- Quan trọng
+                                .Include(g => g.ChiTietSanPham.SanPham.KhuyenMai) 
                                 .ToList();
 
             if (!cartItems.Any())
@@ -255,9 +252,7 @@ namespace DoAn_CauLong.Controllers
             }
         }
 
-        // ===================================================================
-        // CÁC ACTION KHÁC (GIỮ NGUYÊN NHƯ CŨ)
-        // ===================================================================
+        
         [CheckLogin]
         public ActionResult Index()
         {

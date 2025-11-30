@@ -1,0 +1,26 @@
+﻿@model DoAn_CauLong.Models.KhuyenMai
+@{
+    ViewBag.Title = "Xóa Khuyến mãi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Xóa Khuyến mãi</h2>
+<div class="alert alert-warning">Bạn có chắc muốn xóa khuyến mãi này?</div>
+<dl class="dl-horizontal">
+    <dt>Tên chương trình</dt>
+    <dd>@Model.TenChuongTrinh</dd>
+    <dt>Thời gian</dt>
+    <dd>@(Model.NgayBatDau?.ToString("dd/MM/yyyy")) - @(Model.NgayKetThuc?.ToString("dd/MM/yyyy"))</dd>
+    <dt>Phần trăm giảm</dt>
+    <dd>@Model.PhanTramGiam</dd>
+    <dt>Giảm tối đa</dt>
+    <dd>@Model.GiamToiDa</dd>
+    <dt>Số lượng sử dụng</dt>
+    <dd>@Model.SoLuongSuDung</dd>
+</dl>
+@using (Html.BeginForm("Delete", "QuanLyKhuyenMai", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.MaKhuyenMai)
+    <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
+    <a href="@Url.Action("Index")" class="btn btn-default">Hủy</a>
+}

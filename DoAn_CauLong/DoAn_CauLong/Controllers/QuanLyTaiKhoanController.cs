@@ -105,11 +105,12 @@ namespace DoAn_CauLong.Controllers
             viewModel.MaTaiKhoan = taiKhoan.MaTaiKhoan;
             viewModel.TenDangNhap = taiKhoan.TenDangNhap;
             viewModel.Email = taiKhoan.Email;
-            viewModel.MaQuyen = taiKhoan.MaQuyen.Value;
+            
+            viewModel.MaQuyen = taiKhoan.MaQuyen ?? data.PhanQuyens.OrderBy(p => p.MaQuyen).Select(p => p.MaQuyen).FirstOrDefault();
 
-            // === THÊM DÒNG NÀY ĐỂ HIỂN THỊ MK HIỆN TẠI ===
+            
             viewModel.MatKhau = taiKhoan.MatKhau;
-            // ===========================================
+            
 
             if (khachHang != null)
             {
@@ -145,10 +146,9 @@ namespace DoAn_CauLong.Controllers
                         tkToUpdate.Email = model.Email;
                         tkToUpdate.MaQuyen = model.MaQuyen;
 
-                        // === THÊM DÒNG NÀY ĐỂ LƯU MẬT KHẨU MỚI ===
-                        // (Cảnh báo: xem giải thích bảo mật bên dưới)
+                       
                         tkToUpdate.MatKhau = model.MatKhau;
-                        // ========================================
+                        
 
                         var khToUpdate = data.KhachHangs.FirstOrDefault(k => k.MaTaiKhoan == model.MaTaiKhoan);
                         if (khToUpdate != null)
@@ -163,7 +163,7 @@ namespace DoAn_CauLong.Controllers
                         transaction.Commit();
 
                         TempData["Message"] = "Cập nhật tài khoản thành công!";
-                        return RedirectToAction("Index"); // Đã sửa từ "DanhSach"
+                        return RedirectToAction("Index"); 
                     }
                     catch (Exception ex)
                     {
@@ -180,13 +180,13 @@ namespace DoAn_CauLong.Controllers
         {
             var taiKhoan = data.TaiKhoans
                                .Include(t => t.PhanQuyen)
-                               .Include(t => t.KhachHangs) // <-- Sửa thành số nhiều
+                               .Include(t => t.KhachHangs) 
                                .FirstOrDefault(t => t.MaTaiKhoan == id);
             if (taiKhoan == null)
             {
                 return HttpNotFound();
             }
-            // Trả về View tên là "Delete.cshtml"
+            
             return View("Delete", taiKhoan);
         }
 
@@ -199,7 +199,7 @@ namespace DoAn_CauLong.Controllers
             {
                 try
                 {
-                    // Phải xóa KhachHang trước để kích hoạt Trigger xóa (DonHang, GioHang...)
+                    
                     var khToDelete = data.KhachHangs.FirstOrDefault(k => k.MaTaiKhoan == id);
                     if (khToDelete != null)
                     {

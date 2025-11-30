@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using DoAn_CauLong.Filters; // Cần dùng [CheckLogin]
+using DoAn_CauLong.Filters; 
 
 namespace DoAn_CauLong.Controllers
 {
@@ -11,14 +11,14 @@ namespace DoAn_CauLong.Controllers
         QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
 
         // Action này được gọi bằng AJAX từ _Layout.cshtml
-        // Nó chỉ đọc Session, rất nhanh.
+       
         public ActionResult GetCartCount()
         {
             int count = (Session["GioHangCount"] != null) ? (int)Session["GioHangCount"] : 0;
             return Content(count.ToString());
         }
 
-        // Bạn cũng nên đặt Action Xóa khỏi giỏ hàng ở đây
+        
         [CheckLogin]
         public ActionResult RemoveFromCart(int chiTietId)
         {
