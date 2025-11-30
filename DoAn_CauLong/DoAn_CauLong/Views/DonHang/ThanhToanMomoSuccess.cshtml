@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Kết quả thanh toán";
+    bool isSuccess = ViewBag.IsSuccess ?? false;
+}
+
+<div class="container" style="padding: 50px; text-align: center;">
+    @if (isSuccess)
+    {
+        <div class="alert alert-success" style="display: inline-block; padding: 30px;">
+            <i class="glyphicon glyphicon-ok-sign" style="font-size: 50px;"></i>
+            <h3>@ViewBag.Message</h3>
+            <p>Mã đơn hàng: <strong>#@ViewBag.MaDonHang</strong></p>
+            <p>Cảm ơn bạn đã mua hàng tại cửa hàng.</p>
+
+            <br />
+            <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Tiếp tục mua sắm</a>
+            <a href="@Url.Action("Index", "DonHang")" class="btn btn-default">Xem lịch sử đơn hàng</a>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger" style="display: inline-block; padding: 30px;">
+            <i class="glyphicon glyphicon-remove-sign" style="font-size: 50px;"></i>
+            <h3>@ViewBag.Message</h3>
+            <p>@ViewBag.Description</p>
+            <p>Đơn hàng của bạn đã được lưu với trạng thái "Đã hủy".</p>
+
+            <br />
+            <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Về trang chủ</a>
+            <a href="@Url.Action("Checkout", "DonHang")" class="btn btn-warning">Thử thanh toán lại</a>
+        </div>
+    }
+</div>

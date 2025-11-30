@@ -1,12 +1,17 @@
-﻿using DoAn_CauLong.Models;
+﻿using DoAn_CauLong.Filters;
+using DoAn_CauLong.Models;
+using DoAn_CauLong.Payment;
 using DoAn_CauLong.ViewModels;
-using DoAn_CauLong.Filters;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.Entity;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using System.Data.Entity;
 
 namespace DoAn_CauLong.Controllers
 {
@@ -341,6 +346,245 @@ namespace DoAn_CauLong.Controllers
         {
             if (disposing) data.Dispose();
             base.Dispose(disposing);
+        }
+
+        [HttpPost]
+        [CheckLogin]
+        public ActionResult PaymentMoMo(string HoTenNhan, string SoDienThoaiNhan, string DiaChiGiao, string GhiChu)
+        {
+            // 1. Kiểm tra đăng nhập
+            int maKhachHang = GetMaKhachHangFromSession();
+            if (maKhachHang == -1) return RedirectToAction("DangNhap", "TaiKhoan");
+
+            // 2. Lấy giỏ hàng từ DB (Kèm thông tin Khuyến Mãi để tính giá)
+            var cartItems = data.GioHangs
+                .Where(g => g.MaKhachHang == maKhachHang)
+                .Include(g => g.ChiTietSanPham)
+                .Include(g => g.ChiTietSanPham.SanPham)
+                .Include(g => g.ChiTietSanPham.SanPham.KhuyenMai) // QUAN TRỌNG: Include Khuyến mãi
+                .ToList();
+
+            if (!cartItems.Any()) return RedirectToAction("Index", "Home");
+
+            // 3. Tính tổng tiền dựa trên GIÁ THỰC TẾ (đã trừ khuyến mãi)
+            decimal total = 0;
+            foreach (var item in cartItems)
+            {
+                decimal giaDaGiam = TinhGiaBanThucTe(item.ChiTietSanPham);
+                total += giaDaGiam * (item.SoLuong ?? 0);
+            }
+
+            // MoMo yêu cầu số tiền là string số nguyên (VND)
+            string amount = ((long)total).ToString();
+
+            // 4. TẠO ĐƠN HÀNG "TẠM" VÀO DB (Trạng thái chờ thanh toán)
+            // Ta cần ID đơn hàng để gửi sang MoMo
+            int newMaDonHang = 0;
+            using (var transaction = data.Database.BeginTransaction())
+            {
+                try
+                {
+                    var maDHParam = new System.Data.SqlClient.SqlParameter("@MaDonHang_OUT", System.Data.SqlDbType.Int)
+                    {
+                        Direction = System.Data.ParameterDirection.Output
+                    };
+
+                    // Gọi store procedure tạo đơn hàng giống hệt hàm Checkout
+                    data.Database.ExecuteSqlCommand(
+                        "EXEC ThemDonHang @MaKhachHang, @DiaChi, @SoDienThoai, @GhiChu, @MaDonHang_OUT OUTPUT",
+                        new System.Data.SqlClient.SqlParameter("@MaKhachHang", maKhachHang),
+                        new System.Data.SqlClient.SqlParameter("@DiaChi", DiaChiGiao ?? "Tại cửa hàng"), // Fallback nếu null
+                        new System.Data.SqlClient.SqlParameter("@SoDienThoai", SoDienThoaiNhan ?? "0000000000"),
+                        new System.Data.SqlClient.SqlParameter("@GhiChu", GhiChu + " (Thanh toán qua MoMo)"),
+                        maDHParam
+                    );
+
+                    newMaDonHang = (int)maDHParam.Value;
+
+                    // Lưu chi tiết đơn hàng
+                    foreach (var item in cartItems)
+                    {
+                        decimal giaDaGiam = TinhGiaBanThucTe(item.ChiTietSanPham);
+                        var chiTietDH = new ChiTietDonHang
+                        {
+                            MaDonHang = newMaDonHang,
+                            MaChiTietSanPham = item.MaChiTietSanPham,
+                            SoLuong = item.SoLuong,
+                            DonGia = giaDaGiam,
+                            ThanhTien = (item.SoLuong ?? 0) * giaDaGiam
+                        };
+                        data.ChiTietDonHangs.Add(chiTietDH);
+                    }
+
+                    // Cập nhật tổng tiền
+                    var newOrder = data.DonHangs.Find(newMaDonHang);
+                    newOrder.TongTien = total;
+                    newOrder.TongTienSauGiam = total;
+                    // Đánh dấu trạng thái là Đang chờ thanh toán MoMo (hoặc bạn có thể thêm cột StatusPayment riêng)
+                    newOrder.TrangThai = "Chờ thanh toán MoMo";
+
+                    data.SaveChanges();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    return RedirectToAction("Checkout"); // Quay lại nếu lỗi tạo đơn
+                }
+            }
+
+
+            // 5. Cấu hình MoMo
+            string endpoint = ConfigurationManager.AppSettings["Momo:EndPoint"];
+            string partnerCode = ConfigurationManager.AppSettings["Momo:PartnerCode"];
+            string accessKey = ConfigurationManager.AppSettings["Momo:AccessKey"];
+            string secretKey = ConfigurationManager.AppSettings["Momo:SecretKey"];
+            string orderInfo = "Thanh toan don hang #" + newMaDonHang;
+            string redirectUrl = ConfigurationManager.AppSettings["Momo:ReturnUrl"];
+            string ipnUrl = ConfigurationManager.AppSettings["Momo:NotifyUrl"];
+            string requestType = "captureWallet";
+
+            // QUAN TRỌNG: Dùng Mã Đơn Hàng vừa tạo làm OrderId của MoMo
+            string orderId = newMaDonHang.ToString();
+            string requestId = Guid.NewGuid().ToString();
+            string extraData = "";
+
+            // 6. Tạo chữ ký
+            string rawHash = "accessKey=" + accessKey +
+                "&amount=" + amount +
+                "&extraData=" + extraData +
+                "&ipnUrl=" + ipnUrl +
+                "&orderId=" + orderId +
+                "&orderInfo=" + orderInfo +
+                "&partnerCode=" + partnerCode +
+                "&redirectUrl=" + redirectUrl +
+                "&requestId=" + requestId +
+                "&requestType=" + requestType;
+
+            MomoSecurity crypto = new MomoSecurity();
+            string signature = crypto.signSHA256(rawHash, secretKey);
+
+            JObject message = new JObject
+            {
+                { "partnerCode", partnerCode },
+                { "partnerName", "Test" },
+                { "storeId", "MomoTestStore" },
+                { "requestId", requestId },
+                { "amount", amount },
+                { "orderId", orderId },
+                { "orderInfo", orderInfo },
+                { "redirectUrl", redirectUrl },
+                { "ipnUrl", ipnUrl },
+                { "lang", "vi" },
+                { "extraData", extraData },
+                { "requestType", requestType },
+                { "signature", signature }
+            };
+
+            string responseFromMomo = SendPaymentRequest(endpoint, message.ToString());
+            JObject jmessage = JObject.Parse(responseFromMomo);
+
+            return Redirect(jmessage.GetValue("payUrl").ToString());
+        }
+
+        // Hàm gửi request POST (Helper private)
+        private string SendPaymentRequest(string endpoint, string postJsonString)
+        {
+            try
+            {
+                HttpWebRequest httpWReq = (HttpWebRequest)WebRequest.Create(endpoint);
+
+                var postData = postJsonString;
+
+                var data = System.Text.Encoding.UTF8.GetBytes(postData);
+
+                httpWReq.ProtocolVersion = HttpVersion.Version11;
+                httpWReq.Method = "POST";
+                httpWReq.ContentType = "application/json";
+
+                httpWReq.ContentLength = data.Length;
+                httpWReq.ReadWriteTimeout = 30000;
+                httpWReq.Timeout = 15000;
+                Stream stream = httpWReq.GetRequestStream();
+                stream.Write(data, 0, data.Length);
+                stream.Close();
+
+                HttpWebResponse response = (HttpWebResponse)httpWReq.GetResponse();
+
+                string jsonresponse = "";
+
+                using (var reader = new StreamReader(response.GetResponseStream()))
+                {
+                    string temp = null;
+                    while ((temp = reader.ReadLine()) != null)
+                    {
+                        jsonresponse += temp;
+                    }
+                }
+                return jsonresponse;
+            }
+            catch (WebException e)
+            {
+                return e.Message;
+            }
+        }
+
+        public ActionResult ThanhToanMomoSuccess()
+        {
+            // Lấy tham số trả về từ MoMo
+            string errorCode = Request.QueryString["errorCode"];
+            string orderId = Request.QueryString["orderId"]; // Đây là MaDonHang
+            string message = Request.QueryString["message"];
+
+            int maDH = 0;
+            if (!int.TryParse(orderId, out maDH))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Tìm đơn hàng trong DB
+            var order = data.DonHangs.Find(maDH);
+
+            // TRƯỜNG HỢP 1: THANH TOÁN THÀNH CÔNG
+            if (errorCode == "0")
+            {
+                if (order != null)
+                {
+                    order.TrangThai = "Đã thanh toán bằng MoMo";
+                    data.Entry(order).State = EntityState.Modified;
+
+                    // Xóa giỏ hàng của khách này
+                    if (order.MaKhachHang != null)
+                    {
+                        var cartItems = data.GioHangs.Where(g => g.MaKhachHang == order.MaKhachHang).ToList();
+                        data.GioHangs.RemoveRange(cartItems);
+                    }
+
+                    data.SaveChanges();
+                    Session["GioHangCount"] = 0;
+
+                    ViewBag.Message = "Giao dịch thành công!";
+                    ViewBag.IsSuccess = true;
+                    ViewBag.MaDonHang = orderId;
+                }
+            }
+            // TRƯỜNG HỢP 2: KHÁCH HÀNG HỦY HOẶC THANH TOÁN THẤT BẠI
+            else
+            {
+                if (order != null)
+                {
+                    // Cập nhật trạng thái đơn hàng là Đã hủy (hoặc Chờ thanh toán lại tùy logic của bạn)
+                    order.TrangThai = "Đã hủy (Thanh toán thất bại)";
+                    data.Entry(order).State = EntityState.Modified;
+                    data.SaveChanges();
+                }
+
+                ViewBag.Message = "Giao dịch thất bại hoặc đã bị hủy.";
+                ViewBag.Description = "Lý do: " + message; // MoMo trả về lý do hủy
+                ViewBag.IsSuccess = false;
+            }
+
+            return View();
         }
     }
 }
