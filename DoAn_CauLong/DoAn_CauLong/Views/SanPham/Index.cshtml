@@ -74,8 +74,8 @@
     /* Price & badge */
     .product-footer {
         margin-top: auto;
-        display:flex;
-        align-items:center;
+        display: flex;
+        align-items: center;
         justify-content: space-between;
         gap: 8px;
     }
@@ -85,11 +85,12 @@
         font-weight: 800;
         font-size: 16px;
     }
+
     .price-small {
         font-size: 13px;
         color: #888;
         text-decoration: line-through;
-        margin-left:6px;
+        margin-left: 6px;
     }
 
     .badge-out {
@@ -109,7 +110,9 @@
         padding: 6px 10px;
         border-radius: 12px;
         font-weight: 700;
-        font-size: 12px;
+        font-size: 11px;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        z-index: 2;
     }
 
     /* Responsive tweaks */
@@ -132,44 +135,101 @@
         <div class="row product-list gx-3 gy-4">
             @foreach (var sp in Model)
             {
-                var discountPercent = sp.KhuyenMai?.PhanTramGiam ?? 0m;
-                decimal oldPrice = sp.GiaGoc ?? 0m;
-                decimal newPrice = oldPrice;
-                if (discountPercent > 0)
+                // =========================================================
+                // LOGIC TÍNH GIÁ KHUYẾN MÃI (Giống Controller)
+                // =========================================================
+                decimal giaGoc = sp.GiaGoc ?? 0m;
+                decimal giaBanHienTai = giaGoc;
+                bool dangKhuyenMai = false;
+                string badgeText = "";
+                string noteGiamGia = ""; // Biến lưu ghi chú nếu bị giới hạn giá giảm
+
+                if (sp.KhuyenMai != null)
                 {
-                    newPrice = Math.Max(0, oldPrice - (oldPrice * discountPercent / 100));
+                    DateTime now = DateTime.Now;
+                    DateTime? start = sp.KhuyenMai.NgayBatDau;
+                    DateTime? end = sp.KhuyenMai.NgayKetThuc;
+
+                    // Fix lỗi 00:00:00 của ngày kết thúc (cho phép đến hết ngày)
+                    if (end.HasValue && end.Value.TimeOfDay == TimeSpan.Zero)
+                    {
+                        end = end.Value.Date.AddDays(1).AddTicks(-1);
+                    }
+
+                    // 1. Kiểm tra thời hạn
+                    if ((start == null || start <= now) && (end == null || end >= now))
+                    {
+                        dangKhuyenMai = true;
+                        decimal phanTram = sp.KhuyenMai.PhanTramGiam ?? 0;
+                        decimal tienGiam = giaGoc * (phanTram / 100);
+                        decimal? giamToiDa = sp.KhuyenMai.GiamToiDa;
+
+                        // 2. Kiểm tra giảm tối đa
+                        if (giamToiDa.HasValue && giamToiDa > 0 && tienGiam > giamToiDa.Value)
+                        {
+                            // Nếu giảm vượt quá mức trần, chỉ giảm bằng mức trần
+                            tienGiam = giamToiDa.Value;
+
+                            // Badge hiển thị số tiền giảm trực tiếp thay vì % vì % lúc này ko còn đúng
+                            badgeText = "-" + tienGiam.ToString("N0") + "đ";
+                            noteGiamGia = "(Tối đa " + giamToiDa.Value.ToString("N0") + "đ)";
+                        }
+                        else
+                        {
+                            // Giảm bình thường theo %
+                            badgeText = "-" + phanTram + "%";
+                        }
+
+                        giaBanHienTai = giaGoc - tienGiam;
+                    }
                 }
+                // =========================================================
 
                 <div class="col-6 col-sm-6 col-md-4 col-lg-3">
                     <div class="product-card card h-100">
 
-                        @if (discountPercent > 0)
+                        @* Hiển thị Badge Khuyến Mãi (Chỉ khi còn hạn) *@
+                        @if (dangKhuyenMai)
                         {
-                            <div class="promo-badge-small">Giảm @discountPercent% </div>
+                            <div class="promo-badge-small">
+                                @badgeText
+                            </div>
                         }
 
                         <a href="@Url.Action("ChiTietSanPham", "Home", new { id = sp.MaSanPham })" class="d-block">
-                            <img class="card-img-top" src="@Url.Content("~/Content/images/" + (string.IsNullOrEmpty(sp.HinhAnhDaiDien) ? "default.jpg" : sp.HinhAnhDaiDien))" alt="@sp.TenSanPham" />
+                            <img class="card-img-top"
+                                 src="@Url.Content("~/Content/images/" + (string.IsNullOrEmpty(sp.HinhAnhDaiDien) ? "default-product.jpg" : sp.HinhAnhDaiDien))"
+                                 alt="@sp.TenSanPham"
+                                 onerror="this.src='@Url.Content("~/Content/images/default-product.jpg")'" />
                         </a>
 
                         <div class="card-body">
                             <a href="@Url.Action("ChiTietSanPham", "Home", new { id = sp.MaSanPham })" style="text-decoration:none;color:inherit;">
-                                <div class="product-title">@sp.TenSanPham</div>
+                                <div class="product-title" title="@sp.TenSanPham">@sp.TenSanPham</div>
                             </a>
 
                             <div class="product-brand">@sp.MoTa</div>
 
                             <div class="product-footer">
-                                <div>
+                                <div style="display:flex; flex-direction:column; align-items:flex-start;">
                                     @if (sp.GiaGoc.HasValue)
                                     {
                                         <div>
-                                            <span class="product-price">@newPrice.ToString("N0")đ</span>
-                                            @if (discountPercent > 0)
+                                            @* Giá bán thực tế *@
+                                            <span class="product-price">@giaBanHienTai.ToString("N0")đ</span>
+
+                                            @* Giá gốc gạch ngang (nếu có khuyến mãi) *@
+                                            @if (dangKhuyenMai)
                                             {
-                                                <span class="price-small">@oldPrice.ToString("N0")đ</span>
+                                                <span class="price-small">@giaGoc.ToString("N0")đ</span>
                                             }
                                         </div>
+
+                                        @* Dòng chú thích nhỏ nếu bị giới hạn giảm giá *@
+                                        if (!string.IsNullOrEmpty(noteGiamGia))
+                                        {
+                                            <small style="font-size:10px; color:#d32f2f;">@noteGiamGia</small>
+                                        }
                                     }
                                     else
                                     {
@@ -177,13 +237,18 @@
                                     }
                                 </div>
 
-                                @* Nếu bạn có trường SoLuong để kiểm tra hết hàng, hiển thị nhãn *@
-                                @if (sp.GetType().GetProperty("SoLuong") != null)
+                                @* Kiểm tra tồn kho (Optional) *@
+                                @{
+                                    // Kiểm tra reflection an toàn hơn
+                                    var propSoLuong = sp.GetType().GetProperty("SoLuong");
+                                }
+                                @if (propSoLuong != null)
                                 {
-                                    var soLuongProp = sp.GetType().GetProperty("SoLuong").GetValue(sp, null);
-                                    int soLuongValue = 0;
-                                    if (soLuongProp != null) { int.TryParse(soLuongProp.ToString(), out soLuongValue); }
-                                    if (soLuongValue <= 0)
+                                    var val = propSoLuong.GetValue(sp, null);
+                                    int sl = 0;
+                                    if (val != null) { int.TryParse(val.ToString(), out sl); }
+
+                                    if (sl <= 0)
                                     {
                                         <div class="badge-out">Hết hàng</div>
                                     }

@@ -89,68 +89,85 @@
         <div class="row">
             @foreach (var item in Model)
             {
-                // --- CODE MỚI: KIỂM TRA NGÀY KHUYẾN MÃI ---
-                var km = item.KhuyenMai;
-                bool isActivePromo = false;
+                // =========================================================
+                // LOGIC TÍNH GIÁ KHUYẾN MÃI (Đã Fix)
+                // =========================================================
+                decimal giaGoc = item.GiaGoc ?? 0m;
+                decimal giaBanHienTai = giaGoc;
+                bool coKhuyenMai = false;
+                string badgeText = "";
+                string noteGiamGia = "";
 
-                if (km != null)
+                if (item.KhuyenMai != null)
                 {
+                    var km = item.KhuyenMai;
                     DateTime now = DateTime.Now;
                     DateTime? start = km.NgayBatDau;
                     DateTime? end = km.NgayKetThuc;
 
-                    if (end.HasValue && end.Value.TimeOfDay == TimeSpan.Zero)
-                    {
-                        end = end.Value.Date.AddDays(1).AddTicks(-1);
-                    }
+                    // Fix lỗi 00:00:00 ngày kết thúc
+                    if (end.HasValue && end.Value.TimeOfDay == TimeSpan.Zero) { end = end.Value.Date.AddDays(1).AddTicks(-1); }
 
+                    // 1. Kiểm tra hạn sử dụng
                     if ((start == null || start <= now) && (end == null || end >= now))
                     {
-                        isActivePromo = true;
+                        coKhuyenMai = true;
+                        decimal phanTram = km.PhanTramGiam ?? 0;
+                        decimal tienGiam = giaGoc * (phanTram / 100);
+                        decimal? giamToiDa = km.GiamToiDa;
+
+                        // 2. Kiểm tra giảm tối đa
+                        if (giamToiDa.HasValue && giamToiDa > 0 && tienGiam > giamToiDa.Value)
+                        {
+                            tienGiam = giamToiDa.Value;
+                            badgeText = "-" + tienGiam.ToString("N0") + "đ";
+                            noteGiamGia = "(Tối đa " + giamToiDa.Value.ToString("N0") + "đ)";
+                        }
+                        else
+                        {
+                            badgeText = "-" + phanTram + "%";
+                        }
+
+                        giaBanHienTai = giaGoc - tienGiam;
                     }
                 }
-
-                decimal discountPercent = isActivePromo ? (km?.PhanTramGiam ?? 0m) : 0m;
-
-                var oldPrice = item.GiaGoc ?? 0m;
-                var discountedPrice = oldPrice;
-                if (discountPercent > 0)
-                {
-                    discountedPrice = Math.Max(0, oldPrice - (oldPrice * discountPercent / 100));
-                }
+                // =========================================================
 
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <div class="card h-100 product-card"
-                         data-url="@Url.Action("ChiTietSanPham", "Home", new { id = item.MaSanPham })">
+                    <div class="card h-100 product-card" data-url="@Url.Action("ChiTietSanPham", "Home", new { id = item.MaSanPham })">
 
-                        @if (discountPercent > 0)
+                        @if (coKhuyenMai)
                         {
-                            <div class="promo-badge-small">Giảm @discountPercent% </div>
+                            <div class="promo-badge-small">@badgeText</div>
                         }
 
                         <a href="@Url.Action("ChiTietSanPham", "Home", new { id = item.MaSanPham })">
                             <img class="card-img-top"
-                                 src="@Url.Content($"~/Content/images/{item.HinhAnhDaiDien}")"
-                                 alt="@item.TenSanPham">
+                                 src="@Url.Content($"~/Content/images/{(string.IsNullOrEmpty(item.HinhAnhDaiDien) ? "default-product.jpg" : item.HinhAnhDaiDien)}")"
+                                 alt="@item.TenSanPham"
+                                 onerror="this.src='@Url.Content("~/Content/images/default-product.jpg")'" />
                         </a>
 
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title">
-                                @* Giữ link trên tên sản phẩm phòng trường hợp JS không hoạt động *@
                                 <a href="@Url.Action("ChiTietSanPham", "Home", new { id = item.MaSanPham })">
                                     @item.TenSanPham
                                 </a>
                             </h5>
 
                             <div class="price-block mt-auto">
-                                @if (discountPercent > 0)
+                                @if (coKhuyenMai)
                                 {
-                                    <span class="current-price">@string.Format("{0:N0}", discountedPrice) đ</span>
-                                    <span class="original-price">@string.Format("{0:N0}", oldPrice) đ</span>
+                                    <span class="current-price">@giaBanHienTai.ToString("N0") đ</span>
+                                    <span class="original-price">@giaGoc.ToString("N0") đ</span>
+                                    if (!string.IsNullOrEmpty(noteGiamGia))
+                                    {
+                                        <span class="note-discount">@noteGiamGia</span>
+                                    }
                                 }
                                 else
                                 {
-                                    <span class="current-price">@string.Format("{0:N0}", oldPrice) đ</span>
+                                    <span class="current-price">@giaGoc.ToString("N0") đ</span>
                                 }
                             </div>
                         </div>

@@ -19,46 +19,51 @@ namespace DoAn_CauLong.Controllers
     {
         QLDN_CAULONGEntities data = new QLDN_CAULONGEntities();
 
-       
+
         private decimal TinhGiaBanThucTe(ChiTietSanPham item)
         {
-            // 1. Lấy giá gốc (ưu tiên giá biến thể, nếu null thì lấy giá sản phẩm cha)
+            // 1. Lấy giá gốc
             decimal giaGoc = item.GiaBan ?? item.SanPham.GiaGoc ?? 0;
             decimal giaBanHienTai = giaGoc;
 
-            // 2. Lấy thông tin khuyến mãi từ sản phẩm cha
+            // 2. Lấy thông tin khuyến mãi
             var khuyenMai = item.SanPham.KhuyenMai;
 
-            // 3. Kiểm tra logic khuyến mãi
+            // 3. Kiểm tra khuyến mãi có tồn tại không
             if (khuyenMai != null)
             {
                 DateTime now = DateTime.Now;
-
-                // XỬ LÝ NGÀY KẾT THÚC: Nếu có ngày kết thúc, ta cho phép khuyến mãi đến hết giây cuối cùng của ngày đó (23:59:59)
-                // Nếu NgayKetThuc trong DB là 00:00:00, ta cộng thêm 1 ngày rồi trừ 1 tick để thành cuối ngày.
                 DateTime? ngayBatDau = khuyenMai.NgayBatDau;
                 DateTime? ngayKetThuc = khuyenMai.NgayKetThuc;
 
+                // Xử lý ngày kết thúc (tính đến hết ngày)
                 if (ngayKetThuc.HasValue && ngayKetThuc.Value.TimeOfDay == TimeSpan.Zero)
                 {
                     ngayKetThuc = ngayKetThuc.Value.Date.AddDays(1).AddTicks(-1);
                 }
 
-                // Kiểm tra ngày bắt đầu và kết thúc
+                // --- ĐIỀU KIỆN 1: KIỂM TRA HẠN SỬ DỤNG ---
                 bool isActive = (ngayBatDau == null || ngayBatDau <= now) &&
                                 (ngayKetThuc == null || ngayKetThuc >= now);
 
                 if (isActive)
                 {
+                    // --- ĐIỀU KIỆN 2: TÍNH GIẢM GIÁ KẾT HỢP GIẢM TỐI ĐA ---
+
+                    // a. Tính số tiền giảm theo phần trăm
                     decimal phanTram = khuyenMai.PhanTramGiam ?? 0;
                     decimal soTienGiam = giaGoc * (phanTram / 100);
 
-                    // Kiểm tra mức giảm tối đa (nếu có)
-                    if (khuyenMai.GiamToiDa.HasValue && soTienGiam > khuyenMai.GiamToiDa.Value)
+                    // b. Kiểm tra và áp dụng "Giảm tối đa" (Nếu có cấu hình)
+                    if (khuyenMai.GiamToiDa.HasValue && khuyenMai.GiamToiDa.Value > 0)
                     {
-                        soTienGiam = khuyenMai.GiamToiDa.Value;
+                        if (soTienGiam > khuyenMai.GiamToiDa.Value)
+                        {
+                            soTienGiam = khuyenMai.GiamToiDa.Value; // Chỉ giảm đúng mức trần
+                        }
                     }
 
+                    // c. Ra giá cuối
                     giaBanHienTai = giaGoc - soTienGiam;
                 }
             }
