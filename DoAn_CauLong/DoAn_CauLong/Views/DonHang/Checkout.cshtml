@@ -36,8 +36,19 @@
                 </div>
 
                 <hr />
+
                 <button type="submit" class="btn btn-primary btn-lg" style="background-color: #f36f21; border-color: #f36f21;">
-                    XÁC NHẬN ĐẶT HÀNG
+                    Thanh toán khi nhận hàng
+                </button>
+
+                <button type="submit"
+                        formaction="@Url.Action("PaymentMoMo", "DonHang")"
+                        class="btn btn-danger btn-lg"
+                        style="background-color: #a50064; border-color: #a50064; color: white; margin-left: 10px; display: inline-flex; align-items: center;">
+                    <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
+                         alt="MoMo Logo"
+                         style="width: 25px; height: 25px; margin-right: 8px; background-color: white; border-radius: 4px; padding: 2px;" />
+                    Thanh toán qua MoMo
                 </button>
             }
         </div>
