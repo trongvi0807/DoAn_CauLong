@@ -85,7 +85,8 @@ CREATE TABLE SanPham (
     FOREIGN KEY (MaKhuyenMai) REFERENCES KhuyenMai(MaKhuyenMai),
 	FOREIGN KEY (MaHang) REFERENCES Hang(MaHang)
 );
-
+ALTER TABLE SanPham
+ADD GiaBan AS dbo.GiaSauKhuyenMai(MaSanPham);
 -- Bảng ChiTietSanPham
 CREATE TABLE ChiTietSanPham (
     MaChiTiet INT PRIMARY KEY IDENTITY(1,1),
@@ -912,23 +913,71 @@ END
 GO
 
 -- 2. Function: GiaSauKhuyenMai – tính giá sau giảm %
-CREATE FUNCTION GiaSauKhuyenMai(@MaSanPham INT)
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE FUNCTION [dbo].[GiaSauKhuyenMai](@MaSanPham INT)
 RETURNS DECIMAL(15,2)
 AS
 BEGIN
+    -- 1. Khai báo biến
+    DECLARE @GiaGoc DECIMAL(15,2);
+    DECLARE @PhanTramGiam INT;
+    DECLARE @GiamToiDa DECIMAL(15,2);
+    DECLARE @NgayBatDau DATETIME;
+    DECLARE @NgayKetThuc DATETIME;
+    
     DECLARE @GiaSauGiam DECIMAL(15,2);
 
-    SELECT TOP(1) @GiaSauGiam = 
-        CASE 
-            WHEN sp.MaKhuyenMai IS NOT NULL AND km.PhanTramGiam > 0 
-            THEN sp.GiaGoc * (1 - km.PhanTramGiam/100.0)
-            ELSE sp.GiaGoc
-        END
+    -- 2. Lấy dữ liệu từ bảng SanPham và KhuyenMai
+    SELECT TOP 1 
+        @GiaGoc = sp.GiaGoc,
+        @PhanTramGiam = km.PhanTramGiam,
+        @GiamToiDa = km.GiamToiDa,
+        @NgayBatDau = km.NgayBatDau,
+        @NgayKetThuc = km.NgayKetThuc
     FROM SanPham sp
     LEFT JOIN KhuyenMai km ON sp.MaKhuyenMai = km.MaKhuyenMai
     WHERE sp.MaSanPham = @MaSanPham;
 
-    RETURN @GiaSauGiam; -- có thể là NULL nếu MaSanPham không tồn tại
+    -- Mặc định giá sau giảm = giá gốc (xử lý null thành 0 để tránh lỗi)
+    SET @GiaSauGiam = ISNULL(@GiaGoc, 0);
+
+    -- 3. Logic kiểm tra khuyến mãi (Khớp với logic C#)
+    DECLARE @Now DATETIME = GETDATE();
+    DECLARE @TienGiam DECIMAL(15,2) = 0;
+    
+    -- Xử lý trường hợp ngày kết thúc là 00:00:00 (đầu ngày) thì cho phép hiệu lực đến hết ngày đó
+    -- Tương đương logic: end = end.Value.Date.AddDays(1).AddTicks(-1) trong C#
+    IF @NgayKetThuc IS NOT NULL AND CAST(@NgayKetThuc AS TIME) = '00:00:00'
+    BEGIN
+        SET @NgayKetThuc = DATEADD(SECOND, -1, DATEADD(DAY, 1, @NgayKetThuc));
+    END
+
+    -- Điều kiện áp dụng:
+    -- 1. Có phần trăm giảm
+    -- 2. Ngày bắt đầu chưa đến hoặc đã qua
+    -- 3. Ngày kết thúc chưa đến hoặc không giới hạn
+    IF (@PhanTramGiam IS NOT NULL AND @PhanTramGiam > 0)
+       AND (@NgayBatDau IS NULL OR @NgayBatDau <= @Now)
+       AND (@NgayKetThuc IS NULL OR @NgayKetThuc >= @Now)
+    BEGIN
+        -- Tính tiền giảm
+        SET @TienGiam = @GiaGoc * (@PhanTramGiam / 100.0);
+
+        -- Kiểm tra trần giảm giá (GiamToiDa)
+        IF (@GiamToiDa IS NOT NULL AND @GiamToiDa > 0 AND @TienGiam > @GiamToiDa)
+        BEGIN
+            SET @TienGiam = @GiamToiDa;
+        END
+
+        -- Chốt giá cuối
+        SET @GiaSauGiam = @GiaGoc - @TienGiam;
+    END
+
+    RETURN @GiaSauGiam;
 END
 GO
 
