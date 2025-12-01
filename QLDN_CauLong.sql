@@ -85,8 +85,7 @@ CREATE TABLE SanPham (
     FOREIGN KEY (MaKhuyenMai) REFERENCES KhuyenMai(MaKhuyenMai),
 	FOREIGN KEY (MaHang) REFERENCES Hang(MaHang)
 );
-ALTER TABLE SanPham
-ADD GiaBan AS dbo.GiaSauKhuyenMai(MaSanPham);
+
 -- Bảng ChiTietSanPham
 CREATE TABLE ChiTietSanPham (
     MaChiTiet INT PRIMARY KEY IDENTITY(1,1),
@@ -1754,7 +1753,8 @@ BEGIN
     ORDER BY Thang
 END
 
-
+ALTER TABLE SanPham
+ADD GiaBan AS dbo.GiaSauKhuyenMai(MaSanPham);
 
 
 
