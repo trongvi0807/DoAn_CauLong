@@ -204,54 +204,30 @@ else
                     @foreach (var sp in limitedProducts)
                     {
                         // ========================================================
-                        // LOGIC TÍNH GIÁ ĐÃ FIX (Đầy đủ điều kiện)
+                        // LOGIC TÍNH % KHUYẾN MÃI (Sử dụng cột GiaBan từ SQL)
                         // ========================================================
                         decimal giaGoc = sp.GiaGoc ?? 0m;
-                        decimal giaBanHienTai = giaGoc;
-                        bool coKhuyenMai = false;
-                        string badgeText = "";
-                        string noteGiamGia = "";
+                        decimal giaBanHienTai = sp.GiaBan ?? giaGoc;
+                        bool coKhuyenMai = giaBanHienTai < giaGoc;
 
-                        if (sp.KhuyenMai != null)
+                        // Tính phần trăm giảm thực tế
+                        int phanTramGiam = 0;
+                        if (giaGoc > 0 && coKhuyenMai)
                         {
-                            var km = sp.KhuyenMai;
-                            DateTime now = DateTime.Now;
-                            DateTime? start = km.NgayBatDau;
-                            DateTime? end = km.NgayKetThuc;
+                            // Công thức: (Tiền giảm / Giá gốc) * 100 -> Làm tròn số
+                            phanTramGiam = (int)Math.Round((1 - (giaBanHienTai / giaGoc)) * 100);
 
-                            // Fix lỗi 00:00:00 ngày kết thúc
-                            if (end.HasValue && end.Value.TimeOfDay == TimeSpan.Zero)
-                            {
-                                end = end.Value.Date.AddDays(1).AddTicks(-1);
-                            }
-
-                            // 1. Kiểm tra thời hạn
-                            if ((start == null || start <= now) && (end == null || end >= now))
-                            {
-                                coKhuyenMai = true;
-                                decimal phanTram = km.PhanTramGiam ?? 0;
-                                decimal tienGiam = giaGoc * (phanTram / 100);
-                                decimal? giamToiDa = km.GiamToiDa;
-
-                                // 2. Kiểm tra giảm tối đa (QUAN TRỌNG)
-                                if (giamToiDa.HasValue && giamToiDa > 0 && tienGiam > giamToiDa.Value)
-                                {
-                                    tienGiam = giamToiDa.Value; // Chỉ giảm đúng trần
-                                    badgeText = "-" + tienGiam.ToString("N0") + "đ";
-                                    noteGiamGia = "(Tối đa " + giamToiDa.Value.ToString("N0") + "đ)";
-                                }
-                                else
-                                {
-                                    badgeText = "-" + phanTram + "%";
-                                }
-
-                                giaBanHienTai = giaGoc - tienGiam;
-                            }
+                            // Nếu có giảm giá nhưng tính ra 0% (do giảm quá ít), ép về tối thiểu 1%
+                            if (phanTramGiam == 0) { phanTramGiam = 1; }
                         }
+
+                        // Hiển thị phần trăm (Ví dụ: -15%)
+                        string badgeText = coKhuyenMai ? "-" + phanTramGiam + "%" : "";
                         // ========================================================
 
                         <div class="card">
-                            @if (coKhuyenMai)
+
+                            @if (coKhuyenMai && phanTramGiam > 0)
                             {
                                 <div class="promo-badge">@badgeText</div>
                             }
@@ -266,15 +242,12 @@ else
                                 <div>
                                     <p>
                                         <span>@giaBanHienTai.ToString("N0")₫</span>
+
                                         @if (coKhuyenMai)
                                         {
                                             <span class="old-price">@giaGoc.ToString("N0")₫</span>
                                         }
                                     </p>
-                                    @if (!string.IsNullOrEmpty(noteGiamGia))
-                                    {
-                                        <span class="note-max-discount">@noteGiamGia</span>
-                                    }
                                 </div>
                             </a>
                         </div>
