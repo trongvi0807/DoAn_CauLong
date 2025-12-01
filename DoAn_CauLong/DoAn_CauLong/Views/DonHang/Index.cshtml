@@ -11,6 +11,10 @@
     {
         <div class="alert alert-success">@TempData["Success"]</div>
     }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
 
     @if (!Model.Any())
     {
@@ -27,7 +31,7 @@
                     <th>Địa chỉ</th>
                     <th>Tổng tiền</th>
                     <th>Trạng thái</th>
-                    <th></th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,9 +40,7 @@
                     <tr>
                         <td>#@order.MaDonHang</td>
                         <td>@(order.NgayDat?.ToString("dd/MM/yyyy HH:mm"))</td>
-
                         <td>@order.KhachHang.HoTen</td>
-
                         <td>@order.DiaChiGiaoHang</td>
                         <td>@(order.TongTien?.ToString("N0"))đ</td>
                         <td>
@@ -46,9 +48,13 @@
                             {
                                 <span class="label label-warning">@order.TrangThai</span>
                             }
-                            else if (order.TrangThai == "Đã xử lý")
+                            else if (order.TrangThai == "Đã xử lý" || order.TrangThai == "Đã thanh toán bằng MoMo")
                             {
                                 <span class="label label-success">@order.TrangThai</span>
+                            }
+                            else if (order.TrangThai.Contains("Đã hủy"))
+                            {
+                                <span class="label label-danger">@order.TrangThai</span>
                             }
                             else
                             {
@@ -57,6 +63,16 @@
                         </td>
                         <td>
                             @Html.ActionLink("Xem Chi tiết", "Details", "DonHang", new { id = order.MaDonHang }, new { @class = "btn btn-info btn-sm" })
+
+                            @if (order.TrangThai == "Chờ xác nhận")
+                            {
+                                // Vì Controller yêu cầu HttpPost và ValidateAntiForgeryToken nên phải dùng Form
+                                using (Html.BeginForm("HuyDonHang", "DonHang", new { id = order.MaDonHang }, FormMethod.Post, new { style = "display:inline;", onsubmit = "return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger btn-sm" style="margin-left: 5px;">Hủy đơn</button>
+                                }
+                            }
                         </td>
                     </tr>
                 }
