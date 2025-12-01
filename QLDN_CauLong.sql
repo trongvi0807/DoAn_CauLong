@@ -1,5 +1,8 @@
 ﻿CREATE DATABASE QLDN_CAULONG
+GO
+
 USE QLDN_CAULONG
+GO
 
 -- Bảng PhanQuyen
 CREATE TABLE PhanQuyen (
@@ -61,7 +64,7 @@ CREATE TABLE MauSac (
 
 -- Bảng Size
 CREATE TABLE Size (
-     MaSize INT PRIMARY KEY IDENTITY(1,1),
+    MaSize INT PRIMARY KEY IDENTITY(1,1),
     TenSize VARCHAR(20) NOT NULL,
     LoaiSize NVARCHAR(30) NOT NULL CHECK (LoaiSize IN ('AoQuan', 'Giay', 'Vot'))
 );

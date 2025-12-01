@@ -87,6 +87,19 @@
           <Property Name="GiamToiDa" Type="decimal" Precision="15" Scale="2" />
           <Property Name="SoLuongSuDung" Type="int" />
         </EntityType>
+        <EntityType Name="LichSuThayDoiGia">
+          <Key>
+            <PropertyRef Name="MaLichSu" />
+          </Key>
+          <Property Name="MaLichSu" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MaChiTiet" Type="int" Nullable="false" />
+          <Property Name="GiaCu" Type="decimal" Precision="15" Scale="2" Nullable="false" />
+          <Property Name="GiaMoi" Type="decimal" Precision="15" Scale="2" Nullable="false" />
+          <Property Name="SoLuongCu" Type="int" Nullable="false" />
+          <Property Name="SoLuongMoi" Type="int" Nullable="false" />
+          <Property Name="ThoiGianThayDoi" Type="datetime" />
+          <Property Name="NguoiThayDoi" Type="nvarchar" MaxLength="100" />
+        </EntityType>
         <EntityType Name="LoaiSanPham">
           <Key>
             <PropertyRef Name="MaLoai" />
@@ -94,6 +107,16 @@
           <Property Name="MaLoai" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TenLoai" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="MoTa" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="LogLoiGiaoTac">
+          <Key>
+            <PropertyRef Name="MaLog" />
+          </Key>
+          <Property Name="MaLog" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MaChiTiet" Type="int" />
+          <Property Name="Loi" Type="nvarchar" MaxLength="1000" />
+          <Property Name="ThoiGian" Type="datetime" />
+          <Property Name="NguoiThucHien" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="MauSac">
           <Key>
@@ -289,6 +312,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__LichSuTha__MaChi__06CD04F7">
+          <End Role="ChiTietSanPham" Type="Self.ChiTietSanPham" Multiplicity="1" />
+          <End Role="LichSuThayDoiGia" Type="Self.LichSuThayDoiGia" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ChiTietSanPham">
+              <PropertyRef Name="MaChiTiet" />
+            </Principal>
+            <Dependent Role="LichSuThayDoiGia">
+              <PropertyRef Name="MaChiTiet" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__PhanHoi__MaKhach__74AE54BC">
           <End Role="KhachHang" Type="Self.KhachHang" Multiplicity="0..1" />
           <End Role="PhanHoi" Type="Self.PhanHoi" Multiplicity="*" />
@@ -468,7 +503,9 @@
           <EntitySet Name="Hang" EntityType="Self.Hang" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="KhachHang" EntityType="Self.KhachHang" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="KhuyenMai" EntityType="Self.KhuyenMai" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LichSuThayDoiGia" EntityType="Self.LichSuThayDoiGia" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LoaiSanPham" EntityType="Self.LoaiSanPham" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LogLoiGiaoTac" EntityType="Self.LogLoiGiaoTac" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MauSac" EntityType="Self.MauSac" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NhaCungCap" EntityType="Self.NhaCungCap" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PhanHoi" EntityType="Self.PhanHoi" Schema="dbo" store:Type="Tables" />
@@ -512,6 +549,10 @@
           <AssociationSet Name="FK__KhachHang__MaTai__619B8048" Association="Self.FK__KhachHang__MaTai__619B8048">
             <End Role="TaiKhoan" EntitySet="TaiKhoan" />
             <End Role="KhachHang" EntitySet="KhachHang" />
+          </AssociationSet>
+          <AssociationSet Name="FK__LichSuTha__MaChi__06CD04F7" Association="Self.FK__LichSuTha__MaChi__06CD04F7">
+            <End Role="ChiTietSanPham" EntitySet="ChiTietSanPham" />
+            <End Role="LichSuThayDoiGia" EntitySet="LichSuThayDoiGia" />
           </AssociationSet>
           <AssociationSet Name="FK__PhanHoi__MaKhach__74AE54BC" Association="Self.FK__PhanHoi__MaKhach__74AE54BC">
             <End Role="KhachHang" EntitySet="KhachHang" />
@@ -581,6 +622,7 @@
           <NavigationProperty Name="Size" Relationship="Self.FK__ChiTietSa__MaSiz__6C190EBB" FromRole="ChiTietSanPham" ToRole="Size" />
           <NavigationProperty Name="GioHangs" Relationship="Self.FK__GioHang__MaChiTi__0D7A0286" FromRole="ChiTietSanPham" ToRole="GioHang" />
           <NavigationProperty Name="ThongSoVots" Relationship="Self.FK__ThongSoVo__MaChi__6EF57B66" FromRole="ChiTietSanPham" ToRole="ThongSoVot" />
+          <NavigationProperty Name="LichSuThayDoiGias" Relationship="QLDN_CAULONGModel.FK__LichSuTha__MaChi__06CD04F7" FromRole="ChiTietSanPham" ToRole="LichSuThayDoiGia" />
         </EntityType>
         <EntityType Name="DonHang">
           <Key>
@@ -1088,21 +1130,27 @@
             <Parameter Name="Email" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="ThongKeDoanhThu_Quy" ReturnType="Collection(QLDN_CAULONGModel.ThongKeDoanhThu_Quy_Result)">
-            <Parameter Name="Nam" Mode="In" Type="Int32" />
+          <Parameter Name="Nam" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="ThongKeDoanhThuNam" ReturnType="Collection(QLDN_CAULONGModel.ThongKeDoanhThuNam_Result)">
-            <Parameter Name="Nam" Mode="In" Type="Int32" />
+          <Parameter Name="Nam" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="ThongKeDoanhThuThang_Nam" ReturnType="Collection(QLDN_CAULONGModel.ThongKeDoanhThuThang_Nam_Result)">
             <Parameter Name="Thang" Mode="In" Type="Int32" />
             <Parameter Name="Nam" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="ThongKeDoanhThuTheoThang" ReturnType="Collection(QLDN_CAULONGModel.ThongKeDoanhThuTheoThang_Result)">
-            <Parameter Name="Nam" Mode="In" Type="Int32" />
+          <Parameter Name="Nam" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="Tong_SPDaBan" IsComposable="true" ReturnType="Collection(QLDN_CAULONGModel.Tong_SPDaBan_Result)">
-            <Parameter Name="MaSP" Mode="In" Type="Int32" />
+          <Parameter Name="MaSP" Mode="In" Type="Int32" />
           </FunctionImport>
+          <EntitySet Name="LichSuThayDoiGias" EntityType="QLDN_CAULONGModel.LichSuThayDoiGia" />
+          <EntitySet Name="LogLoiGiaoTacs" EntityType="QLDN_CAULONGModel.LogLoiGiaoTac" />
+          <AssociationSet Name="FK__LichSuTha__MaChi__06CD04F7" Association="QLDN_CAULONGModel.FK__LichSuTha__MaChi__06CD04F7">
+            <End Role="ChiTietSanPham" EntitySet="ChiTietSanPhams" />
+            <End Role="LichSuThayDoiGia" EntitySet="LichSuThayDoiGias" />
+          </AssociationSet>
         </EntityContainer>
         <ComplexType Name="SP_ThongBaoDanhGiaThap_Result">
           <Property Type="Int32" Name="MaPhanHoi" Nullable="false" />
@@ -1137,6 +1185,42 @@
           <Property Type="String" Name="TenSanPham" Nullable="false" MaxLength="100" />
           <Property Type="Int32" Name="TongSoLuongBan" Nullable="false" />
         </ComplexType>
+        <EntityType Name="LichSuThayDoiGia">
+          <Key>
+            <PropertyRef Name="MaLichSu" />
+          </Key>
+          <Property Name="MaLichSu" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MaChiTiet" Type="Int32" Nullable="false" />
+          <Property Name="GiaCu" Type="Decimal" Nullable="false" Precision="15" Scale="2" />
+          <Property Name="GiaMoi" Type="Decimal" Nullable="false" Precision="15" Scale="2" />
+          <Property Name="SoLuongCu" Type="Int32" Nullable="false" />
+          <Property Name="SoLuongMoi" Type="Int32" Nullable="false" />
+          <Property Name="ThoiGianThayDoi" Type="DateTime" Precision="3" />
+          <Property Name="NguoiThayDoi" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ChiTietSanPham" Relationship="QLDN_CAULONGModel.FK__LichSuTha__MaChi__06CD04F7" FromRole="LichSuThayDoiGia" ToRole="ChiTietSanPham" />
+        </EntityType>
+        <EntityType Name="LogLoiGiaoTac">
+          <Key>
+            <PropertyRef Name="MaLog" />
+          </Key>
+          <Property Name="MaLog" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MaChiTiet" Type="Int32" />
+          <Property Name="Loi" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="ThoiGian" Type="DateTime" Precision="3" />
+          <Property Name="NguoiThucHien" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK__LichSuTha__MaChi__06CD04F7">
+          <End Type="QLDN_CAULONGModel.ChiTietSanPham" Role="ChiTietSanPham" Multiplicity="1" />
+          <End Type="QLDN_CAULONGModel.LichSuThayDoiGia" Role="LichSuThayDoiGia" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ChiTietSanPham">
+              <PropertyRef Name="MaChiTiet" />
+            </Principal>
+            <Dependent Role="LichSuThayDoiGia">
+              <PropertyRef Name="MaChiTiet" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1396,6 +1480,31 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="LichSuThayDoiGias">
+            <EntityTypeMapping TypeName="QLDN_CAULONGModel.LichSuThayDoiGia">
+              <MappingFragment StoreEntitySet="LichSuThayDoiGia">
+                <ScalarProperty Name="NguoiThayDoi" ColumnName="NguoiThayDoi" />
+                <ScalarProperty Name="ThoiGianThayDoi" ColumnName="ThoiGianThayDoi" />
+                <ScalarProperty Name="SoLuongMoi" ColumnName="SoLuongMoi" />
+                <ScalarProperty Name="SoLuongCu" ColumnName="SoLuongCu" />
+                <ScalarProperty Name="GiaMoi" ColumnName="GiaMoi" />
+                <ScalarProperty Name="GiaCu" ColumnName="GiaCu" />
+                <ScalarProperty Name="MaChiTiet" ColumnName="MaChiTiet" />
+                <ScalarProperty Name="MaLichSu" ColumnName="MaLichSu" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LogLoiGiaoTacs">
+            <EntityTypeMapping TypeName="QLDN_CAULONGModel.LogLoiGiaoTac">
+              <MappingFragment StoreEntitySet="LogLoiGiaoTac">
+                <ScalarProperty Name="NguoiThucHien" ColumnName="NguoiThucHien" />
+                <ScalarProperty Name="ThoiGian" ColumnName="ThoiGian" />
+                <ScalarProperty Name="Loi" ColumnName="Loi" />
+                <ScalarProperty Name="MaChiTiet" ColumnName="MaChiTiet" />
+                <ScalarProperty Name="MaLog" ColumnName="MaLog" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

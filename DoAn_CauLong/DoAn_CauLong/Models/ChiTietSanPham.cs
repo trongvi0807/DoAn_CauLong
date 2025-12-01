@@ -20,6 +20,7 @@ namespace DoAn_CauLong.Models
             this.ChiTietDonHangs = new HashSet<ChiTietDonHang>();
             this.GioHangs = new HashSet<GioHang>();
             this.ThongSoVots = new HashSet<ThongSoVot>();
+            this.LichSuThayDoiGias = new HashSet<LichSuThayDoiGia>();
         }
     
         public int MaChiTiet { get; set; }
@@ -40,5 +41,7 @@ namespace DoAn_CauLong.Models
         public virtual ICollection<GioHang> GioHangs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ThongSoVot> ThongSoVots { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<LichSuThayDoiGia> LichSuThayDoiGias { get; set; }
     }
 }
