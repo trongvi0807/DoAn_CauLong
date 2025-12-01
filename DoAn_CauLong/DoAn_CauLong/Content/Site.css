@@ -1,4 +1,4 @@
-﻿﻿ /* Set padding to keep content from hitting the edges */
+﻿/* Set padding to keep content from hitting the edges */
 .body-content {
     margin-top: 15px;
     padding-left: 15px;
@@ -609,6 +609,32 @@ footer {
     .carousel-caption p {
         margin: 0;
     }
+
+/* Chat header title alignment and spacing */
+.chat-header-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1.2;
+    margin: 0;
+    max-width: calc(100% - 40px); /* leave room for close button */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-header-title .chat-header-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* Improve spacing for the header container */
+.card-header.bg-primary {
+    padding: 10px 12px;
+}
 
 @media (max-width: 1200px) {
     .mega-submenu {

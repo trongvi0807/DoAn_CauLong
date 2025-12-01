@@ -391,7 +391,13 @@
          style="position: fixed; bottom: 100px; right: 30px; z-index: 9999; width: 380px; height: 500px; display: none; flex-direction: column; overflow: hidden; border-radius: 15px;">
 
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center" style="flex-shrink: 0;">
-            <h6 class="mb-0 font-weight-bold"><i class="fa fa-robot"></i> Trợ lý Cầu Lông</h6>
+            <h6 class="mb-0 font-weight-bold chat-header-title d-flex align-items-center">
+                <img class="chat-header-avatar rounded-circle shadow-sm"
+                     src="@Url.Content("~/Content/images/HUIT.jpg")"
+                     alt="HUIT"
+                     style="width: 35px; height: 35px; object-fit: cover; margin-right: 10px;" />
+                Trợ lý Vĩ Cute
+            </h6>
             <button id="close-chat" class="btn btn-sm btn-link text-white" style="text-decoration: none; font-size: 20px;">&times;</button>
         </div>
 
@@ -434,17 +440,12 @@
 
                 // Hiển thị tin người dùng
                 $("#chat-history").append(`
-                        <div class="d-flex justify-content-end mb-2">
-                            <div class="bg-primary text-white p-2 rounded" style="max-width: 80%; word-wrap: break-word;">
-                                ${message}
-                            </div>
-                        </div>
-                    `);
+                        <div class=\"d-flex justify-content-end mb-2\">\r\n                            <div class=\"bg-primary text-white p-2 rounded\" style=\"max-width: 80%; word-wrap: break-word;\">\r\n                                ${message}\r\n                            </div>\r\n                        </div>\r\n                    `);
                 $("#user-input").val("");
                 scrollToBottom();
 
                 // Hiển thị trạng thái đang nhập
-                $("#chat-history").append('<div id="loading" class="text-muted small ml-2"><i>Đang trả lời...</i></div>');
+                $("#chat-history").append('<div id=\"loading\" class=\"text-muted small ml-2\"><i>Đang trả lời...</i></div>');
                 scrollToBottom();
 
                 // Gửi Ajax
@@ -460,14 +461,10 @@
                             // Xử lý xuống dòng cho đẹp
                             var botText = response.reply.replace(/\n/g, "<br>");
                             botHtml = `
-                                    <div class="d-flex justify-content-start mb-2">
-                                        <div class="bg-light text-dark border p-2 rounded" style="max-width: 85%; word-wrap: break-word;">
-                                            ${botText}
-                                        </div>
-                                    </div>`;
+                                    <div class=\"d-flex justify-content-start mb-2\">\r\n                                        <div class=\"bg-light text-dark border p-2 rounded\" style=\"max-width: 85%; word-wrap: break-word;\">\r\n                                            ${botText}\r\n                                        </div>\r\n                                    </div>`;
                         } else {
                             // Hiển thị lỗi chi tiết để debug
-                            botHtml = `<div class="text-danger small my-2">Error: ${response.reply}</div>`;
+                            botHtml = `<div class=\"text-danger small my-2\">Error: ${response.reply}</div>`;
                         }
 
                         $("#chat-history").append(botHtml);
@@ -475,7 +472,7 @@
                     },
                     error: function (xhr, status, error) {
                         $("#loading").remove();
-                        $("#chat-history").append('<div class="text-danger small my-2">Lỗi kết nối server: ' + error + '</div>');
+                        $("#chat-history").append('<div class=\"text-danger small my-2\">Lỗi kết nối server: ' + error + '</div>');
                         scrollToBottom();
                     }
                 });
