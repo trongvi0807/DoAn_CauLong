@@ -468,8 +468,8 @@
     // ===================================================================
     const promotionData = {
         isActive: @(isActivePromo.ToString().ToLower()),
-        percent: @(discountPercent),
-        maxDiscount: @(maxDiscount) // Giá trị giảm tối đa
+        percent: @(discountPercent.ToString(System.Globalization.CultureInfo.InvariantCulture)),
+        maxDiscount: @(maxDiscount.ToString(System.Globalization.CultureInfo.InvariantCulture))
     };
 
     const isRacket = @(isRacket.ToString().ToLower());

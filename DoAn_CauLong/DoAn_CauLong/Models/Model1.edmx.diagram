@@ -38,6 +38,9 @@
         <AssociationConnector Association="QLDN_CAULONGModel.FK__SanPham__MaNhaCu__628FA481" ManuallyRouted="false" />
         <AssociationConnector Association="QLDN_CAULONGModel.FK__PhanHoi__MaSanPh__07C12930" ManuallyRouted="false" />
         <AssociationConnector Association="QLDN_CAULONGModel.FK__TaiKhoan__MaQuye__4D94879B" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.LichSuThayDoiGia" Width="1.5" PointX="7.5" PointY="21.375" />
+        <EntityTypeShape EntityType="QLDN_CAULONGModel.LogLoiGiaoTac" Width="1.5" PointX="7.375" PointY="9.75" />
+        <AssociationConnector Association="QLDN_CAULONGModel.FK__LichSuTha__MaChi__06CD04F7" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

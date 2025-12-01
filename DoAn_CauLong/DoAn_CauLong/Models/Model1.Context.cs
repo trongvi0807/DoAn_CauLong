@@ -43,6 +43,8 @@ namespace DoAn_CauLong.Models
         public virtual DbSet<Size> Sizes { get; set; }
         public virtual DbSet<TaiKhoan> TaiKhoans { get; set; }
         public virtual DbSet<ThongSoVot> ThongSoVots { get; set; }
+        public virtual DbSet<LichSuThayDoiGia> LichSuThayDoiGias { get; set; }
+        public virtual DbSet<LogLoiGiaoTac> LogLoiGiaoTacs { get; set; }
     
         public virtual int CapNhatGiaVaTonKho(Nullable<int> maChiTiet, Nullable<decimal> giaBanMoi, Nullable<int> soLuongTonMoi, string mucCoLap)
         {
