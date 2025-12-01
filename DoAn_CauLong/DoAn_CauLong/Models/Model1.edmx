@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="QLDN_CAULONGModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="QLDN_CAULONGModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ChiTietDonHang">
           <Key>
             <PropertyRef Name="MaChiTiet" />
@@ -146,6 +146,7 @@
           <Property Name="CoSize" Type="bit" />
           <Property Name="CoMau" Type="bit" />
           <Property Name="NgayTao" Type="datetime" />
+          <Property Name="GiaBan" Type="decimal" Precision="15" Scale="2" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="Size">
           <Key>
@@ -178,7 +179,7 @@
           <Property Name="ChieuDai" Type="nvarchar" MaxLength="20" />
           <Property Name="SucCang" Type="nvarchar" MaxLength="20" />
         </EntityType>
-        <Association Name="FK__ChiTietDo__MaChi__02084FDA">
+        <Association Name="FK__ChiTietDo__MaChi__6FE99F9F">
           <End Role="ChiTietSanPham" Type="Self.ChiTietSanPham" Multiplicity="0..1" />
           <End Role="ChiTietDonHang" Type="Self.ChiTietDonHang" Multiplicity="*" />
           <ReferentialConstraint>
@@ -190,7 +191,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ChiTietDo__MaDon__01142BA1">
+        <Association Name="FK__ChiTietDo__MaDon__6EF57B66">
           <End Role="DonHang" Type="Self.DonHang" Multiplicity="0..1" />
           <End Role="ChiTietDonHang" Type="Self.ChiTietDonHang" Multiplicity="*" />
           <ReferentialConstraint>
@@ -202,7 +203,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ChiTietSa__MaMau__6B24EA82">
+        <Association Name="FK__ChiTietSa__MaMau__59063A47">
           <End Role="MauSac" Type="Self.MauSac" Multiplicity="0..1" />
           <End Role="ChiTietSanPham" Type="Self.ChiTietSanPham" Multiplicity="*" />
           <ReferentialConstraint>
@@ -214,7 +215,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ChiTietSa__MaSan__6A30C649">
+        <Association Name="FK__ChiTietSa__MaSan__5812160E">
           <End Role="SanPham" Type="Self.SanPham" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
@@ -228,7 +229,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ChiTietSa__MaSiz__6C190EBB">
+        <Association Name="FK__ChiTietSa__MaSiz__59FA5E80">
           <End Role="Size" Type="Self.Size" Multiplicity="0..1" />
           <End Role="ChiTietSanPham" Type="Self.ChiTietSanPham" Multiplicity="*" />
           <ReferentialConstraint>
@@ -240,7 +241,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__DonHang__MaKhach__7B5B524B">
+        <Association Name="FK__DonHang__MaKhach__693CA210">
           <End Role="KhachHang" Type="Self.KhachHang" Multiplicity="0..1" />
           <End Role="DonHang" Type="Self.DonHang" Multiplicity="*" />
           <ReferentialConstraint>
@@ -252,7 +253,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__GioHang__MaChiTi__0D7A0286">
+        <Association Name="FK__GioHang__MaChiTi__7B5B524B">
           <End Role="ChiTietSanPham" Type="Self.ChiTietSanPham" Multiplicity="0..1" />
           <End Role="GioHang" Type="Self.GioHang" Multiplicity="*" />
           <ReferentialConstraint>
@@ -264,7 +265,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__GioHang__MaKhach__0C85DE4D">
+        <Association Name="FK__GioHang__MaKhach__7A672E12">
           <End Role="KhachHang" Type="Self.KhachHang" Multiplicity="0..1" />
           <End Role="GioHang" Type="Self.GioHang" Multiplicity="*" />
           <ReferentialConstraint>
@@ -276,7 +277,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__KhachHang__MaTai__73BA3083">
+        <Association Name="FK__KhachHang__MaTai__619B8048">
           <End Role="TaiKhoan" Type="Self.TaiKhoan" Multiplicity="0..1" />
           <End Role="KhachHang" Type="Self.KhachHang" Multiplicity="*" />
           <ReferentialConstraint>
@@ -288,7 +289,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PhanHoi__MaKhach__06CD04F7">
+        <Association Name="FK__PhanHoi__MaKhach__74AE54BC">
           <End Role="KhachHang" Type="Self.KhachHang" Multiplicity="0..1" />
           <End Role="PhanHoi" Type="Self.PhanHoi" Multiplicity="*" />
           <ReferentialConstraint>
@@ -300,7 +301,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PhanHoi__MaSanPh__07C12930">
+        <Association Name="FK__PhanHoi__MaSanPh__75A278F5">
           <End Role="SanPham" Type="Self.SanPham" Multiplicity="0..1" />
           <End Role="PhanHoi" Type="Self.PhanHoi" Multiplicity="*" />
           <ReferentialConstraint>
@@ -312,7 +313,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SanPham__MaHang__6477ECF3">
+        <Association Name="FK__SanPham__MaHang__52593CB8">
           <End Role="Hang" Type="Self.Hang" Multiplicity="0..1" />
           <End Role="SanPham" Type="Self.SanPham" Multiplicity="*" />
           <ReferentialConstraint>
@@ -324,7 +325,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SanPham__MaKhuye__6383C8BA">
+        <Association Name="FK__SanPham__MaKhuye__5165187F">
           <End Role="KhuyenMai" Type="Self.KhuyenMai" Multiplicity="0..1" />
           <End Role="SanPham" Type="Self.SanPham" Multiplicity="*" />
           <ReferentialConstraint>
@@ -336,7 +337,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SanPham__MaLoai__619B8048">
+        <Association Name="FK__SanPham__MaLoai__4F7CD00D">
           <End Role="LoaiSanPham" Type="Self.LoaiSanPham" Multiplicity="0..1" />
           <End Role="SanPham" Type="Self.SanPham" Multiplicity="*" />
           <ReferentialConstraint>
@@ -348,7 +349,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SanPham__MaNhaCu__628FA481">
+        <Association Name="FK__SanPham__MaNhaCu__5070F446">
           <End Role="NhaCungCap" Type="Self.NhaCungCap" Multiplicity="0..1" />
           <End Role="SanPham" Type="Self.SanPham" Multiplicity="*" />
           <ReferentialConstraint>
@@ -360,7 +361,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TaiKhoan__MaQuye__4D94879B">
+        <Association Name="FK__TaiKhoan__MaQuye__3B75D760">
           <End Role="PhanQuyen" Type="Self.PhanQuyen" Multiplicity="0..1" />
           <End Role="TaiKhoan" Type="Self.TaiKhoan" Multiplicity="*" />
           <ReferentialConstraint>
@@ -372,7 +373,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ThongSoVo__MaChi__6EF57B66">
+        <Association Name="FK__ThongSoVo__MaChi__5CD6CB2B">
           <End Role="ChiTietSanPham" Type="Self.ChiTietSanPham" Multiplicity="0..1" />
           <End Role="ThongSoVot" Type="Self.ThongSoVot" Multiplicity="*" />
           <ReferentialConstraint>
@@ -384,6 +385,81 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="CapNhatGiaVaTonKho" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="MaChiTiet" Type="int" Mode="In" />
+          <Parameter Name="GiaBanMoi" Type="decimal" Mode="In" />
+          <Parameter Name="SoLuongTonMoi" Type="int" Mode="In" />
+          <Parameter Name="MucCoLap" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="GiaSauKhuyenMai" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="decimal">
+          <Parameter Name="MaSanPham" Type="int" Mode="In" />
+        </Function>
+        <Function Name="KiemTraDangNhap" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="bit">
+          <Parameter Name="User" Type="varchar" Mode="In" />
+          <Parameter Name="Pass" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="KiemTraDonHangChuaThanhToan" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="SP_ThongBaoDanhGiaThap" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="ThemDonHang" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="MaKhachHang" Type="int" Mode="In" />
+          <Parameter Name="DiaChi" Type="nvarchar" Mode="In" />
+          <Parameter Name="SoDienThoai" Type="varchar" Mode="In" />
+          <Parameter Name="GhiChu" Type="nvarchar" Mode="In" />
+          <Parameter Name="MaDonHang_OUT" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="THEMPHANHOI" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="NoiDung" Type="nvarchar" Mode="In" />
+          <Parameter Name="DanhGia" Type="int" Mode="In" />
+          <Parameter Name="MaKH" Type="int" Mode="In" />
+          <Parameter Name="MaSP" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ThemSanPhamKhuyenMai" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TenSanPham" Type="nvarchar" Mode="In" />
+          <Parameter Name="MoTa" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="GiaGoc" Type="decimal" Mode="In" />
+          <Parameter Name="HinhAnhDaiDien" Type="varchar" Mode="In" />
+          <Parameter Name="MaLoai" Type="int" Mode="In" />
+          <Parameter Name="MaNhaCungCap" Type="int" Mode="In" />
+          <Parameter Name="MaHang" Type="int" Mode="In" />
+          <Parameter Name="MaKhuyenMai" Type="int" Mode="In" />
+          <Parameter Name="CoSize" Type="bit" Mode="In" />
+          <Parameter Name="CoMau" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="ThemTaiKhoanMoi" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TenDangNhap" Type="varchar" Mode="In" />
+          <Parameter Name="MatKhau" Type="varchar" Mode="In" />
+          <Parameter Name="Email" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="ThongKeDoanhThu_Quy" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Nam" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ThongKeDoanhThuNam" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Nam" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ThongKeDoanhThuThang_Nam" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Thang" Type="int" Mode="In" />
+          <Parameter Name="Nam" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ThongKeDoanhThuTheoThang" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Nam" Type="int" Mode="In" />
+        </Function>
+        <Function Name="TinhTongTienDonHang" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="decimal">
+          <Parameter Name="MaDonHang" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Tong_SPDaBan" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="MaSP" Type="int" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="TenSanPham" Type="nvarchar" MaxLength="100" Nullable="false" />
+                <Property Name="TongSoLuongBan" Type="int" Nullable="false" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="TrungBinhDanhGia" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="decimal">
+          <Parameter Name="MaSP" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="QLDN_CAULONGModelStoreContainer">
           <EntitySet Name="ChiTietDonHang" EntityType="Self.ChiTietDonHang" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ChiTietSanPham" EntityType="Self.ChiTietSanPham" Schema="dbo" store:Type="Tables" />
@@ -401,77 +477,76 @@
           <EntitySet Name="Size" EntityType="Self.Size" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TaiKhoan" EntityType="Self.TaiKhoan" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ThongSoVot" EntityType="Self.ThongSoVot" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__ChiTietDo__MaChi__02084FDA" Association="Self.FK__ChiTietDo__MaChi__02084FDA">
+          <AssociationSet Name="FK__ChiTietDo__MaChi__6FE99F9F" Association="Self.FK__ChiTietDo__MaChi__6FE99F9F">
             <End Role="ChiTietSanPham" EntitySet="ChiTietSanPham" />
             <End Role="ChiTietDonHang" EntitySet="ChiTietDonHang" />
           </AssociationSet>
-          <AssociationSet Name="FK__ChiTietDo__MaDon__01142BA1" Association="Self.FK__ChiTietDo__MaDon__01142BA1">
+          <AssociationSet Name="FK__ChiTietDo__MaDon__6EF57B66" Association="Self.FK__ChiTietDo__MaDon__6EF57B66">
             <End Role="DonHang" EntitySet="DonHang" />
             <End Role="ChiTietDonHang" EntitySet="ChiTietDonHang" />
           </AssociationSet>
-          <AssociationSet Name="FK__ChiTietSa__MaMau__6B24EA82" Association="Self.FK__ChiTietSa__MaMau__6B24EA82">
+          <AssociationSet Name="FK__ChiTietSa__MaMau__59063A47" Association="Self.FK__ChiTietSa__MaMau__59063A47">
             <End Role="MauSac" EntitySet="MauSac" />
             <End Role="ChiTietSanPham" EntitySet="ChiTietSanPham" />
           </AssociationSet>
-          <AssociationSet Name="FK__ChiTietSa__MaSan__6A30C649" Association="Self.FK__ChiTietSa__MaSan__6A30C649">
+          <AssociationSet Name="FK__ChiTietSa__MaSan__5812160E" Association="Self.FK__ChiTietSa__MaSan__5812160E">
             <End Role="SanPham" EntitySet="SanPham" />
             <End Role="ChiTietSanPham" EntitySet="ChiTietSanPham" />
           </AssociationSet>
-          <AssociationSet Name="FK__ChiTietSa__MaSiz__6C190EBB" Association="Self.FK__ChiTietSa__MaSiz__6C190EBB">
+          <AssociationSet Name="FK__ChiTietSa__MaSiz__59FA5E80" Association="Self.FK__ChiTietSa__MaSiz__59FA5E80">
             <End Role="Size" EntitySet="Size" />
             <End Role="ChiTietSanPham" EntitySet="ChiTietSanPham" />
           </AssociationSet>
-          <AssociationSet Name="FK__DonHang__MaKhach__7B5B524B" Association="Self.FK__DonHang__MaKhach__7B5B524B">
+          <AssociationSet Name="FK__DonHang__MaKhach__693CA210" Association="Self.FK__DonHang__MaKhach__693CA210">
             <End Role="KhachHang" EntitySet="KhachHang" />
             <End Role="DonHang" EntitySet="DonHang" />
           </AssociationSet>
-          <AssociationSet Name="FK__GioHang__MaChiTi__0D7A0286" Association="Self.FK__GioHang__MaChiTi__0D7A0286">
+          <AssociationSet Name="FK__GioHang__MaChiTi__7B5B524B" Association="Self.FK__GioHang__MaChiTi__7B5B524B">
             <End Role="ChiTietSanPham" EntitySet="ChiTietSanPham" />
             <End Role="GioHang" EntitySet="GioHang" />
           </AssociationSet>
-          <AssociationSet Name="FK__GioHang__MaKhach__0C85DE4D" Association="Self.FK__GioHang__MaKhach__0C85DE4D">
+          <AssociationSet Name="FK__GioHang__MaKhach__7A672E12" Association="Self.FK__GioHang__MaKhach__7A672E12">
             <End Role="KhachHang" EntitySet="KhachHang" />
             <End Role="GioHang" EntitySet="GioHang" />
           </AssociationSet>
-          <AssociationSet Name="FK__KhachHang__MaTai__73BA3083" Association="Self.FK__KhachHang__MaTai__73BA3083">
+          <AssociationSet Name="FK__KhachHang__MaTai__619B8048" Association="Self.FK__KhachHang__MaTai__619B8048">
             <End Role="TaiKhoan" EntitySet="TaiKhoan" />
             <End Role="KhachHang" EntitySet="KhachHang" />
           </AssociationSet>
-          <AssociationSet Name="FK__PhanHoi__MaKhach__06CD04F7" Association="Self.FK__PhanHoi__MaKhach__06CD04F7">
+          <AssociationSet Name="FK__PhanHoi__MaKhach__74AE54BC" Association="Self.FK__PhanHoi__MaKhach__74AE54BC">
             <End Role="KhachHang" EntitySet="KhachHang" />
             <End Role="PhanHoi" EntitySet="PhanHoi" />
           </AssociationSet>
-          <AssociationSet Name="FK__PhanHoi__MaSanPh__07C12930" Association="Self.FK__PhanHoi__MaSanPh__07C12930">
+          <AssociationSet Name="FK__PhanHoi__MaSanPh__75A278F5" Association="Self.FK__PhanHoi__MaSanPh__75A278F5">
             <End Role="SanPham" EntitySet="SanPham" />
             <End Role="PhanHoi" EntitySet="PhanHoi" />
           </AssociationSet>
-          <AssociationSet Name="FK__SanPham__MaHang__6477ECF3" Association="Self.FK__SanPham__MaHang__6477ECF3">
+          <AssociationSet Name="FK__SanPham__MaHang__52593CB8" Association="Self.FK__SanPham__MaHang__52593CB8">
             <End Role="Hang" EntitySet="Hang" />
             <End Role="SanPham" EntitySet="SanPham" />
           </AssociationSet>
-          <AssociationSet Name="FK__SanPham__MaKhuye__6383C8BA" Association="Self.FK__SanPham__MaKhuye__6383C8BA">
+          <AssociationSet Name="FK__SanPham__MaKhuye__5165187F" Association="Self.FK__SanPham__MaKhuye__5165187F">
             <End Role="KhuyenMai" EntitySet="KhuyenMai" />
             <End Role="SanPham" EntitySet="SanPham" />
           </AssociationSet>
-          <AssociationSet Name="FK__SanPham__MaLoai__619B8048" Association="Self.FK__SanPham__MaLoai__619B8048">
+          <AssociationSet Name="FK__SanPham__MaLoai__4F7CD00D" Association="Self.FK__SanPham__MaLoai__4F7CD00D">
             <End Role="LoaiSanPham" EntitySet="LoaiSanPham" />
             <End Role="SanPham" EntitySet="SanPham" />
           </AssociationSet>
-          <AssociationSet Name="FK__SanPham__MaNhaCu__628FA481" Association="Self.FK__SanPham__MaNhaCu__628FA481">
+          <AssociationSet Name="FK__SanPham__MaNhaCu__5070F446" Association="Self.FK__SanPham__MaNhaCu__5070F446">
             <End Role="NhaCungCap" EntitySet="NhaCungCap" />
             <End Role="SanPham" EntitySet="SanPham" />
           </AssociationSet>
-          <AssociationSet Name="FK__TaiKhoan__MaQuye__4D94879B" Association="Self.FK__TaiKhoan__MaQuye__4D94879B">
+          <AssociationSet Name="FK__TaiKhoan__MaQuye__3B75D760" Association="Self.FK__TaiKhoan__MaQuye__3B75D760">
             <End Role="PhanQuyen" EntitySet="PhanQuyen" />
             <End Role="TaiKhoan" EntitySet="TaiKhoan" />
           </AssociationSet>
-          <AssociationSet Name="FK__ThongSoVo__MaChi__6EF57B66" Association="Self.FK__ThongSoVo__MaChi__6EF57B66">
+          <AssociationSet Name="FK__ThongSoVo__MaChi__5CD6CB2B" Association="Self.FK__ThongSoVo__MaChi__5CD6CB2B">
             <End Role="ChiTietSanPham" EntitySet="ChiTietSanPham" />
             <End Role="ThongSoVot" EntitySet="ThongSoVot" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="QLDN_CAULONGModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -646,6 +721,7 @@
           <NavigationProperty Name="LoaiSanPham" Relationship="Self.FK__SanPham__MaLoai__619B8048" FromRole="SanPham" ToRole="LoaiSanPham" />
           <NavigationProperty Name="NhaCungCap" Relationship="Self.FK__SanPham__MaNhaCu__628FA481" FromRole="SanPham" ToRole="NhaCungCap" />
           <NavigationProperty Name="PhanHois" Relationship="Self.FK__PhanHoi__MaSanPh__07C12930" FromRole="SanPham" ToRole="PhanHoi" />
+          <Property Name="GiaBan" Type="Decimal" Precision="15" Scale="2" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="Size">
           <Key>
@@ -973,7 +1049,94 @@
             <End Role="PhanQuyen" EntitySet="PhanQuyens" />
             <End Role="TaiKhoan" EntitySet="TaiKhoans" />
           </AssociationSet>
+          <FunctionImport Name="CapNhatGiaVaTonKho">
+            <Parameter Name="MaChiTiet" Mode="In" Type="Int32" />
+            <Parameter Name="GiaBanMoi" Mode="In" Type="Decimal" />
+            <Parameter Name="SoLuongTonMoi" Mode="In" Type="Int32" />
+            <Parameter Name="MucCoLap" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="KiemTraDonHangChuaThanhToan" />
+          <FunctionImport Name="SP_ThongBaoDanhGiaThap" ReturnType="Collection(QLDN_CAULONGModel.SP_ThongBaoDanhGiaThap_Result)" />
+          <FunctionImport Name="ThemDonHang">
+            <Parameter Name="MaKhachHang" Mode="In" Type="Int32" />
+            <Parameter Name="DiaChi" Mode="In" Type="String" />
+            <Parameter Name="SoDienThoai" Mode="In" Type="String" />
+            <Parameter Name="GhiChu" Mode="In" Type="String" />
+            <Parameter Name="MaDonHang_OUT" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="THEMPHANHOI" ReturnType="Collection(String)">
+            <Parameter Name="NoiDung" Mode="In" Type="String" />
+            <Parameter Name="DanhGia" Mode="In" Type="Int32" />
+            <Parameter Name="MaKH" Mode="In" Type="Int32" />
+            <Parameter Name="MaSP" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ThemSanPhamKhuyenMai">
+            <Parameter Name="TenSanPham" Mode="In" Type="String" />
+            <Parameter Name="MoTa" Mode="In" Type="String" />
+            <Parameter Name="GiaGoc" Mode="In" Type="Decimal" />
+            <Parameter Name="HinhAnhDaiDien" Mode="In" Type="String" />
+            <Parameter Name="MaLoai" Mode="In" Type="Int32" />
+            <Parameter Name="MaNhaCungCap" Mode="In" Type="Int32" />
+            <Parameter Name="MaHang" Mode="In" Type="Int32" />
+            <Parameter Name="MaKhuyenMai" Mode="In" Type="Int32" />
+            <Parameter Name="CoSize" Mode="In" Type="Boolean" />
+            <Parameter Name="CoMau" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="ThemTaiKhoanMoi">
+            <Parameter Name="TenDangNhap" Mode="In" Type="String" />
+            <Parameter Name="MatKhau" Mode="In" Type="String" />
+            <Parameter Name="Email" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ThongKeDoanhThu_Quy" ReturnType="Collection(QLDN_CAULONGModel.ThongKeDoanhThu_Quy_Result)">
+            <Parameter Name="Nam" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ThongKeDoanhThuNam" ReturnType="Collection(QLDN_CAULONGModel.ThongKeDoanhThuNam_Result)">
+            <Parameter Name="Nam" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ThongKeDoanhThuThang_Nam" ReturnType="Collection(QLDN_CAULONGModel.ThongKeDoanhThuThang_Nam_Result)">
+            <Parameter Name="Thang" Mode="In" Type="Int32" />
+            <Parameter Name="Nam" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ThongKeDoanhThuTheoThang" ReturnType="Collection(QLDN_CAULONGModel.ThongKeDoanhThuTheoThang_Result)">
+            <Parameter Name="Nam" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Tong_SPDaBan" IsComposable="true" ReturnType="Collection(QLDN_CAULONGModel.Tong_SPDaBan_Result)">
+            <Parameter Name="MaSP" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
+        <ComplexType Name="SP_ThongBaoDanhGiaThap_Result">
+          <Property Type="Int32" Name="MaPhanHoi" Nullable="false" />
+          <Property Type="String" Name="NoiDung" Nullable="true" MaxLength="255" />
+          <Property Type="Int32" Name="DanhGia" Nullable="true" />
+          <Property Type="Int32" Name="MaKhachHang" Nullable="true" />
+          <Property Type="String" Name="HoTen" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="TenSanPham" Nullable="false" MaxLength="100" />
+        </ComplexType>
+        <ComplexType Name="ThongKeDoanhThu_Quy_Result">
+          <Property Type="Int32" Name="Quy" Nullable="true" />
+          <Property Type="Int32" Name="Nam" Nullable="true" />
+          <Property Type="Decimal" Name="TongDoanhThu" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Int32" Name="SoLuongDon" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="ThongKeDoanhThuNam_Result">
+          <Property Type="Int32" Name="Nam" Nullable="true" />
+          <Property Type="Decimal" Name="TongDoanhThu" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Int32" Name="SoLuongDon" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="ThongKeDoanhThuThang_Nam_Result">
+          <Property Type="Int32" Name="Thang" Nullable="true" />
+          <Property Type="Int32" Name="Nam" Nullable="true" />
+          <Property Type="Decimal" Name="TongDoanhThu" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Int32" Name="SoLuongDon" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="ThongKeDoanhThuTheoThang_Result">
+          <Property Type="Int32" Name="Thang" Nullable="true" />
+          <Property Type="Decimal" Name="TongDoanhThu" Nullable="true" Precision="38" Scale="2" />
+        </ComplexType>
+        <ComplexType Name="Tong_SPDaBan_Result">
+          <Property Type="String" Name="TenSanPham" Nullable="false" MaxLength="100" />
+          <Property Type="Int32" Name="TongSoLuongBan" Nullable="false" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1120,6 +1283,7 @@
           <EntitySetMapping Name="SanPhams">
             <EntityTypeMapping TypeName="QLDN_CAULONGModel.SanPham">
               <MappingFragment StoreEntitySet="SanPham">
+                <ScalarProperty Name="GiaBan" ColumnName="GiaBan" />
                 <ScalarProperty Name="MaSanPham" ColumnName="MaSanPham" />
                 <ScalarProperty Name="TenSanPham" ColumnName="TenSanPham" />
                 <ScalarProperty Name="MoTa" ColumnName="MoTa" />
@@ -1169,6 +1333,69 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="CapNhatGiaVaTonKho" FunctionName="QLDN_CAULONGModel.Store.CapNhatGiaVaTonKho" />
+          <FunctionImportMapping FunctionImportName="KiemTraDonHangChuaThanhToan" FunctionName="QLDN_CAULONGModel.Store.KiemTraDonHangChuaThanhToan" />
+          <FunctionImportMapping FunctionImportName="SP_ThongBaoDanhGiaThap" FunctionName="QLDN_CAULONGModel.Store.SP_ThongBaoDanhGiaThap">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="QLDN_CAULONGModel.SP_ThongBaoDanhGiaThap_Result">
+                <ScalarProperty Name="MaPhanHoi" ColumnName="MaPhanHoi" />
+                <ScalarProperty Name="NoiDung" ColumnName="NoiDung" />
+                <ScalarProperty Name="DanhGia" ColumnName="DanhGia" />
+                <ScalarProperty Name="MaKhachHang" ColumnName="MaKhachHang" />
+                <ScalarProperty Name="HoTen" ColumnName="HoTen" />
+                <ScalarProperty Name="TenSanPham" ColumnName="TenSanPham" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ThemDonHang" FunctionName="QLDN_CAULONGModel.Store.ThemDonHang" />
+          <FunctionImportMapping FunctionImportName="THEMPHANHOI" FunctionName="QLDN_CAULONGModel.Store.THEMPHANHOI" />
+          <FunctionImportMapping FunctionImportName="ThemSanPhamKhuyenMai" FunctionName="QLDN_CAULONGModel.Store.ThemSanPhamKhuyenMai" />
+          <FunctionImportMapping FunctionImportName="ThemTaiKhoanMoi" FunctionName="QLDN_CAULONGModel.Store.ThemTaiKhoanMoi" />
+          <FunctionImportMapping FunctionImportName="ThongKeDoanhThu_Quy" FunctionName="QLDN_CAULONGModel.Store.ThongKeDoanhThu_Quy">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="QLDN_CAULONGModel.ThongKeDoanhThu_Quy_Result">
+                <ScalarProperty Name="Quy" ColumnName="Quy" />
+                <ScalarProperty Name="Nam" ColumnName="Nam" />
+                <ScalarProperty Name="TongDoanhThu" ColumnName="TongDoanhThu" />
+                <ScalarProperty Name="SoLuongDon" ColumnName="SoLuongDon" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ThongKeDoanhThuNam" FunctionName="QLDN_CAULONGModel.Store.ThongKeDoanhThuNam">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="QLDN_CAULONGModel.ThongKeDoanhThuNam_Result">
+                <ScalarProperty Name="Nam" ColumnName="Nam" />
+                <ScalarProperty Name="TongDoanhThu" ColumnName="TongDoanhThu" />
+                <ScalarProperty Name="SoLuongDon" ColumnName="SoLuongDon" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ThongKeDoanhThuThang_Nam" FunctionName="QLDN_CAULONGModel.Store.ThongKeDoanhThuThang_Nam">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="QLDN_CAULONGModel.ThongKeDoanhThuThang_Nam_Result">
+                <ScalarProperty Name="Thang" ColumnName="Thang" />
+                <ScalarProperty Name="Nam" ColumnName="Nam" />
+                <ScalarProperty Name="TongDoanhThu" ColumnName="TongDoanhThu" />
+                <ScalarProperty Name="SoLuongDon" ColumnName="SoLuongDon" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ThongKeDoanhThuTheoThang" FunctionName="QLDN_CAULONGModel.Store.ThongKeDoanhThuTheoThang">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="QLDN_CAULONGModel.ThongKeDoanhThuTheoThang_Result">
+                <ScalarProperty Name="Thang" ColumnName="Thang" />
+                <ScalarProperty Name="TongDoanhThu" ColumnName="TongDoanhThu" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Tong_SPDaBan" FunctionName="QLDN_CAULONGModel.Store.Tong_SPDaBan">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="QLDN_CAULONGModel.Tong_SPDaBan_Result">
+                <ScalarProperty Name="TenSanPham" ColumnName="TenSanPham" />
+                <ScalarProperty Name="TongSoLuongBan" ColumnName="TongSoLuongBan" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
