@@ -57,6 +57,14 @@
                         </td>
                         <td>
                             @Html.ActionLink("Xem Chi tiết", "Details", "DonHang", new { id = order.MaDonHang }, new { @class = "btn btn-info btn-sm" })
+                            @if (order.TrangThai == "Chờ xác nhận")
+                            {
+                                using (Html.BeginForm("HuyDonHang", "DonHang", new { id = order.MaDonHang }, FormMethod.Post, new { style = "display:inline;", onsubmit = "return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger btn-sm" style="margin-left:5px;">Hủy đơn</button>
+                                }
+                            }
                         </td>
                     </tr>
                 }
