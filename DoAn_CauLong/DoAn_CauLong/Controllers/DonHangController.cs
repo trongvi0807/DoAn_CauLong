@@ -22,53 +22,25 @@ namespace DoAn_CauLong.Controllers
 
         private decimal TinhGiaBanThucTe(ChiTietSanPham item)
         {
-            // 1. Lấy giá gốc
-            decimal giaGoc = item.GiaBan ?? item.SanPham.GiaGoc ?? 0;
-            decimal giaBanHienTai = giaGoc;
+            // Kiểm tra null
+            if (item == null || item.MaSanPham == null) return 0;
 
-            // 2. Lấy thông tin khuyến mãi
-            var khuyenMai = item.SanPham.KhuyenMai;
-
-            // 3. Kiểm tra khuyến mãi có tồn tại không
-            if (khuyenMai != null)
+            try
             {
-                DateTime now = DateTime.Now;
-                DateTime? ngayBatDau = khuyenMai.NgayBatDau;
-                DateTime? ngayKetThuc = khuyenMai.NgayKetThuc;
+                // Gọi Function SQL: dbo.GiaSauKhuyenMai(@MaSanPham)
+                var giaSauGiam = data.Database.SqlQuery<decimal?>(
+                    "SELECT dbo.GiaSauKhuyenMai(@MaSanPham)",
+                    new System.Data.SqlClient.SqlParameter("@MaSanPham", item.MaSanPham)
+                ).FirstOrDefault();
 
-                // Xử lý ngày kết thúc (tính đến hết ngày)
-                if (ngayKetThuc.HasValue && ngayKetThuc.Value.TimeOfDay == TimeSpan.Zero)
-                {
-                    ngayKetThuc = ngayKetThuc.Value.Date.AddDays(1).AddTicks(-1);
-                }
-
-                // --- ĐIỀU KIỆN 1: KIỂM TRA HẠN SỬ DỤNG ---
-                bool isActive = (ngayBatDau == null || ngayBatDau <= now) &&
-                                (ngayKetThuc == null || ngayKetThuc >= now);
-
-                if (isActive)
-                {
-                    // --- ĐIỀU KIỆN 2: TÍNH GIẢM GIÁ KẾT HỢP GIẢM TỐI ĐA ---
-
-                    // a. Tính số tiền giảm theo phần trăm
-                    decimal phanTram = khuyenMai.PhanTramGiam ?? 0;
-                    decimal soTienGiam = giaGoc * (phanTram / 100);
-
-                    // b. Kiểm tra và áp dụng "Giảm tối đa" (Nếu có cấu hình)
-                    if (khuyenMai.GiamToiDa.HasValue && khuyenMai.GiamToiDa.Value > 0)
-                    {
-                        if (soTienGiam > khuyenMai.GiamToiDa.Value)
-                        {
-                            soTienGiam = khuyenMai.GiamToiDa.Value; // Chỉ giảm đúng mức trần
-                        }
-                    }
-
-                    // c. Ra giá cuối
-                    giaBanHienTai = giaGoc - soTienGiam;
-                }
+                // Trả về giá từ DB (nếu null thì trả về 0)
+                return giaSauGiam ?? 0;
             }
-
-            return giaBanHienTai;
+            catch
+            {
+                // Fallback nếu lỗi kết nối DB
+                return item.SanPham?.GiaGoc ?? item.GiaBan ?? 0;
+            }
         }
 
         private int GetMaKhachHangFromSession()

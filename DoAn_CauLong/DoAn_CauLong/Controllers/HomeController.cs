@@ -32,25 +32,12 @@ namespace DoAn_CauLong.Controllers
             
             return View();
         }
-        
+
         public ActionResult ChiTietSanPham(int id)
         {
-           
+            // 1. Lấy thông tin sản phẩm cơ bản
             var sanPham = data.SanPhams
                 .Include(sp => sp.Hang)
-                .Include(sp => sp.KhuyenMai)
-                .Include(sp => sp.KhuyenMai) 
-                .Include(sp => sp.KhuyenMai)
-                .Include(sp => sp.KhuyenMai)
-                .Include(sp => sp.KhuyenMai)
-                .Include(sp => sp.KhuyenMai)
-                .Include(sp => sp.KhuyenMai)
-                .Include(sp => sp.KhuyenMai)
-                .Include(sp => sp.KhuyenMai)
-                .Include(sp => sp.KhuyenMai)
-                .Include(sp => sp.KhuyenMai)
-                .Include(sp => sp.KhuyenMai)
-                .Include(sp => sp.KhuyenMai)
                 .Include(sp => sp.KhuyenMai)
                 .FirstOrDefault(sp => sp.MaSanPham == id);
 
@@ -59,52 +46,62 @@ namespace DoAn_CauLong.Controllers
                 return HttpNotFound();
             }
 
-            // 2. Lấy tất cả biến thể chi tiết
+            // Gọi hàm dbo.GiaSauKhuyenMai đã tạo trong SQL Server
+            var giaSauGiam = data.Database.SqlQuery<decimal?>(
+                "SELECT dbo.GiaSauKhuyenMai(@MaSanPham)",
+                new SqlParameter("@MaSanPham", id)
+            ).FirstOrDefault();
+
+            // Truyền giá thực tế sang View bằng ViewBag để hiển thị
+            // (Nếu Function trả về NULL thì lấy Giá Gốc, nếu Giá Gốc NULL thì bằng 0)
+            ViewBag.GiaBanThucTe = giaSauGiam ?? sanPham.GiaGoc ?? 0;
+            // ----------------------------------------------------
+
+            // 2. Lấy tất cả biến thể chi tiết (Màu, Size, Thông số vợt)
             var variants = data.ChiTietSanPhams
                 .Where(cts => cts.MaSanPham == id)
-                .Include(cts => cts.MauSac) 
+                .Include(cts => cts.MauSac)
                 .Include(cts => cts.Size)
-                .Include(cts => cts.ThongSoVots) 
+                .Include(cts => cts.ThongSoVots)
                 .ToList();
 
-           
-
-            //thêm câu truy vấn tính trung bình đánh giá
+            // 3. Tính trung bình đánh giá 
             var TrungBinhDanhGia = data.Database.SqlQuery<decimal?>(
                 "SELECT dbo.TrungBinhDanhGia(@MaSP)",
                 new SqlParameter("@MaSP", id)
             ).FirstOrDefault();
 
-            // Hàm của bạn trả về decimal(4,2)
             double XepHangTrungBinh = (double)(TrungBinhDanhGia ?? 0.0m);
 
-            //  Lấy số lượng phản hồi 
-            int reviewCount = data.PhanHois
-                .Where(ph => ph.MaSanPham == id)
-                .Count();
-
-            
+            // 4. Lấy danh sách phản hồi 
             var reviews = data.PhanHois
-            .Where(ph => ph.MaSanPham == id)
-             .OrderByDescending(ph => ph.NgayPhanHoi) // phản hồi mới nhất sẽ thêm ở đầu
-            .ToList();
-            // 4. Chuẩn bị ViewModel
+                .Where(ph => ph.MaSanPham == id)
+                .OrderByDescending(ph => ph.NgayPhanHoi) 
+                .ToList();
+
+            // 5. Chuẩn bị ViewModel
             var viewModel = new ProductDetailViewModel
             {
                 SanPham = sanPham,
                 Variants = variants,
                 AverageRating = XepHangTrungBinh,
-                ReviewCount = reviewCount,
-                AvailableColors = variants.Where(v => v.MauSac != null).Select(v => v.MauSac).Distinct().ToList(),
-                AvailableSizes = variants.Where(v => v.Size != null).Select(v => v.Size).Distinct().ToList(),
+                ReviewCount = reviews.Count, 
 
-               
+                // Lọc Màu và Size duy nhất (Sử dụng GroupBy theo ID để chính xác hơn Distinct object)
+                AvailableColors = variants.Where(v => v.MauSac != null)
+                                          .Select(v => v.MauSac)
+                                          .GroupBy(m => m.MaMau).Select(g => g.FirstOrDefault()).ToList(),
+
+                AvailableSizes = variants.Where(v => v.Size != null)
+                                         .Select(v => v.Size)
+                                         .GroupBy(s => s.MaSize).Select(g => g.FirstOrDefault()).ToList(),
+
+                // Lấy thông số vợt (giả sử các biến thể có cùng thông số, lấy cái đầu tiên)
                 ThongSoVot = variants.SelectMany(v => v.ThongSoVots).FirstOrDefault(),
 
-                  Reviews = reviews
+                Reviews = reviews
             };
 
-            // 5. Truyền ViewModel sang View
             return View(viewModel);
         }
 
@@ -317,48 +314,32 @@ namespace DoAn_CauLong.Controllers
         // HÀM HỖ TRỢ: TÍNH GIÁ BÁN THỰC TẾ (CÓ TRỪ KHUYẾN MÃI)
         private decimal TinhGiaBanThucTe(ChiTietSanPham item)
         {
-            // 1. Lấy giá gốc (ưu tiên giá biến thể, nếu null thì lấy giá sản phẩm cha)
-            decimal giaGoc = item.SanPham.GiaGoc ?? item.GiaBan ?? 0;
-            decimal giaBanHienTai = giaGoc;
-
-            // 2. Lấy thông tin khuyến mãi từ sản phẩm cha
-            var khuyenMai = item.SanPham.KhuyenMai;
-
-            // 3. Kiểm tra logic khuyến mãi
-            if (khuyenMai != null)
+            // Kiểm tra null để tránh lỗi runtime
+            if (item == null || item.MaSanPham == null)
             {
-                DateTime now = DateTime.Now;
-
-                // XỬ LÝ NGÀY KẾT THÚC: Nếu có ngày kết thúc, ta cho phép khuyến mãi đến hết giây cuối cùng của ngày đó (23:59:59)
-                // Nếu NgayKetThuc trong DB là 00:00:00, ta cộng thêm 1 ngày rồi trừ 1 tick để thành cuối ngày.
-                DateTime? ngayBatDau = khuyenMai.NgayBatDau;
-                DateTime? ngayKetThuc = khuyenMai.NgayKetThuc;
-
-                if (ngayKetThuc.HasValue && ngayKetThuc.Value.TimeOfDay == TimeSpan.Zero)
-                {
-                    ngayKetThuc = ngayKetThuc.Value.Date.AddDays(1).AddTicks(-1);
-                }
-
-                // Kiểm tra ngày bắt đầu và kết thúc
-                bool isActive = (ngayBatDau == null || ngayBatDau <= now) &&
-                                (ngayKetThuc == null || ngayKetThuc >= now);
-
-                if (isActive)
-                {
-                    decimal phanTram = khuyenMai.PhanTramGiam ?? 0;
-                    decimal soTienGiam = giaGoc * (phanTram / 100);
-
-                    // Kiểm tra mức giảm tối đa (nếu có)
-                    if (khuyenMai.GiamToiDa.HasValue && soTienGiam > khuyenMai.GiamToiDa.Value)
-                    {
-                        soTienGiam = khuyenMai.GiamToiDa.Value;
-                    }
-
-                    giaBanHienTai = giaGoc - soTienGiam;
-                }
+                return 0;
             }
 
-            return giaBanHienTai;
+            try
+            {
+                // Gọi Function SQL: dbo.GiaSauKhuyenMai(@MaSanPham)
+                // Function này đã bao gồm logic: 
+                // 1. Kiểm tra ngày bắt đầu/kết thúc
+                // 2. Tính % giảm giá
+                // 3. Kiểm tra mức giảm tối đa
+                var giaSauGiam = data.Database.SqlQuery<decimal?>(
+                    "SELECT dbo.GiaSauKhuyenMai(@MaSanPham)",
+                    new SqlParameter("@MaSanPham", item.MaSanPham)
+                ).FirstOrDefault();
+
+                // Trả về giá đã tính toán (nếu null thì trả về 0)
+                return giaSauGiam ?? 0;
+            }
+            catch (Exception)
+            {
+                // Trong trường hợp lỗi kết nối DB, trả về giá gốc của sản phẩm cha hoặc giá của biến thể
+                return item.SanPham?.GiaGoc ?? item.GiaBan ?? 0;
+            }
         }
 
     }
