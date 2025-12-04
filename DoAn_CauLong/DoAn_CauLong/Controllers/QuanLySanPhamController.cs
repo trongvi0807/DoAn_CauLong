@@ -66,38 +66,45 @@ namespace DoAn_CauLong.Controllers
         }
 
         // POST: QuanLySanPham/Create
+        // POST: QuanLySanPham/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [ValidateInput(false)] 
+        [ValidateInput(false)]
         public ActionResult Create([Bind(Include = "TenSanPham,MoTa,GiaGoc,MaLoai,MaNhaCungCap,MaHang,MaKhuyenMai,CoSize,CoMau")] SanPham sanPham, HttpPostedFileBase HinhAnhUpload)
         {
             if (ModelState.IsValid)
             {
-                // Xử lý upload file hình ảnh
+                // 1. Xử lý upload file hình ảnh 
+                string fileName = ""; // Mặc định rỗng hoặc ảnh default
                 if (HinhAnhUpload != null && HinhAnhUpload.ContentLength > 0)
                 {
-                    // Lấy tên file
-                    string fileName = Path.GetFileName(HinhAnhUpload.FileName);
-                    // Tạo đường dẫn lưu file trên server
+                    fileName = Path.GetFileName(HinhAnhUpload.FileName);
                     string path = Path.Combine(Server.MapPath("~/Content/Images"), fileName);
-                    // Lưu file
                     HinhAnhUpload.SaveAs(path);
-
-                    // Lưu tên file vào model
-                    sanPham.HinhAnhDaiDien = fileName;
                 }
+                sanPham.HinhAnhDaiDien = fileName;
 
-                // Gán ngày tạo
-                sanPham.NgayTao = DateTime.Now;
+                // 2. THAY THẾ: Gọi Stored Procedure thay vì Add() và SaveChanges()
+                object maKhuyenMaiParam = sanPham.MaKhuyenMai.HasValue ? (object)sanPham.MaKhuyenMai.Value : DBNull.Value;
 
-                // Lưu vào CSDL
-                data.SanPhams.Add(sanPham);
-                data.SaveChanges();
+                // Dùng ExecuteSqlCommand để gọi Proc
+                data.Database.ExecuteSqlCommand(
+                    "EXEC ThemSanPhamKhuyenMai @TenSanPham, @MoTa, @GiaGoc, @HinhAnhDaiDien, @MaLoai, @MaNhaCungCap, @MaHang, @MaKhuyenMai, @CoSize, @CoMau",
+                    new SqlParameter("@TenSanPham", sanPham.TenSanPham ?? (object)DBNull.Value),
+                    new SqlParameter("@MoTa", sanPham.MoTa ?? (object)DBNull.Value),
+                    new SqlParameter("@GiaGoc", sanPham.GiaGoc ?? 0),
+                    new SqlParameter("@HinhAnhDaiDien", sanPham.HinhAnhDaiDien ?? (object)DBNull.Value),
+                    new SqlParameter("@MaLoai", sanPham.MaLoai ?? (object)DBNull.Value),
+                    new SqlParameter("@MaNhaCungCap", sanPham.MaNhaCungCap ?? (object)DBNull.Value),
+                    new SqlParameter("@MaHang", sanPham.MaHang ?? (object)DBNull.Value),
+                    new SqlParameter("@MaKhuyenMai", maKhuyenMaiParam),
+                    new SqlParameter("@CoSize", sanPham.CoSize ?? false),
+                    new SqlParameter("@CoMau", sanPham.CoMau ?? false)
+                );
 
                 return RedirectToAction("Index");
             }
 
-           
             ViewBag.MaLoai = new SelectList(data.LoaiSanPhams, "MaLoai", "TenLoai", sanPham.MaLoai);
             ViewBag.MaNhaCungCap = new SelectList(data.NhaCungCaps, "MaNhaCungCap", "TenNhaCungCap", sanPham.MaNhaCungCap);
             ViewBag.MaHang = new SelectList(data.Hangs, "MaHang", "TenHang", sanPham.MaHang);
