@@ -1015,11 +1015,12 @@ GO
 
 -- 4. Cursor: Duyệt qua toàn bộ sản phẩm hết hàng để cảnh báo
 DECLARE @MaSanPham INT, @TenSanPham NVARCHAR(100), @TongTon INT
+DECLARE @Count INT = 0 -- Biến đếm số lượng sản phẩm tìm thấy
 
 DECLARE SanPhamHetHang CURSOR FOR
 SELECT sp.MaSanPham, sp.TenSanPham, ISNULL(SUM(ct.SoLuongTon), 0) AS TongTon
 FROM SanPham sp
-LEFT JOIN ChiTietSanPham ct ON sp.MaSanPham = ct.MaSanPham
+LEFT JOIN ChiTietSanPham ct ON sp.MaSanPham = ct.MaSanPham 
 GROUP BY sp.MaSanPham, sp.TenSanPham
 HAVING ISNULL(SUM(ct.SoLuongTon), 0) = 0
 
@@ -1028,14 +1029,23 @@ FETCH NEXT FROM SanPhamHetHang INTO @MaSanPham, @TenSanPham, @TongTon
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
+    SET @Count = @Count + 1 -- Tăng biến đếm
     PRINT N'Sản phẩm "' + @TenSanPham + N'" (Mã: ' + CAST(@MaSanPham AS NVARCHAR(10)) + N') đã hết hàng!'
     FETCH NEXT FROM SanPhamHetHang INTO @MaSanPham, @TenSanPham, @TongTon
+END
+
+-- Kiểm tra nếu không có sản phẩm nào
+IF @Count = 0
+BEGIN
+    PRINT N'Hiện tại không có sản phẩm nào bị hết hàng.'
 END
 
 CLOSE SanPhamHetHang
 DEALLOCATE SanPhamHetHang
 GO
 
+UPDATE ChiTietSanPham SET SoLuongTon = 0 WHERE MaSanPham = 1;
+go
 -- 5. Transaction: Cập nhật đồng thời giá và tồn kho
 -- Tạo bảng LichSuThayDoiGia 
 CREATE TABLE LichSuThayDoiGia (
@@ -1609,6 +1619,26 @@ END;
 ----đã xóa hoàn toàn khách hàng 3
 go
 -- 4. Cursor: Duyệt phản hồi có đánh giá <= 2 để gửi cảnh báo.
+Declare cs_DuyetPhanHoi cursor
+for 
+select MaPhanHoi,NoiDung,DanhGia,MaKhachHang
+from PhanHoi
+where DanhGia <= 2
+open cs_DuyetPhanHoi
+Declare @MaPH int, @NoiDung nvarchar(255),@DanhGia int,@MaKH int
+  fetch next from cs_DuyetPhanHoi into @MaPH,@NoiDung,@DanhGia,@MaKH
+  while @@FETCH_STATUS = 0
+  begin
+  PRINT N'Cảnh báo: Phản hồi mã sản phẩm ' + cast(@MaPH as varchar(10))
+          + N' của khách hàng ' + cast(@MaKH as varchar(10))
+          + N' có đánh giá thấp (' + cast(@DanhGia as varchar(10)) + N').';
+    PRINT N'Nội dung: ' + ISNULL(@NoiDung, N'[Không có nội dung]');
+	fetch next from cs_DuyetPhanHoi into @MaPH,@NoiDung,@DanhGia,@MaKH
+  end
+  close cs_DuyetPhanHoi
+  deallocate cs_DuyetPhanHoi
+  go
+
 Create PROCEDURE SP_ThongBaoDanhGiaThap
 AS
 BEGIN
