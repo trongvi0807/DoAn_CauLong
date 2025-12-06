@@ -16,7 +16,7 @@ namespace DoAn_CauLong.Controllers
     public class ChatbotController : Controller
     {
         private QLDN_CAULONGEntities db = new QLDN_CAULONGEntities();
-        private readonly string apiKey = "";
+        private readonly string apiKey = "AIzaSyAMxKz6nijigPzmjdv5sBBYzjGZuvhq66s";
 
         [HttpPost]
         public async Task<ActionResult> Ask(string message)

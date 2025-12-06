@@ -137,27 +137,21 @@ namespace DoAn_CauLong.Controllers
             return View(viewModel);
         }
 
-        
+
         // XỬ LÝ ĐẶT HÀNG VÀ LƯU DATABASE
-        
+
         [HttpPost]
         [CheckLogin]
         [ValidateAntiForgeryToken]
         public ActionResult Checkout(string HoTenNhan, string SoDienThoaiNhan, string DiaChiGiao, string GhiChu)
         {
             int maKhachHang = GetMaKhachHangFromSession();
-            if (maKhachHang == -1)
-            {
-                return RedirectToAction("DangNhap", "TaiKhoan");
-            }
+            if (maKhachHang == -1) return RedirectToAction("DangNhap", "TaiKhoan");
 
-            // Lấy lại giỏ hàng kèm thông tin Khuyến Mãi
-            var cartItems = data.GioHangs
-                                .Where(g => g.MaKhachHang == maKhachHang)
-                                .Include(g => g.ChiTietSanPham)
-                                .Include(g => g.ChiTietSanPham.SanPham)
-                                .Include(g => g.ChiTietSanPham.SanPham.KhuyenMai) 
-                                .ToList();
+            // Lấy giỏ hàng (Code cũ của bạn)
+            var cartItems = data.GioHangs.Where(g => g.MaKhachHang == maKhachHang)
+                                .Include(g => g.ChiTietSanPham).Include(g => g.ChiTietSanPham.SanPham)
+                                .Include(g => g.ChiTietSanPham.SanPham.KhuyenMai).ToList();
 
             if (!cartItems.Any())
             {
@@ -165,76 +159,94 @@ namespace DoAn_CauLong.Controllers
                 return RedirectToAction("ViewCart", "Home");
             }
 
-            using (var transaction = data.Database.BeginTransaction())
+            // --- CẤU HÌNH RETRY ---
+            int retryCount = 0;
+            bool success = false;
+            const int MaxRetries = 3; // Thử tối đa 3 lần
+
+            while (retryCount < MaxRetries && !success)
             {
-                try
+                using (var transaction = data.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
                 {
-                    // 1. TẠO ĐƠN HÀNG
-                    var maDHParam = new System.Data.SqlClient.SqlParameter("@MaDonHang_OUT", System.Data.SqlDbType.Int)
+                    try
                     {
-                        Direction = System.Data.ParameterDirection.Output
-                    };
-
-                    data.Database.ExecuteSqlCommand(
-                        "EXEC ThemDonHang @MaKhachHang, @DiaChi, @SoDienThoai, @GhiChu, @MaDonHang_OUT OUTPUT",
-                        new System.Data.SqlClient.SqlParameter("@MaKhachHang", maKhachHang),
-                        new System.Data.SqlClient.SqlParameter("@DiaChi", DiaChiGiao),
-                        new System.Data.SqlClient.SqlParameter("@SoDienThoai", SoDienThoaiNhan),
-                        new System.Data.SqlClient.SqlParameter("@GhiChu", GhiChu),
-                        maDHParam
-                    );
-
-                    int newMaDonHang = (int)maDHParam.Value;
-                    decimal tongTienDonHang = 0;
-
-                    // 2. LƯU CHI TIẾT ĐƠN HÀNG VỚI GIÁ ĐÃ GIẢM
-                    foreach (var item in cartItems)
-                    {
-                        // Gọi hàm tính giá đã giảm
-                        decimal giaDaGiam = TinhGiaBanThucTe(item.ChiTietSanPham);
-
-                        var chiTietDH = new ChiTietDonHang
+                        // 1. KIỂM TRA & TRỪ TỒN KHO
+                        foreach (var item in cartItems)
                         {
-                            MaDonHang = newMaDonHang,
-                            MaChiTietSanPham = item.MaChiTietSanPham,
-                            SoLuong = item.SoLuong,
-                            // Lưu giá thực tế (đã giảm) vào Database
-                            DonGia = giaDaGiam,
-                            ThanhTien = (item.SoLuong ?? 0) * giaDaGiam
-                        };
-                        data.ChiTietDonHangs.Add(chiTietDH);
-                        tongTienDonHang += chiTietDH.ThanhTien ?? 0;
-                    }
+                            // Serializable: Lệnh Find này sẽ tạo Shared Lock (Khóa S) ngay lập tức
+                            var spTrongKho = data.ChiTietSanPhams.Find(item.MaChiTietSanPham);
 
-                    // 3. CẬP NHẬT TỔNG TIỀN CHO ĐƠN HÀNG
-                    var newOrder = data.DonHangs.Find(newMaDonHang);
-                    if (newOrder != null)
+                            if (spTrongKho == null) throw new Exception("Sản phẩm không tồn tại.");
+                            if (spTrongKho.SoLuongTon < item.SoLuong) throw new Exception($"Sản phẩm {spTrongKho.SanPham.TenSanPham} vừa hết hàng.");
+
+                            spTrongKho.SoLuongTon -= item.SoLuong;
+                            data.Entry(spTrongKho).State = EntityState.Modified;
+                        }
+
+                        // 2. TẠO ĐƠN HÀNG (Giữ nguyên logic của bạn)
+                        var maDHParam = new System.Data.SqlClient.SqlParameter("@MaDonHang_OUT", System.Data.SqlDbType.Int) { Direction = System.Data.ParameterDirection.Output };
+                        data.Database.ExecuteSqlCommand("EXEC ThemDonHang @MaKhachHang, @DiaChi, @SoDienThoai, @GhiChu, @MaDonHang_OUT OUTPUT",
+                            new System.Data.SqlClient.SqlParameter("@MaKhachHang", maKhachHang),
+                            new System.Data.SqlClient.SqlParameter("@DiaChi", DiaChiGiao),
+                            new System.Data.SqlClient.SqlParameter("@SoDienThoai", SoDienThoaiNhan),
+                            new System.Data.SqlClient.SqlParameter("@GhiChu", GhiChu), maDHParam);
+
+                        int newMaDonHang = (int)maDHParam.Value;
+                        decimal tongTienDonHang = 0;
+
+                        // 3. LƯU CHI TIẾT
+                        foreach (var item in cartItems)
+                        {
+                            decimal giaDaGiam = TinhGiaBanThucTe(item.ChiTietSanPham);
+                            var chiTietDH = new ChiTietDonHang { MaDonHang = newMaDonHang, MaChiTietSanPham = item.MaChiTietSanPham, SoLuong = item.SoLuong, DonGia = giaDaGiam, ThanhTien = (item.SoLuong ?? 0) * giaDaGiam };
+                            data.ChiTietDonHangs.Add(chiTietDH);
+                            tongTienDonHang += chiTietDH.ThanhTien ?? 0;
+                        }
+
+                        // 4. UPDATE TỔNG TIỀN & XÓA GIỎ
+                        var newOrder = data.DonHangs.Find(newMaDonHang);
+                        if (newOrder != null) { newOrder.TongTien = tongTienDonHang; newOrder.TongTienSauGiam = tongTienDonHang; data.Entry(newOrder).State = EntityState.Modified; }
+                        data.GioHangs.RemoveRange(cartItems);
+
+                        // 5. SAVE & COMMIT
+                        data.SaveChanges();
+                        transaction.Commit();
+
+                        success = true; // Đánh dấu thành công để thoát vòng lặp
+                        Session["GioHangCount"] = 0;
+                        TempData["Success"] = "Đặt hàng thành công! Đơn hàng #" + newMaDonHang;
+                    }
+                    catch (System.Data.Entity.Infrastructure.DbUpdateException ex)
                     {
-                        newOrder.TongTien = tongTienDonHang;
-                        newOrder.TongTienSauGiam = tongTienDonHang;
-                        data.Entry(newOrder).State = EntityState.Modified;
+                        // BẮT LỖI DEADLOCK (Mã lỗi 1205)
+                        var sqlEx = ex.InnerException?.InnerException as System.Data.SqlClient.SqlException;
+                        if (sqlEx != null && sqlEx.Number == 1205)
+                        {
+                            retryCount++;
+                            transaction.Rollback(); // Hủy để thử lại
+                            if (retryCount < MaxRetries)
+                            {
+                                System.Threading.Thread.Sleep(1000); // Chờ 1 giây
+                                continue; // Quay lại đầu vòng while
+                            }
+                        }
+                        // Nếu lỗi khác hoặc hết lượt retry
+                        transaction.Rollback();
+                        TempData["Error"] = "Lỗi hệ thống (Deadlock) hoặc lỗi dữ liệu.";
+                        return RedirectToAction("ViewCart", "Home");
                     }
-
-                    // 4. Xóa giỏ hàng
-                    data.GioHangs.RemoveRange(cartItems);
-
-                    data.SaveChanges();
-                    transaction.Commit();
-
-                    Session["GioHangCount"] = 0;
-                    TempData["Success"] = "Đặt hàng thành công! Đơn hàng #" + newMaDonHang;
-                    return RedirectToAction("Index");
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    TempData["Error"] = "Đã xảy ra lỗi khi đặt hàng: " + ex.Message;
-                    return RedirectToAction("Checkout");
+                    catch (Exception ex)
+                    {
+                        TempData["Error"] = "Lỗi: " + ex.Message;
+                        return RedirectToAction("ViewCart", "Home");
+                    }
                 }
             }
+
+            return RedirectToAction("Index");
         }
 
-        
+
         [CheckLogin]
         public ActionResult Index()
         {
